@@ -208,7 +208,12 @@ fun EraserScreen(
                 // tombol langsung di bawah kontrol (bukan di dasar layar) supaya tidak tertutup tombol HP
                 Spacer(Modifier.height(20.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    TextButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Batal") }
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp)
+                    ) { Text("Batal", fontWeight = FontWeight.Bold) }
                     Button(
                         onClick = { onSave(working.copy(Bitmap.Config.ARGB_8888, false)) },
                         enabled = edited || history.isNotEmpty(),
