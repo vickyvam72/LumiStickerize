@@ -38,6 +38,11 @@
 - **Rapikan stiker**: penghapus manual dengan ukuran kuas, Urungkan, dan Ulang dari awal
 - Stiker yang diedit ikut diperbarui di WhatsApp
 
+### 👋 Layar pembuka & latar belakang
+- Layar pembuka saat pertama dipasang: perkenalan → isi API key **OpenRouter dan/atau Cloudflare** (minimal salah satu) → izin
+- Izin wajib: **notifikasi** dan **berjalan di latar belakang**; Autostart untuk Xiaomi/Oppo/Vivo/Realme/Infinix (opsional)
+- Aplikasi boleh ditinggal selama AI bekerja, lalu muncul **notifikasi saat stiker sudah jadi**
+
 ### 📦 Paket & ganti sebagian
 - Simpan ke **paket baru** atau **tambahkan ke paket yang sudah ada** (maks. 30 stiker per paket)
 - **Ganti sebagian**: centang 1 atau beberapa stiker, lalu ubah katanya atau buat ulang hanya stiker itu
@@ -53,6 +58,7 @@
 - Garis pemisah grid yang digambar AI ikut dibuang
 - Tombol **Simpan** di layar Rapikan stiker tidak lagi tertutup tombol navigasi HP
 - Tulisan tombol "Buat ulang semua" tidak lagi terpotong
+- Kalau AI menggambar lebih sedikit stiker dari yang diminta (mis. 6 dari 10), hanya stiker yang ada yang dipotong dengan rapi, disertai saran untuk buat ulang atau ganti model AI
 
 </details>
 
@@ -80,6 +86,11 @@
 - **Rapikan stiker** (Tidy up sticker): a manual eraser with adjustable brush, Undo and Start over
 - Edited stickers are updated in WhatsApp too
 
+### 👋 Welcome screens & background work
+- Welcome screens on first install: introduction → **OpenRouter and/or Cloudflare** API key (at least one) → permissions
+- Required permissions: **notifications** and **running in the background**; Autostart for Xiaomi/Oppo/Vivo/Realme/Infinix (optional)
+- You can leave the app while the AI works and get a **notification when the stickers are ready**
+
 ### 📦 Packs & partial regeneration
 - Save to a **new pack** or **add to an existing pack** (up to 30 stickers per pack)
 - **Replace some**: tick 1 or more stickers, then change their captions or regenerate only those
@@ -95,5 +106,6 @@
 - Grid separator lines drawn by the AI are removed too
 - The **Simpan** (Save) button on the Tidy up screen is no longer hidden behind the phone's navigation buttons
 - The "Buat ulang semua" (Regenerate all) button label is no longer cut off
+- If the AI draws fewer stickers than requested (e.g. 6 of 10), only those are cut out cleanly, with a tip to regenerate or switch AI model
 
 </details>

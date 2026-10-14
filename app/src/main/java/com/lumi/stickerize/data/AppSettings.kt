@@ -48,6 +48,14 @@ class AppSettings(context: Context) {
         get() = prefs.getString("publisher", "Lumi Stickerize").orEmpty().ifBlank { "Lumi Stickerize" }
         set(v) = prefs.edit().putString("publisher", v.trim()).apply()
 
+    /** Layar pembuka (kenalan, API key, izin) sudah dilewati. */
+    var onboardingDone: Boolean
+        get() = prefs.getBoolean("onboarding_done", false)
+        set(v) = prefs.edit().putBoolean("onboarding_done", v).apply()
+
+    val hasOpenRouter: Boolean get() = apiKey.isNotBlank()
+    val hasCloudflare: Boolean get() = cfAccountId.isNotBlank() && cfToken.isNotBlank()
+
     val provider: Provider get() = providerOf(model)
 
     /** Kunci untuk penyedia yang dipakai sudah diisi? */

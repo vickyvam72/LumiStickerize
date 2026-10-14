@@ -24,6 +24,8 @@ import com.lumi.stickerize.sticker.StickerPack
 import com.lumi.stickerize.sticker.StickerMaker
 import com.lumi.stickerize.util.FaceFinder
 import com.lumi.stickerize.util.ImageUtils
+import com.lumi.stickerize.work.GenerationService
+import com.lumi.stickerize.work.Notifier
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -302,6 +304,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
         generating = true
         error = null
+        val app = getApplication<Application>()
+        Notifier.clearDone(app)
+        GenerationService.start(app, "AI sedang membuat $count stiker…")
         job = viewModelScope.launch {
             try {
                 val total = count
@@ -311,8 +316,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 if (pieces.size < GridSpec.WHATSAPP_MIN) {
                     sheet = sheetBmp.asImageBitmap()
                     throw IllegalStateException(
-                        "AI hanya menghasilkan ${pieces.size} stiker yang bisa dipotong " +
-                            "(WhatsApp butuh minimal 3). Silakan coba buat ulang."
+                        "AI hanya mampu membuat ${pieces.size} stiker (WhatsApp butuh minimal 3). " +
+                            "Coba buat ulang, atau ganti model AI di ⚙️ Pengaturan."
                     )
                 }
 
@@ -332,15 +337,24 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                     SimpleDateFormat("d MMM HH.mm", Locale("id", "ID")).format(Date())
                 refreshPacks()
                 notice = if (pieces.size < total) {
-                    "Ada ${total - pieces.size} stiker yang tidak tergambar oleh AI, jadi hanya ${pieces.size} stiker yang dibuat."
+                    "AI hanya mampu membuat ${pieces.size} dari $total stiker yang diminta, jadi hanya " +
+                        "${pieces.size} stiker yang dipotong. Kalau ingin lengkap, tekan \"Buat ulang semua\" " +
+                        "atau ganti model AI di ⚙️ Pengaturan."
                 } else null
                 step = Step.RESULT
+                Notifier.done(
+                    app, "Stiker sudah jadi! 🎉",
+                    if (pieces.size < total) "${pieces.size} dari $total stiker berhasil dibuat. Ketuk untuk melihat."
+                    else "${pieces.size} stiker siap ditambahkan ke WhatsApp. Ketuk untuk melihat."
+                )
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 error = e.message ?: "Terjadi kesalahan. Coba lagi."
+                Notifier.done(app, "Pembuatan stiker gagal", error ?: "Ketuk untuk mencoba lagi.")
             } finally {
                 generating = false
+                GenerationService.stop(app)
             }
         }
     }
@@ -380,6 +394,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         generating = true
         regenerating = targets.size
         error = null
+        val app = getApplication<Application>()
+        Notifier.clearDone(app)
+        GenerationService.start(app, "AI sedang membuat ulang ${targets.size} stiker…")
         job = viewModelScope.launch {
             try {
                 val captions = targets.map { (newCaptions[it] ?: stickerCaptions.getOrElse(it) { "" }).trim() }
@@ -405,13 +422,16 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 } else "${targets.size} stiker berhasil dibuat ulang ✨"
                 stopSelecting()
                 recommitIfNeeded()
+                Notifier.done(app, "Stiker sudah diperbarui ✨", notice ?: "Ketuk untuk melihat.")
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 error = e.message ?: "Terjadi kesalahan. Coba lagi."
+                Notifier.done(app, "Pembuatan ulang gagal", error ?: "Ketuk untuk mencoba lagi.")
             } finally {
                 generating = false
                 regenerating = 0
+                GenerationService.stop(app)
             }
         }
     }
@@ -420,6 +440,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         job?.cancel()
         generating = false
         regenerating = 0
+        GenerationService.stop(getApplication())
+    }
+
+    override fun onCleared() {
+        GenerationService.stop(getApplication())
+        super.onCleared()
     }
 
     /* ------------------------------------------------ simpan ke paket */

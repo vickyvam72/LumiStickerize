@@ -61,6 +61,11 @@
 - **Ganti sebagian** (Replace some): tick 1 or more stickers, then **change their captions** or **regenerate** only those, without remaking the whole set
 - **Buat ulang semua** (Regenerate all) with the same settings
 
+**🔔 Leave it, get notified**
+- While the AI works, you can switch apps or turn the screen off
+- A **notification** appears when the stickers are ready (or if something fails)
+- If the AI draws **fewer** stickers than requested, only the ones it drew are cut out, and you're advised to regenerate or switch AI model
+
 **📲 Add to WhatsApp**
 - The official **Tambahkan ke WhatsApp** (Add to WhatsApp) flow, supporting WhatsApp and WhatsApp Business
 - Save to a **new pack** or **add to an existing pack** (up to 30 stickers per pack)
@@ -101,7 +106,8 @@
 - Android **8.0 (API 26)** or newer on an ARM processor (nearly every Android phone)
 - About **80 MB** of free space
 - **WhatsApp** or **WhatsApp Business** installed
-- An internet connection and an **API key** from OpenRouter or Cloudflare
+- An internet connection and an **API key** from OpenRouter and/or Cloudflare
+- **Notification** and **background** permissions
 
 ---
 
@@ -109,8 +115,15 @@
 
 > 🗣️ The app interface is in **Indonesian**. Button names are written below exactly as they appear in the app, with an English translation in brackets.
 
-### 1️⃣ Add your API key (once)
-Tap the ⚙️ icon at the top right → **Pengaturan AI** (AI settings), then pick a model:
+### 1️⃣ Welcome screens (once)
+On first launch, Lumi Stickerize shows 3 screens:
+1. A short **introduction** — tap **Mulai** (Start).
+2. **Hubungkan AI** (Connect AI): fill in **at least one**, or both:
+   - **OpenRouter (paid):** create a key at [openrouter.ai/keys](https://openrouter.ai/keys), add credit at [openrouter.ai/credits](https://openrouter.ai/credits), then paste the key (starts with `sk-or-`).
+   - **Cloudflare (free):** sign up at [dash.cloudflare.com](https://dash.cloudflare.com), copy your **Account ID**, create an **API Token** with the *Workers AI* template, and fill in both.
+3. **Satu langkah lagi** (One more step): the **required** permissions are **notifications** (to tell you when stickers are ready) and **running in the background** (so you can leave the app while the AI works). Xiaomi, Oppo, Vivo, Realme & Infinix users are also advised to turn on **Autostart** (optional).
+
+You can change the model and keys any time via the ⚙️ icon at the top right → **Pengaturan AI** (AI settings):
 - **OpenRouter (paid):** create a key at [openrouter.ai/keys](https://openrouter.ai/keys), add credit at [openrouter.ai/credits](https://openrouter.ai/credits), then paste the key (starts with `sk-or-`).
 - **Cloudflare (free):** sign up at [dash.cloudflare.com](https://dash.cloudflare.com), copy your **Account ID**, create an **API Token** with the *Workers AI* template, and fill in both.
 

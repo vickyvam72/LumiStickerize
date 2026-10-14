@@ -1,0 +1,583 @@
+package com.lumi.stickerize.ui
+
+import android.Manifest
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
+import android.provider.Settings
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import com.lumi.stickerize.R
+import com.lumi.stickerize.data.AppSettings
+import com.lumi.stickerize.work.Notifier
+
+// Palet gelap layar pembuka
+private val NightTop = Color(0xFF0A1330)
+private val NightBottom = Color(0xFF070B1C)
+private val CardBg = Color(0xFF121C3D)
+private val CardBorder = Color(0xFF2A3B6B)
+private val IconBg = Color(0xFF1B2A55)
+private val TextMain = Color(0xFFF2F5FF)
+private val TextSoft = Color(0xFFA9B4D6)
+private val Accent = Color(0xFF5B9BF5)
+private val Success = Color(0xFF4CD08A)
+private val Warn = Color(0xFFF2B54A)
+private val ButtonGradient = Brush.horizontalGradient(listOf(Color(0xFF7CC0FA), Color(0xFF4F95EE), Color(0xFF3A6FEA)))
+private val Background = Brush.verticalGradient(listOf(NightTop, Color(0xFF0D1838), NightBottom))
+
+/**
+ * Layar pembuka saat aplikasi pertama kali dipasang:
+ * 1. Perkenalan  2. API key (OpenRouter dan/atau Cloudflare)  3. Izin notifikasi & latar belakang
+ */
+@Composable
+fun OnboardingScreen(settings: AppSettings, onFinished: () -> Unit) {
+    var page by rememberSaveable { mutableIntStateOf(0) }
+    BackHandler(enabled = page > 0) { page-- }
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Background)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .imePadding()
+    ) {
+        AnimatedContent(targetState = page, label = "onboarding") { p ->
+            when (p) {
+                0 -> WelcomePage(onNext = { page = 1 })
+                1 -> KeysPage(settings, onNext = { page = 2 })
+                else -> PermissionsPage(onFinished = {
+                    settings.onboardingDone = true
+                    onFinished()
+                })
+            }
+        }
+    }
+}
+
+/* ---------------------------------------------------------------- 1. perkenalan */
+
+@Composable
+private fun WelcomePage(onNext: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.height(24.dp))
+        AppLogo(120)
+        Spacer(Modifier.height(28.dp))
+        Text("Lumi Stickerize", color = TextMain, fontSize = 34.sp, fontWeight = FontWeight.Light)
+        Spacer(Modifier.height(10.dp))
+        Text(
+            "Ubah fotomu jadi paket stiker WhatsApp yang mirip kamu, dibuat AI dalam sekali tekan.",
+            color = TextSoft,
+            fontSize = 17.sp,
+            textAlign = TextAlign.Center,
+            lineHeight = 24.sp
+        )
+        Spacer(Modifier.height(36.dp))
+        Feature("✨", "Stiker mirip kamu", "1–3 foto, 10 tema, bisa berdua — semua stiker digambar AI dalam 1 gambar (hemat).")
+        Feature("✂️", "Rapi otomatis", "Latar dihapus, tiap stiker dipotong & diberi garis tepi putih. Bisa dirapikan manual.")
+        Feature("📲", "Langsung ke WhatsApp", "Simpan ke paket baru atau tambahkan ke paket lama, sekali tekan.")
+        Spacer(Modifier.height(32.dp))
+        GradientButton("Mulai", enabled = true, onClick = onNext)
+        Spacer(Modifier.height(14.dp))
+        Text(
+            "Butuh API key OpenRouter (berbayar) atau Cloudflare (gratis). Key hanya disimpan di HP-mu.",
+            color = TextSoft.copy(alpha = 0.75f),
+            fontSize = 13.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun Feature(icon: String, title: String, text: String) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
+    ) {
+        Box(
+            Modifier
+                .size(54.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(IconBg),
+            contentAlignment = Alignment.Center
+        ) { Text(icon, fontSize = 24.sp) }
+        Spacer(Modifier.width(16.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title, color = TextMain, fontSize = 18.sp)
+            Text(text, color = TextSoft, fontSize = 14.sp, lineHeight = 20.sp)
+        }
+    }
+}
+
+/* ---------------------------------------------------------------- 2. API key */
+
+@Composable
+private fun KeysPage(settings: AppSettings, onNext: () -> Unit) {
+    var orKey by remember { mutableStateOf(settings.apiKey) }
+    var cfAccount by remember { mutableStateOf(settings.cfAccountId) }
+    var cfToken by remember { mutableStateOf(settings.cfToken) }
+    var reveal by remember { mutableStateOf(false) }
+    val uri = LocalUriHandler.current
+
+    val hasOr = orKey.isNotBlank()
+    val hasCf = cfAccount.isNotBlank() && cfToken.isNotBlank()
+    val cfHalf = (cfAccount.isNotBlank()) xor (cfToken.isNotBlank())
+    val hidden = if (reveal) VisualTransformation.None else PasswordVisualTransformation()
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 24.dp)
+    ) {
+        AppLogo(72)
+        Spacer(Modifier.height(20.dp))
+        Text("Hubungkan AI", color = TextMain, fontSize = 30.sp)
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Isi minimal salah satu: OpenRouter (berbayar, hasil terbaik) atau Cloudflare (gratis tiap hari). " +
+                "Boleh juga keduanya. Semua key hanya disimpan di HP ini.",
+            color = TextSoft,
+            fontSize = 15.sp,
+            lineHeight = 22.sp
+        )
+        Spacer(Modifier.height(20.dp))
+
+        // ---- OpenRouter
+        DarkCard(done = hasOr) {
+            CardHeader("💳", "OpenRouter", "Berbayar • ±\$0,01–0,04 per pembuatan • 8 model", hasOr)
+            Spacer(Modifier.height(12.dp))
+            DarkField(
+                value = orKey,
+                onChange = { orKey = it.trim() },
+                label = "API key OpenRouter",
+                placeholder = "sk-or-v1-…",
+                transformation = hidden,
+                onToggleReveal = { reveal = !reveal },
+                revealed = reveal
+            )
+            TextButton(onClick = { uri.openUri(AppSettings.API_KEY_URL) }) {
+                Text("Buat API key di openrouter.ai →", color = Accent)
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+
+        // ---- Cloudflare
+        DarkCard(done = hasCf) {
+            CardHeader("🆓", "Cloudflare Workers AI", "Gratis • ±6–80 pembuatan per hari • 2 model", hasCf)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "1) Daftar gratis di dash.cloudflare.com\n" +
+                    "2) Salin Account ID (ada di halaman Workers AI)\n" +
+                    "3) Buat API Token dengan template \"Workers AI\"",
+                color = TextSoft,
+                fontSize = 13.sp,
+                lineHeight = 19.sp
+            )
+            Spacer(Modifier.height(10.dp))
+            DarkField(
+                value = cfAccount,
+                onChange = { cfAccount = it.trim() },
+                label = "Account ID",
+                placeholder = "",
+                transformation = VisualTransformation.None
+            )
+            Spacer(Modifier.height(8.dp))
+            DarkField(
+                value = cfToken,
+                onChange = { cfToken = it.trim() },
+                label = "API Token",
+                placeholder = "",
+                transformation = hidden,
+                onToggleReveal = { reveal = !reveal },
+                revealed = reveal
+            )
+            if (cfHalf) {
+                Spacer(Modifier.height(6.dp))
+                Text("Isi Account ID dan API Token, keduanya.", color = Warn, fontSize = 13.sp)
+            }
+            TextButton(onClick = { uri.openUri(AppSettings.CF_TOKEN_URL) }) {
+                Text("Buat API Token Cloudflare →", color = Accent)
+            }
+        }
+
+        Spacer(Modifier.height(24.dp))
+        GradientButton(
+            text = if (hasOr || hasCf) "Lanjut" else "Isi minimal salah satu dulu",
+            enabled = hasOr || hasCf,
+            onClick = {
+                settings.apiKey = orKey
+                settings.cfAccountId = cfAccount
+                settings.cfToken = cfToken
+                // pilih model awal yang sesuai dengan key yang diisi
+                if (!hasOr && hasCf && settings.provider != com.lumi.stickerize.data.Provider.CLOUDFLARE) {
+                    settings.model = "@cf/black-forest-labs/flux-2-klein-4b"
+                } else if (hasOr && !hasCf && settings.provider == com.lumi.stickerize.data.Provider.CLOUDFLARE) {
+                    settings.model = AppSettings.DEFAULT_MODEL
+                }
+                onNext()
+            }
+        )
+        Spacer(Modifier.height(10.dp))
+        Text(
+            "Bisa diubah kapan saja lewat ⚙️ Pengaturan.",
+            color = TextSoft.copy(alpha = 0.75f),
+            fontSize = 13.sp,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun CardHeader(icon: String, title: String, subtitle: String, done: Boolean) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(if (done) Success.copy(alpha = 0.18f) else IconBg),
+            contentAlignment = Alignment.Center
+        ) { Text(if (done) "✅" else icon, fontSize = 22.sp) }
+        Spacer(Modifier.width(14.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title, color = TextMain, fontSize = 18.sp)
+            Text(subtitle, color = TextSoft, fontSize = 13.sp)
+        }
+    }
+}
+
+@Composable
+private fun DarkField(
+    value: String,
+    onChange: (String) -> Unit,
+    label: String,
+    placeholder: String,
+    transformation: VisualTransformation,
+    onToggleReveal: (() -> Unit)? = null,
+    revealed: Boolean = false,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onChange,
+        label = { Text(label) },
+        placeholder = { if (placeholder.isNotEmpty()) Text(placeholder) },
+        singleLine = true,
+        visualTransformation = transformation,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        trailingIcon = onToggleReveal?.let {
+            { TextButton(onClick = it) { Text(if (revealed) "Tutup" else "Lihat", color = Accent) } }
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = TextMain,
+            unfocusedTextColor = TextMain,
+            focusedBorderColor = Accent,
+            unfocusedBorderColor = CardBorder,
+            focusedLabelColor = Accent,
+            unfocusedLabelColor = TextSoft,
+            cursorColor = Accent,
+            focusedPlaceholderColor = TextSoft.copy(alpha = 0.5f),
+            unfocusedPlaceholderColor = TextSoft.copy(alpha = 0.5f),
+        ),
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+/* ---------------------------------------------------------------- 3. izin */
+
+private fun notificationsAllowed(context: Context) = Notifier.canNotify(context)
+
+private fun backgroundAllowed(context: Context): Boolean {
+    val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+    return pm.isIgnoringBatteryOptimizations(context.packageName)
+}
+
+private fun openAppSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    context.startActivity(intent)
+}
+
+private fun openNotificationSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        openAppSettings(context)
+    }
+}
+
+@android.annotation.SuppressLint("BatteryLife")
+private fun requestBackground(context: Context) {
+    try {
+        context.startActivity(
+            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:${context.packageName}"))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+    } catch (e: Exception) {
+        try {
+            context.startActivity(
+                Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (e2: Exception) {
+            openAppSettings(context)
+        }
+    }
+}
+
+@Composable
+private fun PermissionsPage(onFinished: () -> Unit) {
+    val context = LocalContext.current
+    var notifOk by remember { mutableStateOf(notificationsAllowed(context)) }
+    var bgOk by remember { mutableStateOf(backgroundAllowed(context)) }
+    var askedNotif by rememberSaveable { mutableStateOf(false) }
+
+    // cek ulang setiap kembali dari layar pengaturan HP
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        notifOk = notificationsAllowed(context)
+        bgOk = backgroundAllowed(context)
+    }
+    val notifLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        notifOk = notificationsAllowed(context)
+    }
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 24.dp)
+    ) {
+        AppLogo(72)
+        Spacer(Modifier.height(20.dp))
+        Text("Satu langkah lagi", color = TextMain, fontSize = 30.sp)
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Membuat stiker butuh 15–60 detik. Dengan dua izin ini kamu bisa meninggalkan aplikasi " +
+                "selama AI bekerja, lalu diberi tahu saat stikernya sudah jadi. Dua izin ini wajib diaktifkan.",
+            color = TextSoft,
+            fontSize = 15.sp,
+            lineHeight = 22.sp
+        )
+        Spacer(Modifier.height(20.dp))
+
+        PermissionCard(
+            icon = "🔔",
+            title = "Izinkan notifikasi",
+            text = "Supaya kamu langsung tahu saat stiker sudah jadi, walau aplikasi sedang tidak dibuka.",
+            granted = notifOk,
+            button = if (askedNotif) "Buka pengaturan notifikasi" else "Izinkan",
+            onClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !askedNotif) {
+                    askedNotif = true
+                    notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    openNotificationSettings(context)
+                }
+            }
+        )
+        Spacer(Modifier.height(14.dp))
+        PermissionCard(
+            icon = "⚡",
+            title = "Izinkan berjalan di latar belakang",
+            text = "Mengecualikan Lumi dari penghemat baterai agar pembuatan stiker tetap jalan walau kamu pindah aplikasi atau layar mati.",
+            granted = bgOk,
+            button = "Izinkan",
+            onClick = { requestBackground(context) }
+        )
+        Spacer(Modifier.height(14.dp))
+
+        // ---- opsional untuk HP yang agresif menutup aplikasi
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .background(CardBg)
+                .border(1.dp, Warn.copy(alpha = 0.6f), RoundedCornerShape(24.dp))
+                .padding(18.dp)
+        ) {
+            Text("Pengguna Xiaomi, Oppo, Vivo, Realme & Infinix", color = Warn, fontSize = 17.sp)
+            Text("Opsional", color = Warn.copy(alpha = 0.75f), fontSize = 12.sp)
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "Aktifkan juga \"Autostart\" / \"Mulai otomatis\" untuk Lumi Stickerize di pengaturan aplikasi " +
+                    "HP kamu, karena sistem HP tersebut sering menutup aplikasi di latar belakang.",
+                color = TextSoft,
+                fontSize = 14.sp,
+                lineHeight = 20.sp
+            )
+            Spacer(Modifier.height(12.dp))
+            Box(
+                Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .border(BorderStroke(1.dp, Warn.copy(alpha = 0.7f)), RoundedCornerShape(16.dp))
+                    .clickable { openAppSettings(context) }
+                    .padding(horizontal = 18.dp, vertical = 12.dp)
+            ) { Text("Buka pengaturan aplikasi", color = Warn, fontSize = 15.sp) }
+        }
+
+        Spacer(Modifier.height(24.dp))
+        val ready = notifOk && bgOk
+        GradientButton(
+            text = if (ready) "Mulai buat stiker" else "Aktifkan kedua izin dulu",
+            enabled = ready,
+            onClick = onFinished
+        )
+    }
+}
+
+@Composable
+private fun PermissionCard(
+    icon: String,
+    title: String,
+    text: String,
+    granted: Boolean,
+    button: String,
+    onClick: () -> Unit,
+) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(CardBg)
+            .border(1.dp, if (granted) Success.copy(alpha = 0.6f) else CardBorder, RoundedCornerShape(24.dp))
+            .padding(18.dp)
+    ) {
+        Row {
+            Box(
+                Modifier
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(if (granted) Success.copy(alpha = 0.18f) else IconBg),
+                contentAlignment = Alignment.Center
+            ) { Text(if (granted) "✅" else icon, fontSize = 22.sp) }
+            Spacer(Modifier.width(14.dp))
+            Column(Modifier.weight(1f)) {
+                Text(title, color = TextMain, fontSize = 18.sp)
+                Text(text, color = TextSoft, fontSize = 14.sp, lineHeight = 20.sp)
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        if (granted) {
+            Text("✓ Sudah diizinkan", color = Success, fontSize = 15.sp)
+        } else {
+            GradientButton(button, enabled = true, onClick = onClick, height = 52)
+        }
+    }
+}
+
+/* ---------------------------------------------------------------- komponen */
+
+@Composable
+private fun DarkCard(done: Boolean, content: @Composable () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(CardBg)
+            .border(1.dp, if (done) Success.copy(alpha = 0.6f) else CardBorder, RoundedCornerShape(24.dp))
+            .padding(18.dp)
+    ) { content() }
+}
+
+@Composable
+private fun AppLogo(sizeDp: Int) {
+    Box(
+        Modifier
+            .size(sizeDp.dp)
+            .clip(CircleShape)
+            .background(Brush.linearGradient(listOf(Color(0xFF74BBF9), Color(0xFF4F95EE), Color(0xFF2F6FDC)))),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_launcher_foreground),
+            contentDescription = null,
+            modifier = Modifier.size((sizeDp * 1.5f).dp)
+        )
+    }
+}
+
+@Composable
+private fun GradientButton(text: String, enabled: Boolean, onClick: () -> Unit, height: Int = 58) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(height.dp)
+            .clip(RoundedCornerShape(height.dp / 2))
+            .background(if (enabled) ButtonGradient else Brush.horizontalGradient(listOf(IconBg, IconBg)))
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text,
+            color = if (enabled) Color.White else TextSoft.copy(alpha = 0.7f),
+            fontSize = 17.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}

@@ -216,9 +216,11 @@ public final class StickerCore {
 
         double bestScore = Double.NEGATIVE_INFINITY;
         int[] bestX = null, bestY = null;
-        for (int c = 1; c <= 5; c++) {
-            int r = (n + c - 1) / c;
-            if (r > 5 || c * r - n >= c) continue;
+        // Coba semua susunan sampai n stiker. AI kadang menggambar LEBIH SEDIKIT dari yang diminta
+        // (mis. diminta 10, digambar 6 dalam 3×2), jadi susunan yang lebih kecil juga dicoba.
+        for (int c = 1; c <= 5; c++) for (int r = 1; r <= 5; r++) {
+            if (c * r - n >= c) continue;      // jauh lebih banyak sel dari yang diminta
+            if (c * r < 1) continue;
             double[] sx = new double[1];
             double[] sy = new double[1];
             int[] xc = cutsFor(colProfile, xGaps, w, c, sx);

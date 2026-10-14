@@ -764,7 +764,7 @@ private fun GenerateStep(vm: MainViewModel) {
             Text(loadingLines[line], fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Biasanya 15–60 detik. Jangan tutup aplikasi.",
+                "Biasanya 15–60 detik. Kamu boleh meninggalkan aplikasi, nanti ada notifikasi saat stiker sudah jadi.",
                 fontSize = 13.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

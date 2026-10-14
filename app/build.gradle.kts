@@ -14,7 +14,7 @@ android {
         applicationId = "com.lumi.stickerize"
         minSdk = 26
         targetSdk = 35
-        versionCode = 24
+        versionCode = 25
         versionName = "2.0"
 
         // Hanya prosesor HP Android (ARM). Emulator x86 tidak disertakan agar APK lebih kecil.
@@ -74,6 +74,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
 
     implementation("androidx.compose.ui:ui")

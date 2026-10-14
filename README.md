@@ -61,6 +61,11 @@
 - **Ganti sebagian**: centang 1 atau beberapa stiker, lalu **ubah katanya** atau **buat ulang** hanya stiker itu, tanpa membuat ulang semuanya
 - **Buat ulang semua** dengan pengaturan yang sama
 
+**🔔 Tinggal saja, nanti diberi tahu**
+- Selama AI bekerja, kamu boleh pindah aplikasi atau mematikan layar
+- **Notifikasi** muncul saat stiker sudah jadi (atau kalau gagal)
+- Kalau AI menggambar **lebih sedikit** stiker dari yang diminta, hanya stiker yang ada yang dipotong, dan kamu diberi saran untuk buat ulang atau ganti model AI
+
 **📲 Tambahkan ke WhatsApp**
 - Tombol **Tambahkan ke WhatsApp** resmi, mendukung WhatsApp dan WhatsApp Business
 - Simpan ke **paket baru** atau **tambahkan ke paket yang sudah ada** (maks. 30 stiker per paket)
@@ -101,14 +106,22 @@
 - Android **8.0 (API 26)** atau lebih baru, prosesor ARM (hampir semua HP Android)
 - Ruang kosong sekitar **80 MB**
 - **WhatsApp** atau **WhatsApp Business** terpasang
-- Koneksi internet dan **API key** dari OpenRouter atau Cloudflare
+- Koneksi internet dan **API key** dari OpenRouter dan/atau Cloudflare
+- Izin **notifikasi** dan **berjalan di latar belakang**
 
 ---
 
 ## 📖 Panduan Pemakaian
 
-### 1️⃣ Isi API key (sekali saja)
-Tekan ikon ⚙️ di kanan atas → **Pengaturan AI**, lalu pilih model:
+### 1️⃣ Layar pembuka (sekali saja)
+Saat pertama kali dibuka, Lumi Stickerize menampilkan 3 layar:
+1. **Perkenalan** singkat, lalu tekan **Mulai**.
+2. **Hubungkan AI**: isi **minimal salah satu**, boleh juga keduanya:
+   - **OpenRouter (berbayar):** buat key di [openrouter.ai/keys](https://openrouter.ai/keys), isi kredit di [openrouter.ai/credits](https://openrouter.ai/credits), lalu tempel key (diawali `sk-or-`).
+   - **Cloudflare (gratis):** daftar di [dash.cloudflare.com](https://dash.cloudflare.com), salin **Account ID**, buat **API Token** dengan template *Workers AI*, lalu isi keduanya.
+3. **Satu langkah lagi**: izin yang **wajib** adalah **notifikasi** (memberi tahu saat stiker sudah jadi) dan **berjalan di latar belakang** (supaya kamu bisa meninggalkan aplikasi selama AI bekerja). Pengguna Xiaomi, Oppo, Vivo, Realme & Infinix juga disarankan mengaktifkan **Autostart** (opsional).
+
+Model dan key bisa diganti kapan saja lewat ikon ⚙️ di kanan atas → **Pengaturan AI**:
 - **OpenRouter (berbayar):** buat key di [openrouter.ai/keys](https://openrouter.ai/keys), isi kredit di [openrouter.ai/credits](https://openrouter.ai/credits), lalu tempel key (diawali `sk-or-`).
 - **Cloudflare (gratis):** daftar di [dash.cloudflare.com](https://dash.cloudflare.com), salin **Account ID**, buat **API Token** dengan template *Workers AI*, lalu isi keduanya.
 
