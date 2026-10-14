@@ -4,7 +4,7 @@
 
 ### An AI-powered WhatsApp sticker maker for Android
 
-*3 photos · 1 AI image · 3–10 stickers · straight into WhatsApp*
+*1–3 photos · 1 AI image · 3–10 stickers · straight into WhatsApp*
 
 [![Release](https://img.shields.io/github/v/release/vickyvam72/LumiStickerize?label=release&color=3E84E8&style=for-the-badge)](https://github.com/vickyvam72/LumiStickerize/releases/latest)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-requirements)
@@ -22,11 +22,11 @@
 
 ## 🌟 Why Lumi Stickerize?
 
-> Pick 3 photos, choose a style and your captions, and **Lumi Stickerize** creates a WhatsApp sticker pack that looks like you — neatly cut out and added in **one tap**.
+> Pick 1 to 3 photos, choose a style and your captions, and **Lumi Stickerize** creates a WhatsApp sticker pack that looks like you — neatly cut out and added in **one tap**.
 
 | | |
 |---|---|
-| 🤖 **Stickers that look like you** | The AI learns your face, hair or hijab, and outfit from your 3 photos. |
+| 🤖 **Stickers that look like you** | The AI learns your face, hair or hijab, and outfit from your photos. 1 photo is enough; 2–3 photos are more accurate. |
 | 💑 **Couple stickers** | Automatic face detection. Pick 1 person, or 2 people for **couple stickers**. |
 | 💸 **Token-saving** | All stickers are drawn in **a single image**, so 3 or 10 stickers cost the same. |
 | ✂️ **Auto cut-out** | Background removed, stray frames and lines cleaned up, and a white sticker border added. |
@@ -40,9 +40,10 @@
 ## ✨ Features
 
 **🖼️ Photos & faces**
-- Pick **3 photos** one by one or **all at once**
-- An upfront reminder that all 3 photos should show the **same outfit**
-- **Automatic face detection** on the first photo (on-device, no internet needed)
+- **1 photo is enough**; add photos 2 and 3 (optional) for more accurate results
+- Pick photos one by one or **all at once**
+- An upfront reminder that, when using more than 1 photo, they should all show the **same outfit**
+- **Automatic face detection** on the main photo (on-device, no internet needed)
 - Tap the box on a face to select it, **up to 2 people**
 - Unselected faces are **pixelated** before anything is sent to the AI
 
@@ -108,11 +109,11 @@ Tap the ⚙️ icon at the top right → **Pengaturan AI** (AI settings), then p
 
 Keys are stored **only on your device**.
 
-### 2️⃣ Pick 3 photos
-Use photos with the **same outfit** and clearly visible faces. Make sure everyone you want on the stickers appears in the **first photo**.
+### 2️⃣ Pick your photos
+**One photo is enough.** For more accurate, better-looking results, add photos 2 and 3 (optional) with the **same outfit**. Use photos with clearly visible faces, and make sure everyone you want on the stickers appears in the **main photo** (*Foto utama*).
 
 ### 3️⃣ Choose faces
-Tap the box on a face in the first photo. For couple stickers, tap **Pilih keduanya (stiker berdua)** (Select both — couple stickers).
+Tap the box on a face in the main photo. For couple stickers, tap **Pilih keduanya (stiker berdua)** (Select both — couple stickers).
 
 ### 4️⃣ Count, style and captions
 Choose 3–10 stickers, pick a style, then choose **Tanpa kata** (No text) or **Pakai kata** (With captions). Tap 🎲 for random captions.
@@ -142,7 +143,7 @@ Tap that sticker, rub the area away with the eraser on the **Rapikan stiker** sc
 <details>
 <summary><b>No face is detected</b></summary>
 
-Replace the first photo with one where the face is larger, well lit and facing the camera.
+Replace the main photo with one where the face is larger, well lit and facing the camera.
 </details>
 
 <details>

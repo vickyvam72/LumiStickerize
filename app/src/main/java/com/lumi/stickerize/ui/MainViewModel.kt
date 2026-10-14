@@ -32,7 +32,7 @@ import java.util.Date
 import java.util.Locale
 
 enum class Step(val title: String, val subtitle: String) {
-    PHOTOS("Pilih 3 foto", "Foto wajah yang jelas akan jadi referensi AI"),
+    PHOTOS("Pilih foto", "1 foto sudah cukup, 2–3 foto hasilnya lebih akurat"),
     FACES("Pilih wajah", "Ketuk wajah di foto pertama yang mau dijadikan stiker"),
     COUNT("Jumlah stiker", "Mau dibuatkan berapa stiker?"),
     STYLE("Pilih tema", "Gaya gambar stikermu"),
@@ -80,7 +80,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private var job: Job? = null
 
-    val photosReady: Boolean get() = photoUris.all { it != null } && photos.all { it != null }
+    /** Foto utama (foto 1) wajib, foto 2 & 3 opsional. Semua foto yang dipilih harus sudah selesai dimuat. */
+    val photosReady: Boolean
+        get() = photos[0] != null && photoUris.indices.all { photoUris[it] == null || photos[it] != null }
+
+    /** Jumlah foto yang dipilih (1–3). */
+    val photoCount: Int get() = photos.count { it != null }
 
     /** Foto pertama punya minimal 1 wajah terpilih. */
     val facesReady: Boolean
@@ -130,8 +135,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 error = "Foto tidak bisa dibuka. Coba pilih foto lain."
                 return@launch
             }
-            // deteksi wajah cukup di foto pertama
-            val faces = if (index == 0) FaceFinder.detect(bmp) else emptyList()
+            // Wajah dideteksi di semua foto, supaya kalau foto utama dihapus,
+            // foto berikutnya bisa langsung naik jadi foto utama. Pemilihan wajah tetap di foto 1.
+            val faces = FaceFinder.detect(bmp)
             if (photoUris[index] != uri) return@launch
             photos[index] = PhotoInfo(bmp, bmp.asImageBitmap(), faces)
             // 1 wajah = otomatis terpilih; lebih dari 1 = user yang memilih
@@ -163,16 +169,24 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setPhotos(uris: List<Uri>) {
-        // 3 foto sekaligus = ganti semua; kurang dari 3 = isi slot yang masih kosong dulu
-        val targets = if (uris.size >= 3) listOf(0, 1, 2)
-        else (0..2).filter { photoUris[it] == null }.ifEmpty { listOf(0, 1, 2) }
+        // 3 foto sekaligus = ganti semua; 1–2 foto = isi slot yang masih kosong dulu (mulai dari foto utama)
+        val empty = (0..2).filter { photoUris[it] == null }
+        val targets = if (uris.size >= 3 || empty.size < uris.size) (0..2).toList() else empty
         uris.zip(targets).forEach { (uri, index) -> setPhoto(index, uri) }
     }
 
+    /** Hapus foto lalu geser foto sesudahnya ke depan, jadi foto utama selalu terisi lebih dulu. */
     fun clearPhoto(index: Int) {
-        photoUris[index] = null
-        photos[index] = null
-        if (index == 0) selectedFaces = emptySet()
+        for (i in index until 2) {
+            photoUris[i] = photoUris[i + 1]
+            photos[i] = photos[i + 1]
+        }
+        photoUris[2] = null
+        photos[2] = null
+        if (index == 0) {
+            val faces = photos[0]?.faces.orEmpty()
+            selectedFaces = if (faces.size == 1) setOf(0) else emptySet()
+        }
     }
 
     /** Isi kata acak untuk satu stiker (tidak sama dengan kata di stiker lain). */
@@ -198,8 +212,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         val chosenStyle = style ?: return
-        val infos = photos.toList()
-        if (infos.any { it == null } || !facesReady) return
+        val infos = photos.filterNotNull()
+        if (infos.isEmpty() || !facesReady) return
         val chosen = selectedFaces.sorted()
         val people = peopleCount
         val generator = settings.generator()
@@ -215,10 +229,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
                 // wajah yang tidak dipilih disamarkan, lalu foto dipotong di sekitar wajah terpilih
                 // Susunan referensi:
-                //  1 orang : [foto 1 (wajah lain disamarkan), foto 2, foto 3]
-                //  2 orang : [foto 1 berdua, foto 1 hanya orang A, foto 1 hanya orang B, foto 2, foto 3]
+                //  1 orang : [foto 1 (wajah lain disamarkan), foto 2?, foto 3?]
+                //  2 orang : [foto 1 berdua, foto 1 hanya orang A, foto 1 hanya orang B, foto 2?, foto 3?]
+                //  Foto 2 & 3 opsional, jadi daftar bisa hanya berisi foto 1.
                 val refs = withContext(Dispatchers.Default) {
-                    val first = infos[0]!!
+                    val first = infos[0]
                     val list = ArrayList<ByteArray>()
                     fun add(bmp: Bitmap) {
                         list.add(ImageUtils.toJpeg(bmp))
@@ -230,11 +245,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                             add(ImageUtils.buildReference(first.bitmap, first.faces, setOf(face)))
                         }
                     }
-                    for (i in 1 until infos.size) list.add(ImageUtils.toJpeg(infos[i]!!.bitmap))
+                    for (i in 1 until infos.size) list.add(ImageUtils.toJpeg(infos[i].bitmap))
                     list.take(generator.maxReferences)
                 }
 
-                val prompt = PromptBuilder.build(chosenStyle, grid, total, captions, people)
+                val prompt = PromptBuilder.build(chosenStyle, grid, total, captions, people, infos.size)
                 val sheetBmp: Bitmap = generator.generateSheet(prompt, refs, grid.aspectRatio)
 
                 val pieces = withContext(Dispatchers.Default) {

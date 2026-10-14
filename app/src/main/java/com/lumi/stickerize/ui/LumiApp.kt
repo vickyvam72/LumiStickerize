@@ -275,10 +275,15 @@ private fun PhotosStep(vm: MainViewModel) {
     }
     val imagesOnly = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
 
+    InfoCard(
+        "Cukup 1 foto juga bisa. Tapi kalau ingin hasil stiker lebih akurat dan lebih mirip, " +
+            "pilih 2 atau 3 foto."
+    )
+    Spacer(Modifier.height(12.dp))
     WarningCard(
         "Penting: outfit harus sama",
-        "Pastikan ketiga foto memakai pakaian/outfit yang SAMA (baju, hijab, aksesoris). " +
-            "Kalau outfit berbeda-beda, AI bisa bingung dan hasil stiker jadi tidak konsisten."
+        "Kalau memilih lebih dari 1 foto, pastikan semuanya memakai pakaian/outfit yang SAMA " +
+            "(baju, hijab, aksesoris). Kalau outfit berbeda-beda, AI bisa bingung dan hasil stiker jadi tidak konsisten."
     )
     Spacer(Modifier.height(16.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -288,7 +293,9 @@ private fun PhotosStep(vm: MainViewModel) {
                 thumb = vm.photos[i]?.image,
                 loading = vm.photoUris[i] != null && vm.photos[i] == null,
                 onPick = {
-                    pendingIndex = i
+                    // Slot kosong selalu diisi berurutan, mulai dari foto utama
+                    val firstEmpty = (0..2).firstOrNull { vm.photoUris[it] == null } ?: i
+                    pendingIndex = if (vm.photoUris[i] == null) minOf(i, firstEmpty) else i
                     pickOne.launch(imagesOnly)
                 },
                 onClear = { vm.clearPhoto(i) },
@@ -305,15 +312,27 @@ private fun PhotosStep(vm: MainViewModel) {
     ) {
         Icon(Icons.Filled.Add, contentDescription = null)
         Spacer(Modifier.width(8.dp))
-        Text("Pilih 3 foto sekaligus")
+        Text("Pilih 1–3 foto sekaligus")
     }
+    Spacer(Modifier.height(8.dp))
+    Text(
+        when (vm.photoCount) {
+            0 -> "Pilih minimal 1 foto untuk lanjut."
+            1 -> "1 foto dipilih. Tambah foto 2 atau 3 kalau ingin hasil lebih akurat (opsional)."
+            2 -> "2 foto dipilih. Tambah 1 foto lagi untuk hasil paling akurat (opsional)."
+            else -> "3 foto dipilih. Hasil paling akurat 👍"
+        },
+        fontSize = 13.sp,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
     Spacer(Modifier.height(20.dp))
     TipCard(
         "Tips foto terbaik",
         listOf(
-            "Outfit sama di ketiga foto",
+            "1 foto sudah cukup, 2–3 foto hasilnya lebih akurat",
+            "Kalau pakai lebih dari 1 foto, outfit harus sama",
             "Wajah terlihat jelas & terang",
-            "Foto 1 dipakai untuk memilih wajah: pastikan semua orang yang mau dijadikan stiker ada di foto 1 (maks. 2 orang)",
+            "Foto utama dipakai untuk memilih wajah: pastikan semua orang yang mau dijadikan stiker ada di foto utama (maks. 2 orang)",
             "Campur sudut: depan, samping, setengah badan",
         )
     )
@@ -373,7 +392,17 @@ private fun PhotoSlot(
             else -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(Icons.Filled.Add, contentDescription = null, tint = LumiBlue)
                 Spacer(Modifier.height(4.dp))
-                Text("Foto ${index + 1}", color = LumiBlue, fontWeight = FontWeight.SemiBold)
+                Text(
+                    if (index == 0) "Foto utama" else "Foto ${index + 1}",
+                    color = LumiBlue,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                )
+                Text(
+                    if (index == 0) "wajib" else "opsional",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.sp
+                )
             }
         }
     }
@@ -385,12 +414,12 @@ private val faceColors = listOf(Color(0xFF3E84E8), Color(0xFFE8673E))
 
 @Composable
 private fun FacesStep(vm: MainViewModel) {
-    InfoCard("Wajah di foto pertama sudah dideteksi otomatis. Ketuk kotak di wajah untuk memilih siapa yang dijadikan stiker. Maksimal hanya 2 wajah.")
+    InfoCard("Wajah di foto utama sudah dideteksi otomatis. Ketuk kotak di wajah untuk memilih siapa yang dijadikan stiker. Maksimal hanya 2 wajah.")
     Spacer(Modifier.height(14.dp))
     val info = vm.photos[0] ?: return
     val sel = vm.selectedFaces
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("Foto 1", fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+        Text("Foto utama", fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
         Text(
             if (info.faces.isEmpty()) "Tidak ada wajah" else "${info.faces.size} wajah • ${sel.size} dipilih",
             fontSize = 13.sp,
@@ -402,7 +431,7 @@ private fun FacesStep(vm: MainViewModel) {
     Spacer(Modifier.height(8.dp))
     when {
         info.faces.isEmpty() -> Text(
-            "Wajah tidak terdeteksi. Kembali dan ganti foto 1 dengan foto yang wajahnya terlihat jelas.",
+            "Wajah tidak terdeteksi. Kembali dan ganti foto utama dengan foto yang wajahnya terlihat jelas.",
             fontSize = 13.sp,
             color = Color(0xFFD14343)
         )
@@ -420,8 +449,9 @@ private fun FacesStep(vm: MainViewModel) {
     if (sel.isNotEmpty()) {
         Spacer(Modifier.height(12.dp))
         InfoCard(
-            if (sel.size >= 2) "Stiker akan berisi 2 orang: orang bertanda biru (kiri) dan oranye (kanan). Foto 2 & 3 dipakai sebagai referensi tambahan."
-            else "Stiker akan berisi 1 orang. Foto 2 & 3 dipakai sebagai referensi tambahan untuk orang yang sama."
+            (if (sel.size >= 2) "Stiker akan berisi 2 orang: orang bertanda biru (kiri) dan oranye (kanan)."
+            else "Stiker akan berisi 1 orang.") +
+                (if (vm.photoCount > 1) " Foto lainnya dipakai sebagai referensi tambahan agar lebih mirip." else "")
         )
     }
 }
@@ -696,7 +726,7 @@ private fun ChoiceCard(
 /* ---------------------------------------------------------------- langkah 5: buat */
 
 private val loadingLines = listOf(
-    "Mempelajari wajah dari 3 foto…",
+    "Mempelajari wajah dari fotomu…",
     "Menggambar ekspresi lucu…",
     "Menyusun semua stiker dalam 1 halaman…",
     "Hampir selesai, sabar ya…",
@@ -737,7 +767,7 @@ private fun GenerateStep(vm: MainViewModel) {
     ) {
         Column(Modifier.padding(18.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                vm.photos.map { it?.image }.forEach { t ->
+                vm.photos.mapNotNull { it?.image }.forEach { t ->
                     Box(
                         Modifier
                             .weight(1f)
@@ -745,11 +775,11 @@ private fun GenerateStep(vm: MainViewModel) {
                             .clip(RoundedCornerShape(12.dp))
                             .background(LumiTile)
                     ) {
-                        if (t != null) {
-                            Image(t, null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-                        }
+                        Image(t, null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
                     }
                 }
+                // jaga ukuran thumbnail tetap sama walau fotonya hanya 1 atau 2
+                repeat(3 - vm.photoCount) { Spacer(Modifier.weight(1f)) }
             }
             Spacer(Modifier.height(14.dp))
             SummaryRow(

@@ -28,7 +28,9 @@ object PromptBuilder {
         stickerCount: Int,
         captions: List<String>,
         people: Int = 1,
+        photoCount: Int = 1,
     ): String {
+        val extra = photoCount > 1
         val sb = StringBuilder()
         sb.appendLine(
             "Create ONE single image: a sticker sheet arranged as an invisible grid of " +
@@ -38,9 +40,9 @@ object PromptBuilder {
             sb.appendLine(
                 "REFERENCE IMAGES: the FIRST reference image shows two people together — PERSON A is " +
                     "the one on the LEFT, PERSON B is the one on the RIGHT. The SECOND reference image " +
-                    "shows only PERSON A. The THIRD reference image shows only PERSON B. Any further " +
-                    "reference images show them again in the same outfits. Pixelated faces belong to " +
-                    "other people — ignore them."
+                    "shows only PERSON A. The THIRD reference image shows only PERSON B." +
+                    (if (extra) " Any further reference images show them again in the same outfits." else "") +
+                    " Pixelated faces belong to other people — ignore them."
             )
             sb.appendLine(
                 "CHARACTERS: draw exactly two DIFFERENT characters, PERSON A and PERSON B. Each keeps " +
@@ -52,8 +54,9 @@ object PromptBuilder {
         } else {
             sb.appendLine(
                 "REFERENCE IMAGES: the FIRST reference image shows the person to draw. Pixelated faces " +
-                    "belong to other people — ignore them. The other reference images show the same " +
-                    "person again; if other people appear there, ignore them too."
+                    "belong to other people — ignore them." +
+                    (if (extra) " The other reference images show the same person again; if other " +
+                        "people appear there, ignore them too." else "")
             )
             sb.appendLine(
                 "CHARACTER: exactly ONE character in every sticker — this person. Keep them clearly " +

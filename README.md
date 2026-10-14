@@ -4,7 +4,7 @@
 
 ### Pembuat stiker WhatsApp otomatis dengan AI untuk Android
 
-*3 foto · 1 gambar AI · 3–10 stiker · langsung masuk WhatsApp*
+*1–3 foto · 1 gambar AI · 3–10 stiker · langsung masuk WhatsApp*
 
 [![Rilis](https://img.shields.io/github/v/release/vickyvam72/LumiStickerize?label=rilis&color=3E84E8&style=for-the-badge)](https://github.com/vickyvam72/LumiStickerize/releases/latest)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-kebutuhan-sistem)
@@ -22,11 +22,11 @@
 
 ## 🌟 Kenapa Lumi Stickerize?
 
-> Pilih 3 foto, tentukan tema dan kata-katanya, lalu **Lumi Stickerize** membuatkan satu paket stiker WhatsApp yang mirip denganmu, sudah dipotong rapi dan siap dipakai dalam **sekali tekan**.
+> Pilih 1 sampai 3 foto, tentukan tema dan kata-katanya, lalu **Lumi Stickerize** membuatkan satu paket stiker WhatsApp yang mirip denganmu, sudah dipotong rapi dan siap dipakai dalam **sekali tekan**.
 
 | | |
 |---|---|
-| 🤖 **Stiker mirip kamu** | AI mempelajari wajah, rambut atau hijab, dan outfit dari 3 fotomu. |
+| 🤖 **Stiker mirip kamu** | AI mempelajari wajah, rambut atau hijab, dan outfit dari fotomu. 1 foto cukup, 2–3 foto lebih akurat. |
 | 💑 **Bisa berdua** | Deteksi wajah otomatis. Pilih 1 orang, atau 2 orang sekaligus untuk **stiker couple**. |
 | 💸 **Hemat token** | Semua stiker digambar dalam **1 gambar saja**, jadi biaya 3 atau 10 stiker sama. |
 | ✂️ **Potong otomatis** | Latar dihapus, bingkai dan garis sisa dibuang, lalu tiap stiker diberi garis tepi putih. |
@@ -40,9 +40,10 @@
 ## ✨ Fitur
 
 **🖼️ Foto & wajah**
-- Pilih **3 foto** satu per satu atau **sekaligus**
-- Peringatan di awal: ketiga foto harus memakai **outfit yang sama**
-- **Deteksi wajah otomatis** di foto pertama (berjalan di HP, tanpa internet)
+- **1 foto sudah cukup**; tambah foto 2 dan 3 (opsional) agar hasil lebih akurat
+- Pilih foto satu per satu atau **sekaligus**
+- Peringatan di awal: kalau memakai lebih dari 1 foto, semuanya harus memakai **outfit yang sama**
+- **Deteksi wajah otomatis** di foto utama (berjalan di HP, tanpa internet)
 - Ketuk kotak di wajah untuk memilih, **maksimal 2 orang**
 - Wajah yang tidak dipilih **disamarkan** sebelum dikirim ke AI
 
@@ -106,11 +107,11 @@ Tekan ikon ⚙️ di kanan atas → **Pengaturan AI**, lalu pilih model:
 
 Key hanya disimpan **di HP-mu**.
 
-### 2️⃣ Pilih 3 foto
-Gunakan foto dengan **outfit yang sama** dan wajah yang terlihat jelas. Pastikan semua orang yang mau dijadikan stiker ada di **foto pertama**.
+### 2️⃣ Pilih foto
+**1 foto sudah cukup.** Kalau ingin hasil lebih akurat dan lebih mirip, tambahkan foto 2 dan 3 (opsional) dengan **outfit yang sama**. Gunakan foto yang wajahnya terlihat jelas, dan pastikan semua orang yang mau dijadikan stiker ada di **foto utama**.
 
 ### 3️⃣ Pilih wajah
-Ketuk kotak di wajah pada foto pertama. Untuk stiker berdua, tekan **Pilih keduanya (stiker berdua)**.
+Ketuk kotak di wajah pada foto utama. Untuk stiker berdua, tekan **Pilih keduanya (stiker berdua)**.
 
 ### 4️⃣ Jumlah, tema, dan kata
 Tentukan jumlah stiker (3–10), pilih tema, lalu pilih **Tanpa kata** atau **Pakai kata**. Tekan 🎲 untuk kata acak.
@@ -140,7 +141,7 @@ Ketuk stiker tersebut, lalu gosok bagian itu dengan penghapus di layar **Rapikan
 <details>
 <summary><b>Wajah tidak terdeteksi</b></summary>
 
-Ganti foto pertama dengan foto yang wajahnya lebih besar, terang, dan menghadap kamera.
+Ganti foto utama dengan foto yang wajahnya lebih besar, terang, dan menghadap kamera.
 </details>
 
 <details>
