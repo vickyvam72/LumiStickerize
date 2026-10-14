@@ -1,2 +1,250 @@
-# LumiStickerize
-AI-powered Android app that turns your photos into custom WhatsApp sticker packs, auto-cut and ready in one tap
+<div align="center">
+
+# ✦ Lumi Stickerize ✦
+
+### Pembuat stiker WhatsApp otomatis dengan AI untuk Android
+
+*3 foto · 1 gambar AI · 3–10 stiker · langsung masuk WhatsApp*
+
+[![Rilis](https://img.shields.io/github/v/release/vickyvam72/LumiStickerize?label=rilis&color=3E84E8&style=for-the-badge)](https://github.com/vickyvam72/LumiStickerize/releases/latest)
+[![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-kebutuhan-sistem)
+[![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#%EF%B8%8F-teknologi)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-Stiker-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](#-fitur)
+
+**🌐 Bahasa / Language:** &nbsp; **🇮🇩 Bahasa Indonesia** &nbsp;|&nbsp; [🇬🇧 English](README.en.md)
+
+[⬇️ Unduh](#%EF%B8%8F-unduh--pasang) · [✨ Fitur](#-fitur) · [📖 Panduan](#-panduan-pemakaian) · [❓ FAQ](#-faq--mengatasi-masalah) · [📝 Catatan Perubahan](CHANGELOG.md)
+
+</div>
+
+---
+
+## 🌟 Kenapa Lumi Stickerize?
+
+> Pilih 3 foto, tentukan tema dan kata-katanya, lalu **Lumi Stickerize** membuatkan satu paket stiker WhatsApp yang mirip denganmu, sudah dipotong rapi dan siap dipakai dalam **sekali tekan**.
+
+| | |
+|---|---|
+| 🤖 **Stiker mirip kamu** | AI mempelajari wajah, rambut atau hijab, dan outfit dari 3 fotomu. |
+| 💑 **Bisa berdua** | Deteksi wajah otomatis. Pilih 1 orang, atau 2 orang sekaligus untuk **stiker couple**. |
+| 💸 **Hemat token** | Semua stiker digambar dalam **1 gambar saja**, jadi biaya 3 atau 10 stiker sama. |
+| ✂️ **Potong otomatis** | Latar dihapus, bingkai dan garis sisa dibuang, lalu tiap stiker diberi garis tepi putih. |
+| 🎨 **10 tema** | Cartoon, Chibi, Anime, 3D Lucu, Kawaii, Pixel Art, Komik, Cat Air, Clay, dan Sketsa. |
+| 💬 **1.600+ kata siap pakai** | Tulis sendiri, atau tekan 🎲 untuk kata acak di tiap stiker. |
+| 🧽 **Penghapus manual** | Masih ada bagian yang kurang rapi? Gosok saja dengan jari. |
+| 🆓 **Ada opsi gratis** | Pakai model gratis harian dari Cloudflare, atau model OpenRouter untuk hasil terbaik. |
+
+---
+
+## ✨ Fitur
+
+**🖼️ Foto & wajah**
+- Pilih **3 foto** satu per satu atau **sekaligus**
+- Peringatan di awal: ketiga foto harus memakai **outfit yang sama**
+- **Deteksi wajah otomatis** di foto pertama (berjalan di HP, tanpa internet)
+- Ketuk kotak di wajah untuk memilih, **maksimal 2 orang**
+- Wajah yang tidak dipilih **disamarkan** sebelum dikirim ke AI
+
+**🎨 Pengaturan stiker**
+- Jumlah stiker **3 sampai 10** (minimal 3 sesuai aturan WhatsApp)
+- **10 tema** gaya gambar
+- **Tanpa kata** (hanya ekspresi) atau **pakai kata**, satu kata per stiker
+- Tombol 🎲 di tiap kolom dan **🎲 Acak semua**, dari **1.647 kata** dalam 33 kategori: salam, terima kasih, maaf, tertawa, bucin, kerja, sekolah, makan, Islami, bahasa gaul, bahasa daerah, dan lainnya
+
+**✂️ Hasil**
+- Stiker 512×512 WebP di bawah 100 KB, sesuai syarat WhatsApp
+- Otomatis membuang latar putih, **kotak/bingkai**, **potongan garis**, dan bintik
+- **Rapikan stiker**: penghapus dengan ukuran kuas, Urungkan, dan Ulang dari awal
+- Lihat gambar asli dari AI untuk membandingkan
+- **Buat ulang** dengan pengaturan yang sama
+
+**📲 Tambahkan ke WhatsApp**
+- Tombol **Tambahkan ke WhatsApp** resmi, mendukung WhatsApp dan WhatsApp Business
+- Nama paket bisa diganti
+- Stiker yang diedit setelah ditambahkan ikut diperbarui di WhatsApp
+
+---
+
+## 🤖 Pilihan AI
+
+| Model | Penyedia | Biaya | Catatan |
+|---|---|---|---|
+| **Nano Banana 2 Lite** *(default)* | OpenRouter | ±$0,034 / pembuatan | Wajah paling mirip, tulisan rapi, cepat |
+| **Seedream 5.0 Flash** | OpenRouter | ±$0,018 / pembuatan | Lebih hemat |
+| **Nano Banana 2** | OpenRouter | ±2× harga Lite | Kualitas terbaik |
+| **FLUX.2 Klein 9B** | Cloudflare | 🆓 ±6× per hari | Gratis, kemiripan wajah lebih rendah |
+| **FLUX.2 Klein 4B** | Cloudflare | 🆓 ±80× per hari | Gratis, cepat, kualitas standar |
+
+> 💡 Satu pembuatan = satu gambar AI, berapa pun jumlah stikernya. Kuota gratis Cloudflare reset setiap hari pukul **07.00 WIB**.
+
+---
+
+## ⬇️ Unduh & Pasang
+
+1. Buka halaman **[Releases](https://github.com/vickyvam72/LumiStickerize/releases/latest)**.
+2. Di bagian **Assets**, unduh `LumiStickerize-v2.0.apk`.
+3. Buka file yang sudah diunduh. Kalau Android meminta, izinkan **"Instal aplikasi tidak dikenal"** untuk browser atau pengelola file yang kamu pakai.
+4. Tekan **Instal**. Selesai! 🎉
+
+> 💡 **Update:** Cukup pasang APK baru di atas yang lama. Pengaturan dan paket stikermu tetap aman.
+
+### 📋 Kebutuhan Sistem
+- Android **8.0 (API 26)** atau lebih baru, prosesor ARM (hampir semua HP Android)
+- Ruang kosong sekitar **80 MB**
+- **WhatsApp** atau **WhatsApp Business** terpasang
+- Koneksi internet dan **API key** dari OpenRouter atau Cloudflare
+
+---
+
+## 📖 Panduan Pemakaian
+
+### 1️⃣ Isi API key (sekali saja)
+Tekan ikon ⚙️ di kanan atas → **Pengaturan AI**, lalu pilih model:
+- **OpenRouter (berbayar):** buat key di [openrouter.ai/keys](https://openrouter.ai/keys), isi kredit di [openrouter.ai/credits](https://openrouter.ai/credits), lalu tempel key (diawali `sk-or-`).
+- **Cloudflare (gratis):** daftar di [dash.cloudflare.com](https://dash.cloudflare.com), salin **Account ID**, buat **API Token** dengan template *Workers AI*, lalu isi keduanya.
+
+Key hanya disimpan **di HP-mu**.
+
+### 2️⃣ Pilih 3 foto
+Gunakan foto dengan **outfit yang sama** dan wajah yang terlihat jelas. Pastikan semua orang yang mau dijadikan stiker ada di **foto pertama**.
+
+### 3️⃣ Pilih wajah
+Ketuk kotak di wajah pada foto pertama. Untuk stiker berdua, tekan **Pilih keduanya (stiker berdua)**.
+
+### 4️⃣ Jumlah, tema, dan kata
+Tentukan jumlah stiker (3–10), pilih tema, lalu pilih **Tanpa kata** atau **Pakai kata**. Tekan 🎲 untuk kata acak.
+
+### 5️⃣ Buat dan rapikan
+Tekan **✨ Buat Stiker** dan tunggu sekitar 15–60 detik. Kalau ada bagian yang kurang rapi, ketuk stikernya untuk membuka **Rapikan stiker**.
+
+### 6️⃣ Tambahkan ke WhatsApp
+Ganti nama paket kalau mau, lalu tekan **Tambahkan ke WhatsApp**.
+
+---
+
+## ❓ FAQ & Mengatasi Masalah
+
+<details>
+<summary><b>Di stiker berdua, wajahnya jadi kembar</b></summary>
+
+Tekan **Buat ulang**. Aplikasi sudah mengirim foto masing-masing orang secara terpisah ke AI, tapi AI sesekali masih meleset. Model **Nano Banana 2** biasanya paling akurat untuk stiker berdua.
+</details>
+
+<details>
+<summary><b>Masih ada garis atau kotak di sekitar stiker</b></summary>
+
+Ketuk stiker tersebut, lalu gosok bagian itu dengan penghapus di layar **Rapikan stiker** dan tekan **Simpan**.
+</details>
+
+<details>
+<summary><b>Wajah tidak terdeteksi</b></summary>
+
+Ganti foto pertama dengan foto yang wajahnya lebih besar, terang, dan menghadap kamera.
+</details>
+
+<details>
+<summary><b>Muncul pesan kredit atau kuota habis</b></summary>
+
+Untuk OpenRouter, isi kredit di openrouter.ai/credits. Untuk Cloudflare, tunggu kuota reset pukul 07.00 WIB, atau pindah ke model lain di ⚙️ Pengaturan.
+</details>
+
+<details>
+<summary><b>Kenapa minimal 3 stiker?</b></summary>
+
+WhatsApp mewajibkan setiap paket stiker berisi minimal 3 stiker.
+</details>
+
+<details>
+<summary><b>WhatsApp menolak paket stiker</b></summary>
+
+Perbarui WhatsApp ke versi terbaru. Kalau masih gagal, pesan error dari WhatsApp akan ditampilkan di aplikasi.
+</details>
+
+---
+
+## 🔒 Privasi
+
+- ✅ **Tanpa** iklan, analitik, atau pelacak
+- ✅ Deteksi wajah berjalan **di HP**, tanpa internet
+- ✅ Foto hanya dikirim ke **penyedia AI yang kamu pilih** saat membuat stiker
+- ✅ Wajah yang tidak dipilih **disamarkan** sebelum dikirim
+- ✅ API key dan paket stiker disimpan **di HP-mu**
+
+---
+
+## 🛠️ Teknologi
+
+| Bagian | Teknologi |
+|---|---|
+| Bahasa | **Kotlin** (+ Java untuk pemotong stiker) |
+| Tampilan | **Jetpack Compose**, Material 3 |
+| AI gambar | **OpenRouter Image API** dan **Cloudflare Workers AI** |
+| Deteksi wajah | **Google ML Kit Face Detection** (di HP) |
+| Jaringan | OkHttp |
+| Stiker | ContentProvider sesuai kontrak stiker WhatsApp |
+| CI/CD | GitHub Actions: setiap push mem-build dan merilis APK |
+
+### 📁 Struktur proyek
+```
+app/src/main/java/com/lumi/stickerize/
+├── ai/          # PromptBuilder, klien OpenRouter & Cloudflare
+├── data/        # Pengaturan, daftar model, bank kata
+├── model/       # Tema stiker dan tata letak grid
+├── sticker/     # Pemotong stiker, penyimpanan paket, ContentProvider WhatsApp
+├── util/        # Deteksi wajah, pemrosesan foto
+├── whatsapp/    # Intent "Tambahkan ke WhatsApp"
+└── ui/          # Layar Compose: langkah-langkah, hasil, penghapus
+app/src/main/assets/kata_stiker.txt   # 1.647 kata untuk tombol 🎲
+```
+
+### 🏗️ Build dari kode sumber
+```bash
+git clone https://github.com/vickyvam72/LumiStickerize.git
+cd LumiStickerize
+gradle :app:assembleRelease   # Gradle 8.11.1, JDK 17
+```
+APK hasil build ada di `app/build/outputs/apk/release/`.
+
+> 🔐 Kalau **GitHub Actions Secrets** `LUMI_KEYSTORE_BASE64`, `LUMI_KEYSTORE_PASSWORD`, dan `LUMI_KEY_ALIAS` diisi, APK ditandatangani dengan kunci pribadi itu. Kalau belum, dipakai `app/lumi-debug.keystore` yang cukup untuk pemasangan manual.
+
+---
+
+## 🙏 Terima Kasih
+
+Lumi Stickerize bisa berdiri berkat proyek, model, dan layanan luar biasa berikut. **Terima kasih banyak** untuk para pembuat dan kontributornya! 💖
+
+### 🧩 Kode, teknik, dan ide
+| Proyek | Yang dipelajari Lumi Stickerize |
+|---|---|
+| [**WhatsApp Stickers**](https://github.com/WhatsApp/stickers) oleh WhatsApp | Kontrak ContentProvider, intent *Add to WhatsApp*, dan syarat file stiker |
+
+### 🤖 Model AI
+[Nano Banana (Gemini Image)](https://deepmind.google/models/gemini-image/) oleh Google · [Seedream](https://seed.bytedance.com/) oleh ByteDance Seed · [FLUX.2 Klein](https://bfl.ai/) oleh Black Forest Labs
+
+### ☁️ Layanan
+[OpenRouter](https://openrouter.ai) · [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/)
+
+### 📚 Library
+[Jetpack Compose](https://developer.android.com/jetpack/compose) · [ML Kit Face Detection](https://developers.google.com/ml-kit/vision/face-detection) · [OkHttp](https://github.com/square/okhttp) · [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines) · [AndroidX ExifInterface](https://developer.android.com/jetpack/androidx/releases/exifinterface)
+
+> Proyek dan layanan ini tidak berafiliasi dengan Lumi Stickerize. Seluruh penghargaan atas karya mereka menjadi milik pembuatnya masing-masing.
+
+---
+
+## ⚖️ Penafian
+
+Lumi Stickerize adalah proyek independen untuk **penggunaan pribadi dan edukasi**.
+Lumi Stickerize **tidak berafiliasi dengan, didukung oleh, atau disponsori oleh WhatsApp, Meta, Google, OpenRouter, Cloudflare, ByteDance, maupun Black Forest Labs**. Semua merek dagang adalah milik pemiliknya masing-masing.
+Gunakan hanya foto milikmu sendiri atau foto orang yang sudah memberi izin. Biaya pemakaian AI mengikuti ketentuan penyedia yang kamu pilih.
+
+## 📄 Lisensi
+
+Hak cipta © 2026 **vickyvam72**. Seluruh hak dilindungi.
+
+<div align="center">
+
+---
+
+Dibuat dengan ❤️ di Indonesia · Kalau suka Lumi Stickerize, beri ⭐ ya
+
+</div>

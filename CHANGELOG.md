@@ -1,0 +1,73 @@
+<div align="center">
+
+# 📝 Catatan Perubahan · Changelog
+
+**🌐 Bahasa / Language:** ketuk bagian di bawah untuk membuka / tap a section below to expand it
+
+[⬅️ README (ID)](README.md) · [⬅️ README (EN)](README.en.md)
+
+</div>
+
+---
+
+## ✦ v2.0 — 14 Oktober 2026 / 14 October 2026
+
+> 🌐 **Pilih bahasa / Choose your language** — ketuk salah satu untuk membuka / tap a section to expand it.
+
+<details open>
+<summary><h2>🇮🇩 Bahasa Indonesia</h2></summary>
+
+### ✨ Fitur
+- Buat **3–10 stiker WhatsApp** dari 3 foto, semuanya dalam **1 gambar AI** (hemat token)
+- **Deteksi wajah otomatis** di foto pertama, pilih **1 atau 2 orang** untuk stiker berdua
+- Wajah yang tidak dipilih disamarkan sebelum dikirim ke AI
+- **10 tema**: Cartoon, Chibi, Anime, 3D Lucu, Kawaii, Pixel Art, Komik, Cat Air, Clay, Sketsa
+- **Tanpa kata** atau **pakai kata**, dengan tombol 🎲 acak dari **1.647 kata** dalam 33 kategori
+- Peringatan di awal agar ketiga foto memakai **outfit yang sama**
+- **Tambahkan ke WhatsApp** sekali tekan (WhatsApp & WhatsApp Business)
+
+### 🤖 Pilihan AI
+- **OpenRouter:** Nano Banana 2 Lite *(default)*, Seedream 5.0 Flash, Nano Banana 2
+- **Cloudflare (gratis harian):** FLUX.2 Klein 9B dan FLUX.2 Klein 4B
+
+### ✂️ Potong otomatis & penghapus
+- Latar putih dihapus dan tiap stiker diberi garis tepi putih
+- **Kotak/bingkai** dan **potongan garis** yang digambar AI dibuang otomatis
+- **Rapikan stiker**: penghapus manual dengan ukuran kuas, Urungkan, dan Ulang dari awal
+- Stiker yang diedit ikut diperbarui di WhatsApp
+
+### 🐞 Perbaikan
+- Stiker berdua tidak lagi menggambar orang yang sama dua kali
+- Stiker tidak lagi tertinggal di dalam kotak
+- Garis sisa di sekitar stiker tidak lagi ikut terpotong
+
+</details>
+
+<details>
+<summary><h2>🇬🇧 English</h2></summary>
+
+### ✨ Features
+- Create **3–10 WhatsApp stickers** from 3 photos, all in **a single AI image** (token-saving)
+- **Automatic face detection** on the first photo — pick **1 or 2 people** for couple stickers
+- Unselected faces are pixelated before anything is sent to the AI
+- **10 styles**: Cartoon, Chibi, Anime, Cute 3D, Kawaii, Pixel Art, Comic, Watercolor, Clay, Sketch
+- **No text** or **with captions**, with a 🎲 random button drawing from **1,647 captions** in 33 categories
+- An upfront reminder that all 3 photos should show the **same outfit**
+- One-tap **Add to WhatsApp** (WhatsApp & WhatsApp Business)
+
+### 🤖 AI options
+- **OpenRouter:** Nano Banana 2 Lite *(default)*, Seedream 5.0 Flash, Nano Banana 2
+- **Cloudflare (free daily quota):** FLUX.2 Klein 9B and FLUX.2 Klein 4B
+
+### ✂️ Auto cut-out & eraser
+- White background removed and a white sticker border added
+- **Boxes/frames** and **stray line fragments** drawn by the AI are removed automatically
+- **Rapikan stiker** (Tidy up sticker): a manual eraser with adjustable brush, Undo and Start over
+- Edited stickers are updated in WhatsApp too
+
+### 🐞 Fixes
+- Couple stickers no longer draw the same person twice
+- Stickers are no longer left inside boxes
+- Leftover lines around stickers are no longer kept
+
+</details>

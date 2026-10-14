@@ -1,0 +1,92 @@
+name: Build Lumi Stickerize
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.11.1"
+
+      # Kalau Secrets LUMI_KEYSTORE_BASE64 + LUMI_KEYSTORE_PASSWORD (+ LUMI_KEY_ALIAS) diisi,
+      # APK ditandatangani dengan kunci pribadi itu. Kalau belum, dipakai app/lumi-debug.keystore.
+      - name: Load signing key from Secrets (optional)
+        env:
+          KS_B64: ${{ secrets.LUMI_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.LUMI_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.LUMI_KEY_ALIAS }}
+        run: |
+          if [ -n "$KS_B64" ] && [ -n "$KS_PASS" ]; then
+            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/lumistickerize.jks"
+            echo "LUMI_KEYSTORE_PATH=$RUNNER_TEMP/lumistickerize.jks" >> "$GITHUB_ENV"
+            echo "LUMI_KEYSTORE_PASSWORD=$KS_PASS" >> "$GITHUB_ENV"
+            echo "LUMI_KEY_PASSWORD=$KS_PASS" >> "$GITHUB_ENV"
+            echo "LUMI_KEY_ALIAS=${KS_ALIAS:-lumistickerize}" >> "$GITHUB_ENV"
+          else
+            echo "::notice::Secrets keystore belum diisi, memakai app/lumi-debug.keystore."
+          fi
+
+      - name: Build release APK
+        run: |
+          set -o pipefail
+          gradle :app:assembleRelease --no-daemon 2>&1 | tee build.log
+
+      - name: Report compile errors
+        if: failure()
+        run: |
+          grep -E "^e: |error:|What went wrong|FAILED" build.log | head -60 | while IFS= read -r line; do
+            echo "::error::${line}"
+          done
+
+      - name: Read version
+        id: ver
+        run: |
+          TAG=$(tr -d ' \r\n' < release-notes/CURRENT)
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Rename APK
+        run: |
+          mkdir -p out
+          cp app/build/outputs/apk/release/app-release.apk "out/LumiStickerize-${{ steps.ver.outputs.tag }}.apk"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LumiStickerize-apk
+          path: out/*.apk
+
+      # Satu rilis per versi (release-notes/CURRENT, mis. v2.0). Push berikutnya memperbarui
+      # APK di rilis versi itu. Tag versi selalu menunjuk commit terbaru, supaya
+      # "Source code (zip/tar.gz)" di halaman rilis ikut diperbarui bersama APK-nya.
+      - name: Move version tag to this commit
+        run: |
+          git tag -f "${{ steps.ver.outputs.tag }}" "${{ github.sha }}"
+          git push -f origin "refs/tags/${{ steps.ver.outputs.tag }}"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: "✦ Lumi Stickerize ${{ steps.ver.outputs.tag }}"
+          body_path: release-notes/${{ steps.ver.outputs.tag }}.md
+          files: out/*.apk
+          overwrite_files: true
+          make_latest: "true"
