@@ -56,7 +56,8 @@
 - Garis sisa di sekitar stiker tidak lagi ikut terpotong
 - Tombol di bawah tidak lagi tertutup tombol navigasi HP
 - Kolom nama paket tidak lagi tertutup keyboard
-- Area di belakang tombol navigasi HP kini bersih: tidak ada bayangan di langkah 1–6 dan tidak ada kotak hitam di layar Rapikan stiker
+- Area di belakang tombol navigasi HP kini bersih: tidak ada bayangan di langkah 1–6, dan latar layar Rapikan stiker menyambung sampai paling bawah tanpa garis hitam
+- **Lihat gambar asli AI** kini terbuka di layar tersendiri dan diperkecil agar pas satu layar
 - Susunan grid dari AI kini **dideteksi otomatis** (mis. diminta 4×3 tapi AI menggambar 3×4), jadi stiker & tulisannya tidak terpotong lagi
 - Garis pemisah grid yang digambar AI ikut dibuang
 - Tombol **Simpan** di layar Rapikan stiker tidak lagi tertutup tombol navigasi HP
@@ -106,7 +107,8 @@
 - Stickers are no longer left inside boxes
 - Leftover lines around stickers are no longer kept
 - Bottom buttons are no longer hidden behind the phone's navigation buttons
-- The area behind the phone's navigation buttons is now clean: no shadow on steps 1–6 and no black bar on the Tidy up screen
+- The area behind the phone's navigation buttons is now clean: no shadow on steps 1–6, and the Tidy up screen background runs all the way to the bottom with no black bar
+- **View original AI image** now opens on its own screen, scaled to fit on one screen
 - The grid layout the AI actually drew is now **detected automatically** (e.g. 4×3 requested but 3×4 drawn), so stickers and captions are no longer cut apart
 - Grid separator lines drawn by the AI are removed too
 - The **Simpan** (Save) button on the Tidy up screen is no longer hidden behind the phone's navigation buttons

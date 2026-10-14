@@ -64,6 +64,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -117,6 +118,7 @@ fun LumiApp(vm: MainViewModel) {
     // Seluruh layar menyisakan ruang untuk tombol navigasi HP dan keyboard,
     // jadi tombol & kolom isian tidak pernah tertutup.
     val imeVisible = WindowInsets.isImeVisible
+    Box(Modifier.fillMaxSize()) {
     Column(
         Modifier
             .fillMaxSize()
@@ -150,6 +152,32 @@ fun LumiApp(vm: MainViewModel) {
         BottomBar(vm)
         // Halaman hasil tidak punya tombol bawah: sisakan ruang tombol navigasi HP dengan warna latar yang sama
         if (vm.step == Step.RESULT) Spacer(Modifier.navigationBarsPadding())
+    }
+
+    // Layar penuh di jendela aplikasi sendiri (bukan Dialog), jadi latarnya menyambung
+    // sampai paling bawah di belakang tombol navigasi HP tanpa garis hitam.
+    if (vm.step == Step.RESULT) {
+        vm.editingIndex?.let { idx ->
+            val original = vm.stickerBitmaps.getOrNull(idx)
+            if (original != null) {
+                key(idx) {
+                    EraserScreen(
+                        index = idx,
+                        original = original,
+                        onDismiss = { vm.editingIndex = null },
+                        onSave = { edited ->
+                            vm.updateSticker(idx, edited)
+                            vm.editingIndex = null
+                        }
+                    )
+                }
+            }
+        }
+        val sheet = vm.sheet
+        if (vm.viewingSheet && sheet != null) {
+            SheetViewer(sheet, onClose = { vm.viewingSheet = false })
+        }
+    }
     }
 
     if (showSettings) {
@@ -880,24 +908,8 @@ private fun SummaryRow(label: String, value: String, target: Step, vm: MainViewM
 @Composable
 private fun ResultStep(vm: MainViewModel) {
     val context = LocalContext.current
-    var showSheet by remember { mutableStateOf(false) }
-    var editing by remember { mutableStateOf<Int?>(null) }
     var showRegenDialog by remember { mutableStateOf(false) }
 
-    editing?.let { idx ->
-        val original = vm.stickerBitmaps.getOrNull(idx)
-        if (original != null) {
-            EraserDialog(
-                index = idx,
-                original = original,
-                onDismiss = { editing = null },
-                onSave = { edited ->
-                    vm.updateSticker(idx, edited)
-                    editing = null
-                }
-            )
-        }
-    }
     if (showRegenDialog) {
         RegenerateDialog(
             vm = vm,
@@ -985,7 +997,7 @@ private fun ResultStep(vm: MainViewModel) {
                             RoundedCornerShape(12.dp)
                         )
                         .clickable(enabled = !vm.generating) {
-                            if (vm.selecting) vm.toggleSelection(index) else editing = index
+                            if (vm.selecting) vm.toggleSelection(index) else vm.editingIndex = index
                         }
                         .padding(3.dp)
                 ) {
@@ -1047,25 +1059,15 @@ private fun ResultStep(vm: MainViewModel) {
     Spacer(Modifier.height(6.dp))
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text("Simpan ke paket", fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.weight(1f))
-        Text(
-            if (showSheet) "Tutup gambar AI" else "Lihat gambar asli AI",
-            color = LumiBlue,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .clickable { showSheet = !showSheet }
-                .padding(horizontal = 6.dp, vertical = 6.dp)
-        )
-    }
-    if (showSheet) {
-        vm.sheet?.let {
-            Image(
-                it,
-                contentDescription = "Gambar asli",
+        if (vm.sheet != null) {
+            Text(
+                "Lihat gambar asli AI",
+                color = LumiBlue,
+                fontSize = 12.sp,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { vm.viewingSheet = true }
+                    .padding(horizontal = 6.dp, vertical = 6.dp)
             )
         }
     }

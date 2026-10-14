@@ -49,16 +49,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.DialogWindowProvider
+import android.app.Activity
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.runtime.SideEffect
 import androidx.core.view.WindowCompat
 
 /** Penghapus manual: gosok bagian stiker yang tidak terpotong rapi. */
 @Composable
-fun EraserDialog(
+fun EraserScreen(
     index: Int,
     original: Bitmap,
     onDismiss: () -> Unit,
@@ -108,28 +111,12 @@ fun EraserDialog(
         version++
     }
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            // biar jarak tombol navigasi HP terbaca, jadi tombol bawah tidak tertutup
-            decorFitsSystemWindows = false,
-        )) {
-        // Bilah status & navigasi jendela ini dibuat transparan (ikon gelap) supaya tidak ada
-        // kotak hitam di belakang tombol navigasi HP.
-        val dialogView = LocalView.current
-        SideEffect {
-            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
-            window.statusBarColor = android.graphics.Color.TRANSPARENT
-            window.navigationBarColor = android.graphics.Color.TRANSPARENT
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                window.isNavigationBarContrastEnforced = false
-                window.isStatusBarContrastEnforced = false
-            }
-            WindowCompat.getInsetsController(window, dialogView).apply {
-                isAppearanceLightNavigationBars = true
-                isAppearanceLightStatusBars = true
-            }
-        }
-        Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+    BackHandler(onBack = onDismiss)
+    LightSystemBarIcons()
+    // Layar penuh di jendela aplikasi (bukan Dialog): latar menyambung sampai paling bawah,
+    // di belakang tombol navigasi HP, tanpa garis hitam.
+    FullScreenLayer {
+        run {
             Column(
                 Modifier
                     .fillMaxSize()
@@ -232,6 +219,76 @@ fun EraserDialog(
                 }
                 Spacer(Modifier.height(24.dp))
             }
+        }
+    }
+}
+
+/** Lapisan layar penuh berlatar terang yang menahan sentuhan agar tidak tembus ke halaman di bawahnya. */
+@Composable
+private fun FullScreenLayer(content: @Composable () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .pointerInput(Unit) { detectTapGestures { } }
+    ) { content() }
+}
+
+/** Selama layar terang tampil, ikon jam/baterai dibuat gelap supaya tetap terbaca. */
+@Composable
+private fun LightSystemBarIcons() {
+    val view = LocalView.current
+    DisposableEffect(view) {
+        val window = (view.context as? Activity)?.window
+        val ctrl = window?.let { WindowCompat.getInsetsController(it, view) }
+        val before = ctrl?.isAppearanceLightStatusBars ?: false
+        ctrl?.isAppearanceLightStatusBars = true
+        onDispose { ctrl?.isAppearanceLightStatusBars = before }
+    }
+}
+
+/** Gambar asli dari AI, diperkecil agar pas satu layar. */
+@Composable
+fun SheetViewer(sheet: ImageBitmap, onClose: () -> Unit) {
+    BackHandler(onBack = onClose)
+    LightSystemBarIcons()
+    FullScreenLayer {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+                .padding(20.dp)
+        ) {
+            Text("Gambar asli dari AI", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "Ini 1 gambar yang digambar AI sebelum dipotong menjadi stiker.",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(16.dp))
+            Box(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    sheet,
+                    contentDescription = "Gambar asli",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp))
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            Button(
+                onClick = onClose,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) { Text("Tutup", fontWeight = FontWeight.Bold) }
         }
     }
 }

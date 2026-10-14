@@ -71,6 +71,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var error by mutableStateOf<String?>(null)
     var notice by mutableStateOf<String?>(null)
 
+    /** Layar penuh di atas halaman hasil: stiker yang sedang dirapikan & tampilan gambar asli AI. */
+    var editingIndex by mutableStateOf<Int?>(null)
+    var viewingSheet by mutableStateOf(false)
+
     var sheet by mutableStateOf<ImageBitmap?>(null)
         private set
     /** Bitmap asli tiap stiker (untuk diedit dengan penghapus). */
