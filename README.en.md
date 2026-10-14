@@ -74,7 +74,12 @@
 | Model | Provider | Cost | Notes |
 |---|---|---|---|
 | **Nano Banana 2 Lite** *(default)* | OpenRouter | ~$0.034 / generation | Best likeness, clean text, fast |
-| **Seedream 5.0 Flash** | OpenRouter | ~$0.018 / generation | Cheaper |
+| **GPT Image 1 Mini** | OpenRouter | ~$0.01 / generation | Cheapest, clean text |
+| **FLUX.2 Klein 4B** | OpenRouter | ~$0.015 / generation | Very cheap, no daily limit |
+| **Seedream 5.0 Flash** | OpenRouter | ~$0.018 / generation | Budget |
+| **Nano Banana 2.1** | OpenRouter | ~$0.034 / generation | Google's newest image model, great detail & faces |
+| **Seedream 5.0 Lite** | OpenRouter | $0.035 / generation | Sharp images (2K) |
+| **Qwen Image 3** | OpenRouter | ~$0.04 / generation | Great at small text |
 | **Nano Banana 2** | OpenRouter | ~2× Lite | Highest quality |
 | **FLUX.2 Klein 9B** | Cloudflare | 🆓 ~6× per day | Free, lower likeness |
 | **FLUX.2 Klein 4B** | Cloudflare | 🆓 ~80× per day | Free, fast, standard quality |
@@ -227,7 +232,7 @@ Lumi Stickerize stands on the shoulders of these amazing projects, models and se
 | [**WhatsApp Stickers**](https://github.com/WhatsApp/stickers) by WhatsApp | The ContentProvider contract, the *Add to WhatsApp* intent and sticker file requirements |
 
 ### 🤖 AI models
-[Nano Banana (Gemini Image)](https://deepmind.google/models/gemini-image/) by Google · [Seedream](https://seed.bytedance.com/) by ByteDance Seed · [FLUX.2 Klein](https://bfl.ai/) by Black Forest Labs
+[Nano Banana (Gemini Image)](https://deepmind.google/models/gemini-image/) by Google · [GPT Image](https://openai.com/) by OpenAI · [Seedream](https://seed.bytedance.com/) by ByteDance Seed · [Qwen Image](https://qwenlm.github.io/) by Alibaba Qwen · [FLUX.2 Klein](https://bfl.ai/) by Black Forest Labs
 
 ### ☁️ Services
 [OpenRouter](https://openrouter.ai) · [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/)

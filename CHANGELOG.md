@@ -28,7 +28,8 @@
 - **Tambahkan ke WhatsApp** sekali tekan (WhatsApp & WhatsApp Business)
 
 ### 🤖 Pilihan AI
-- **OpenRouter:** Nano Banana 2 Lite *(default)*, Seedream 5.0 Flash, Nano Banana 2
+- **OpenRouter (8 model):** Nano Banana 2 Lite *(default)*, GPT Image 1 Mini, FLUX.2 Klein 4B, Seedream 5.0 Flash, Nano Banana 2.1, Seedream 5.0 Lite, Qwen Image 3, Nano Banana 2
+- Tiap model otomatis memakai rasio, resolusi, dan jumlah foto referensi yang didukungnya
 - **Cloudflare (gratis harian):** FLUX.2 Klein 9B dan FLUX.2 Klein 4B
 
 ### ✂️ Potong otomatis & penghapus
@@ -69,7 +70,8 @@
 - One-tap **Add to WhatsApp** (WhatsApp & WhatsApp Business)
 
 ### 🤖 AI options
-- **OpenRouter:** Nano Banana 2 Lite *(default)*, Seedream 5.0 Flash, Nano Banana 2
+- **OpenRouter (8 models):** Nano Banana 2 Lite *(default)*, GPT Image 1 Mini, FLUX.2 Klein 4B, Seedream 5.0 Flash, Nano Banana 2.1, Seedream 5.0 Lite, Qwen Image 3, Nano Banana 2
+- Each model automatically uses the aspect ratios, resolution and number of reference photos it supports
 - **Cloudflare (free daily quota):** FLUX.2 Klein 9B and FLUX.2 Klein 4B
 
 ### ✂️ Auto cut-out & eraser

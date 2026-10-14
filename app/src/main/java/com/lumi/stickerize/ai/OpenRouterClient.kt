@@ -18,9 +18,26 @@ import java.util.concurrent.TimeUnit
  * Memanggil Image API OpenRouter (POST /api/v1/images) sekali saja per pembuatan:
  * 3 foto referensi + prompt  ->  1 lembar gambar berisi semua stiker.
  */
-class OpenRouterClient(private val apiKey: String, private val model: String) : ImageGenerator {
+class OpenRouterClient(
+    private val apiKey: String,
+    private val model: String,
+    /** Batas tiap model (null = model diisi manual, pakai pengaturan aman). */
+    private val spec: com.lumi.stickerize.data.AiModel? = null,
+) : ImageGenerator {
 
-    override val maxReferences: Int = 10
+    override val maxReferences: Int = spec?.maxRefs ?: 4
+
+    /** Rasio paling dekat yang didukung model (AI tetap bebas menyusun grid; pemotong mendeteksinya). */
+    private fun pickAspect(wanted: String): String {
+        val supported = spec?.aspects ?: return wanted
+        if (wanted in supported) return wanted
+        fun ratio(a: String): Double {
+            val p = a.split(":")
+            return p[0].toDouble() / p[1].toDouble()
+        }
+        val target = ratio(wanted)
+        return supported.minByOrNull { kotlin.math.abs(kotlin.math.ln(ratio(it) / target)) } ?: wanted
+    }
 
     private val http = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -48,14 +65,17 @@ class OpenRouterClient(private val apiKey: String, private val model: String) : 
             .put("model", model.trim())
             .put("prompt", prompt)
             .put("n", 1)
-            .put("resolution", "1K")
-            .put("aspect_ratio", aspectRatio)
+            .put("aspect_ratio", pickAspect(aspectRatio))
             .put("input_references", refs)
+        // hanya kirim parameter yang memang didukung model itu
+        val resolution = if (spec == null) "1K" else spec.resolution
+        if (resolution != null) body.put("resolution", resolution)
+        spec?.quality?.let { body.put("quality", it) }
 
         val request = Request.Builder()
             .url("https://openrouter.ai/api/v1/images")
             .header("Authorization", "Bearer ${apiKey.trim()}")
-            .header("HTTP-Referer", "https://github.com/vickyvam72/backuplumistickerize")
+            .header("HTTP-Referer", "https://github.com/vickyvam72/LumiStickerize")
             .header("X-Title", "Lumi Stickerize")
             .post(body.toString().toRequestBody("application/json".toMediaType()))
             .build()

@@ -14,6 +14,14 @@ data class AiModel(
     val note: String,
     val provider: Provider,
     val free: Boolean = false,
+    /** Resolusi yang dikirim ke OpenRouter (null = jangan kirim, model memakai bawaannya). */
+    val resolution: String? = "1K",
+    /** Rasio gambar yang didukung (null = semua rasio umum). */
+    val aspects: List<String>? = null,
+    /** Kualitas (khusus model yang punya pilihan ini). */
+    val quality: String? = null,
+    /** Jumlah foto referensi maksimal yang diterima model. */
+    val maxRefs: Int = 10,
 )
 
 /** Pengaturan sederhana yang disimpan di HP (key hanya dikirim ke penyedia AI-nya). */
@@ -50,7 +58,7 @@ class AppSettings(context: Context) {
         }
 
     fun generator(): ImageGenerator = when (provider) {
-        Provider.OPENROUTER -> OpenRouterClient(apiKey, model)
+        Provider.OPENROUTER -> OpenRouterClient(apiKey, model, MODELS.firstOrNull { it.id == model.trim() })
         Provider.CLOUDFLARE -> CloudflareClient(cfAccountId, cfToken, model)
     }
 
@@ -68,19 +76,64 @@ class AppSettings(context: Context) {
                 DEFAULT_MODEL,
                 "Nano Banana 2 Lite",
                 "Rekomendasi • ±\$0,034 per pembuatan, wajah paling mirip, teks rapi",
-                Provider.OPENROUTER
+                Provider.OPENROUTER,
+                maxRefs = 14
+            ),
+            AiModel(
+                "openai/gpt-image-1-mini",
+                "GPT Image 1 Mini",
+                "Paling murah • ±\$0,01 per pembuatan, teks rapi",
+                Provider.OPENROUTER,
+                resolution = null,
+                aspects = listOf("1:1", "3:2", "2:3"),
+                quality = "medium",
+                maxRefs = 16
+            ),
+            AiModel(
+                "black-forest-labs/flux.2-klein-4b",
+                "FLUX.2 Klein 4B",
+                "Sangat murah • ±\$0,015 per pembuatan, tanpa batas harian",
+                Provider.OPENROUTER,
+                resolution = null,
+                aspects = listOf("1:1", "4:3", "3:4", "3:2", "2:3", "16:9", "9:16", "21:9"),
+                maxRefs = 4
             ),
             AiModel(
                 "bytedance-seed/seedream-5-0-flash",
                 "Seedream 5.0 Flash",
                 "Hemat • ±\$0,018 per pembuatan",
-                Provider.OPENROUTER
+                Provider.OPENROUTER,
+                maxRefs = 14
+            ),
+            AiModel(
+                "google/gemini-nano-banana-2.1",
+                "Nano Banana 2.1",
+                "Terbaru dari Google • ±\$0,034 per pembuatan, detail & wajah bagus",
+                Provider.OPENROUTER,
+                maxRefs = 14
+            ),
+            AiModel(
+                "bytedance-seed/seedream-5-0-lite",
+                "Seedream 5.0 Lite",
+                "±\$0,035 per pembuatan, gambar tajam (2K)",
+                Provider.OPENROUTER,
+                resolution = "2K",
+                maxRefs = 14
+            ),
+            AiModel(
+                "qwen/qwen-image-3",
+                "Qwen Image 3",
+                "±\$0,04 per pembuatan, jago tulisan kecil",
+                Provider.OPENROUTER,
+                aspects = listOf("1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9"),
+                maxRefs = 4
             ),
             AiModel(
                 "google/gemini-3.1-flash-image",
                 "Nano Banana 2",
                 "Kualitas terbaik • ±2x harga Lite",
-                Provider.OPENROUTER
+                Provider.OPENROUTER,
+                maxRefs = 14
             ),
             AiModel(
                 "@cf/black-forest-labs/flux-2-klein-9b",

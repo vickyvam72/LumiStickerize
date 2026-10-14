@@ -74,7 +74,12 @@
 | Model | Penyedia | Biaya | Catatan |
 |---|---|---|---|
 | **Nano Banana 2 Lite** *(default)* | OpenRouter | ±$0,034 / pembuatan | Wajah paling mirip, tulisan rapi, cepat |
-| **Seedream 5.0 Flash** | OpenRouter | ±$0,018 / pembuatan | Lebih hemat |
+| **GPT Image 1 Mini** | OpenRouter | ±$0,01 / pembuatan | Paling murah, tulisan rapi |
+| **FLUX.2 Klein 4B** | OpenRouter | ±$0,015 / pembuatan | Sangat murah, tanpa batas harian |
+| **Seedream 5.0 Flash** | OpenRouter | ±$0,018 / pembuatan | Hemat |
+| **Nano Banana 2.1** | OpenRouter | ±$0,034 / pembuatan | Model gambar terbaru Google, detail & wajah bagus |
+| **Seedream 5.0 Lite** | OpenRouter | $0,035 / pembuatan | Gambar tajam (2K) |
+| **Qwen Image 3** | OpenRouter | ±$0,04 / pembuatan | Jago menulis tulisan kecil |
 | **Nano Banana 2** | OpenRouter | ±2× harga Lite | Kualitas terbaik |
 | **FLUX.2 Klein 9B** | Cloudflare | 🆓 ±6× per hari | Gratis, kemiripan wajah lebih rendah |
 | **FLUX.2 Klein 4B** | Cloudflare | 🆓 ±80× per hari | Gratis, cepat, kualitas standar |
@@ -225,7 +230,7 @@ Lumi Stickerize bisa berdiri berkat proyek, model, dan layanan luar biasa beriku
 | [**WhatsApp Stickers**](https://github.com/WhatsApp/stickers) oleh WhatsApp | Kontrak ContentProvider, intent *Add to WhatsApp*, dan syarat file stiker |
 
 ### 🤖 Model AI
-[Nano Banana (Gemini Image)](https://deepmind.google/models/gemini-image/) oleh Google · [Seedream](https://seed.bytedance.com/) oleh ByteDance Seed · [FLUX.2 Klein](https://bfl.ai/) oleh Black Forest Labs
+[Nano Banana (Gemini Image)](https://deepmind.google/models/gemini-image/) oleh Google · [GPT Image](https://openai.com/) oleh OpenAI · [Seedream](https://seed.bytedance.com/) oleh ByteDance Seed · [Qwen Image](https://qwenlm.github.io/) oleh Alibaba Qwen · [FLUX.2 Klein](https://bfl.ai/) oleh Black Forest Labs
 
 ### ☁️ Layanan
 [OpenRouter](https://openrouter.ai) · [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/)
