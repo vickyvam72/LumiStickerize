@@ -42,6 +42,7 @@
 - Layar pembuka saat pertama dipasang: perkenalan → isi API key **OpenRouter dan/atau Cloudflare** (minimal salah satu) → izin
 - Izin wajib: **notifikasi** dan **berjalan di latar belakang**; Autostart untuk Xiaomi/Oppo/Vivo/Realme/Infinix (opsional) yang langsung membuka halaman **Mulai otomatis** bawaan HP
 - Tiap layar pembuka (perkenalan, Hubungkan AI, Satu langkah lagi) muat dalam **satu layar tanpa scroll**, juga di HP dengan ukuran font besar
+- Langkah 1 sampai 6 juga dibuat ringkas agar muat satu layar: header lebih kecil, tema & kata dalam 2 kolom, stiker hasil 4 per baris
 - Aplikasi boleh ditinggal selama AI bekerja, lalu muncul **notifikasi saat stiker sudah jadi**
 
 ### 📦 Paket & ganti sebagian
@@ -91,6 +92,7 @@
 - Welcome screens on first install: introduction → **OpenRouter and/or Cloudflare** API key (at least one) → permissions
 - Required permissions: **notifications** and **running in the background**; Autostart for Xiaomi/Oppo/Vivo/Realme/Infinix (optional), which opens the phone's own **Autostart** page directly
 - Every welcome screen (introduction, Connect AI, One more step) fits on **one screen without scrolling**, even with a large system font size
+- Steps 1 to 6 are compact too so they fit on one screen: smaller header, styles & captions in 2 columns, result stickers 4 per row
 - You can leave the app while the AI works and get a **notification when the stickers are ready**
 
 ### 📦 Packs & partial regeneration

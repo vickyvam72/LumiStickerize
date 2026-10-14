@@ -7,11 +7,14 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import com.lumi.stickerize.ui.LumiApp
 import com.lumi.stickerize.ui.MainViewModel
 import com.lumi.stickerize.ui.OnboardingScreen
@@ -26,6 +29,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         Notifier.ensureChannels(this)
         setContent {
+            // Ukuran font sistem yang sangat besar membuat tiap langkah tidak muat satu layar,
+            // jadi skala font di aplikasi dibatasi maksimal normal (100%).
+            val density = LocalDensity.current
+            CompositionLocalProvider(
+                LocalDensity provides Density(density.density, minOf(density.fontScale, 1f))
+            ) {
             LumiTheme {
                 var onboarded by remember { mutableStateOf(vm.settings.onboardingDone) }
                 // Layar pembuka gelap → ikon bar sistem putih; layar utama terang → ikon navigasi gelap
@@ -41,6 +50,7 @@ class MainActivity : ComponentActivity() {
                 } else {
                     OnboardingScreen(vm.settings, onFinished = { onboarded = true })
                 }
+            }
             }
         }
     }

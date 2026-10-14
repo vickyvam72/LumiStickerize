@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -131,7 +132,7 @@ fun LumiApp(vm: MainViewModel) {
                     Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 20.dp, vertical = 16.dp)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
                 ) {
                     when (step) {
                         Step.PHOTOS -> PhotosStep(vm)
@@ -142,7 +143,7 @@ fun LumiApp(vm: MainViewModel) {
                         Step.GENERATE -> GenerateStep(vm)
                         Step.RESULT -> ResultStep(vm)
                     }
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(12.dp))
                 }
             }
         }
@@ -174,28 +175,28 @@ private fun Header(step: Step, compact: Boolean, onSettings: () -> Unit) {
             .fillMaxWidth()
             .background(LumiGradient)
             .statusBarsPadding()
-            .padding(start = 20.dp, end = 8.dp, top = 8.dp, bottom = if (compact) 8.dp else 18.dp)
+            .padding(start = 16.dp, end = 4.dp, top = 2.dp, bottom = if (compact) 6.dp else 12.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(10.dp))
                     .background(Color.White.copy(alpha = 0.18f)),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_foreground),
                     contentDescription = null,
-                    modifier = Modifier.size(56.dp),
+                    modifier = Modifier.size(46.dp),
                 )
             }
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(10.dp))
             Text(
                 "Lumi Stickerize",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 17.sp,
                 modifier = Modifier.weight(1f)
             )
             IconButton(onClick = onSettings) {
@@ -204,15 +205,23 @@ private fun Header(step: Step, compact: Boolean, onSettings: () -> Unit) {
         }
         // saat keyboard terbuka, header diperkecil supaya kolom isian tetap kelihatan
         if (compact) return@Column
-        Spacer(Modifier.height(14.dp))
-        Text(
-            if (step == Step.RESULT) "Selesai" else "Langkah ${step.ordinal + 1} dari ${Step.entries.size - 1}",
-            color = Color.White.copy(alpha = 0.85f),
-            fontSize = 13.sp
-        )
-        Text(step.title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 26.sp)
-        Text(step.subtitle, color = Color.White.copy(alpha = 0.9f), fontSize = 14.sp)
-        Spacer(Modifier.height(12.dp))
+        Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(end = 12.dp)) {
+            Text(
+                step.title,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 21.sp,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                if (step == Step.RESULT) "Selesai" else "Langkah ${step.ordinal + 1}/${Step.entries.size - 1}",
+                color = Color.White.copy(alpha = 0.85f),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+        Text(step.subtitle, color = Color.White.copy(alpha = 0.9f), fontSize = 13.sp)
+        Spacer(Modifier.height(8.dp))
         LinearProgressIndicator(
             progress = { (step.ordinal + 1) / Step.entries.size.toFloat() },
             modifier = Modifier
@@ -232,14 +241,14 @@ private fun BottomBar(vm: MainViewModel) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             if (vm.step != Step.PHOTOS) {
                 OutlinedButton(
                     onClick = { vm.back() },
                     enabled = !vm.generating,
-                    modifier = Modifier.height(52.dp)
+                    modifier = Modifier.height(46.dp)
                 ) { Text("Kembali") }
             }
             if (vm.step == Step.GENERATE) {
@@ -248,14 +257,14 @@ private fun BottomBar(vm: MainViewModel) {
                         onClick = { vm.cancel() },
                         modifier = Modifier
                             .weight(1f)
-                            .height(52.dp)
+                            .height(46.dp)
                     ) { Text("Batalkan") }
                 } else {
                     Button(
                         onClick = { vm.generate() },
                         modifier = Modifier
                             .weight(1f)
-                            .height(52.dp)
+                            .height(46.dp)
                     ) { Text("✨  Buat Stiker", fontWeight = FontWeight.Bold) }
                 }
             } else {
@@ -264,7 +273,7 @@ private fun BottomBar(vm: MainViewModel) {
                     enabled = vm.canGoNext(),
                     modifier = Modifier
                         .weight(1f)
-                        .height(52.dp)
+                        .height(46.dp)
                 ) { Text("Lanjut", fontWeight = FontWeight.Bold) }
             }
         }
@@ -287,17 +296,16 @@ private fun PhotosStep(vm: MainViewModel) {
     val imagesOnly = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
 
     InfoCard(
-        "Cukup 1 foto juga bisa. Tapi kalau ingin hasil stiker lebih akurat dan lebih mirip, " +
-            "pilih 2 atau 3 foto."
+        "Cukup 1 foto juga bisa. Kalau ingin hasil lebih akurat dan mirip, pilih 2 atau 3 foto. " +
+            "Semua orang yang mau dijadikan stiker (maks. 2) harus ada di foto utama."
     )
-    Spacer(Modifier.height(12.dp))
+    Spacer(Modifier.height(8.dp))
     WarningCard(
         "Penting: outfit harus sama",
-        "Kalau memilih lebih dari 1 foto, pastikan semuanya memakai pakaian/outfit yang SAMA " +
-            "(baju, hijab, aksesoris). Kalau outfit berbeda-beda, AI bisa bingung dan hasil stiker jadi tidak konsisten."
+        "Kalau memilih lebih dari 1 foto, semuanya harus memakai outfit yang SAMA (baju, hijab, aksesoris)."
     )
-    Spacer(Modifier.height(16.dp))
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Spacer(Modifier.height(12.dp))
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         for (i in 0 until 3) {
             PhotoSlot(
                 index = i,
@@ -314,18 +322,18 @@ private fun PhotosStep(vm: MainViewModel) {
             )
         }
     }
-    Spacer(Modifier.height(16.dp))
+    Spacer(Modifier.height(10.dp))
     OutlinedButton(
         onClick = { pickMany.launch(imagesOnly) },
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp)
+            .height(42.dp)
     ) {
         Icon(Icons.Filled.Add, contentDescription = null)
         Spacer(Modifier.width(8.dp))
         Text("Pilih 1–3 foto sekaligus")
     }
-    Spacer(Modifier.height(8.dp))
+    Spacer(Modifier.height(6.dp))
     Text(
         when (vm.photoCount) {
             0 -> "Pilih minimal 1 foto untuk lanjut."
@@ -333,19 +341,10 @@ private fun PhotosStep(vm: MainViewModel) {
             2 -> "2 foto dipilih. Tambah 1 foto lagi untuk hasil paling akurat (opsional)."
             else -> "3 foto dipilih. Hasil paling akurat 👍"
         },
-        fontSize = 13.sp,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
-    Spacer(Modifier.height(20.dp))
-    TipCard(
-        "Tips foto terbaik",
-        listOf(
-            "1 foto sudah cukup, 2–3 foto hasilnya lebih akurat",
-            "Kalau pakai lebih dari 1 foto, outfit harus sama",
-            "Wajah terlihat jelas & terang",
-            "Foto utama dipakai untuk memilih wajah: pastikan semua orang yang mau dijadikan stiker ada di foto utama (maks. 2 orang)",
-            "Campur sudut: depan, samping, setengah badan",
-        )
+        fontSize = 12.sp,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth()
     )
 }
 
@@ -360,8 +359,8 @@ private fun PhotoSlot(
 ) {
     Box(
         modifier
-            .aspectRatio(0.78f)
-            .clip(RoundedCornerShape(18.dp))
+            .aspectRatio(0.9f)
+            .clip(RoundedCornerShape(16.dp))
             .background(LumiTile)
             .border(
                 BorderStroke(
@@ -425,8 +424,8 @@ private val faceColors = listOf(Color(0xFF3E84E8), Color(0xFFE8673E))
 
 @Composable
 private fun FacesStep(vm: MainViewModel) {
-    InfoCard("Wajah di foto utama sudah dideteksi otomatis. Ketuk kotak di wajah untuk memilih siapa yang dijadikan stiker. Maksimal hanya 2 wajah.")
-    Spacer(Modifier.height(14.dp))
+    InfoCard("Wajah sudah dideteksi otomatis. Ketuk kotak di wajah untuk memilih siapa yang dijadikan stiker (maks. 2).")
+    Spacer(Modifier.height(10.dp))
     val info = vm.photos[0] ?: return
     val sel = vm.selectedFaces
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -471,10 +470,12 @@ private fun FacesStep(vm: MainViewModel) {
 private fun FacePhoto(info: PhotoInfo, selected: Set<Int>, onToggle: (Int) -> Unit) {
     val bw = info.bitmap.width
     val bh = info.bitmap.height
+    // Tinggi foto dibatasi supaya seluruh langkah muat satu layar
+    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
     BoxWithConstraints(
         Modifier
-            .fillMaxWidth()
-            .aspectRatio(bw.toFloat() / bh.toFloat())
+            .heightIn(max = 330.dp)
+            .aspectRatio(bw.toFloat() / bh.toFloat(), matchHeightConstraintsFirst = true)
             .clip(RoundedCornerShape(16.dp))
             .background(LumiTile)
     ) {
@@ -515,6 +516,7 @@ private fun FacePhoto(info: PhotoInfo, selected: Set<Int>, onToggle: (Int) -> Un
             }
         }
     }
+    }
 }
 
 @Composable
@@ -525,14 +527,13 @@ private fun WarningCard(title: String, text: String) {
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFFFFF4E0))
             .border(1.dp, Color(0xFFF2B54A), RoundedCornerShape(14.dp))
-            .padding(14.dp)
+            .padding(horizontal = 12.dp, vertical = 10.dp)
     ) {
-        Text("⚠️", fontSize = 18.sp)
-        Spacer(Modifier.width(10.dp))
+        Text("⚠️", fontSize = 15.sp)
+        Spacer(Modifier.width(8.dp))
         Column {
-            Text(title, fontWeight = FontWeight.Bold, color = Color(0xFF7A4B00))
-            Spacer(Modifier.height(2.dp))
-            Text(text, fontSize = 13.sp, color = Color(0xFF7A4B00))
+            Text(title, fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Color(0xFF7A4B00))
+            Text(text, fontSize = 12.sp, lineHeight = 16.sp, color = Color(0xFF7A4B00))
         }
     }
 }
@@ -548,19 +549,19 @@ private fun CountStep(vm: MainViewModel) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(horizontal = 20.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             RoundButton("−", enabled = vm.count > MainViewModel.MIN_STICKERS) { vm.count-- }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("${vm.count}", fontSize = 64.sp, fontWeight = FontWeight.Black, color = LumiBlue)
+                Text("${vm.count}", fontSize = 46.sp, fontWeight = FontWeight.Black, color = LumiBlue)
                 Text("stiker", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             RoundButton("+", enabled = vm.count < MainViewModel.MAX_STICKERS) { vm.count++ }
         }
     }
-    Spacer(Modifier.height(16.dp))
+    Spacer(Modifier.height(12.dp))
     (MainViewModel.MIN_STICKERS..MainViewModel.MAX_STICKERS).chunked(4).forEach { row ->
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             row.forEach { n ->
@@ -568,7 +569,7 @@ private fun CountStep(vm: MainViewModel) {
                 Box(
                     Modifier
                         .weight(1f)
-                        .aspectRatio(1f)
+                        .height(52.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(if (selected) LumiBlue else MaterialTheme.colorScheme.surface)
                         .border(1.dp, if (selected) LumiBlue else MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
@@ -586,7 +587,7 @@ private fun CountStep(vm: MainViewModel) {
         }
         Spacer(Modifier.height(10.dp))
     }
-    Spacer(Modifier.height(6.dp))
+    Spacer(Modifier.height(2.dp))
     InfoCard("Bisa 3 sampai 10 stiker. Semuanya dibuat dalam 1 gambar AI, jadi biayanya sama saja.")
 }
 
@@ -596,7 +597,7 @@ private fun RoundButton(label: String, enabled: Boolean, onClick: () -> Unit) {
         onClick = onClick,
         enabled = enabled,
         shape = CircleShape,
-        modifier = Modifier.size(56.dp),
+        modifier = Modifier.size(48.dp),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -610,45 +611,35 @@ private fun RoundButton(label: String, enabled: Boolean, onClick: () -> Unit) {
 @Composable
 private fun StyleStep(vm: MainViewModel) {
     StickerStyle.entries.chunked(2).forEach { row ->
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             row.forEach { s ->
                 val selected = vm.style == s
-                Box(
+                Row(
                     Modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(18.dp))
+                        .height(54.dp)
+                        .clip(RoundedCornerShape(14.dp))
                         .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
                         .border(
                             if (selected) 2.dp else 1.dp,
                             if (selected) LumiBlue else MaterialTheme.colorScheme.outline,
-                            RoundedCornerShape(18.dp)
+                            RoundedCornerShape(14.dp)
                         )
                         .clickable { vm.style = s }
-                        .padding(vertical = 18.dp, horizontal = 12.dp)
+                        .padding(horizontal = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(s.emoji, fontSize = 34.sp)
-                        Spacer(Modifier.height(6.dp))
-                        Text(s.label, fontWeight = FontWeight.Bold)
-                    }
+                    Text(s.emoji, fontSize = 22.sp)
+                    Spacer(Modifier.width(10.dp))
+                    Text(s.label, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.weight(1f), maxLines = 1)
                     if (selected) {
-                        Icon(
-                            Icons.Filled.Check,
-                            contentDescription = null,
-                            tint = LumiBlue,
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .size(20.dp)
-                        )
+                        Icon(Icons.Filled.Check, contentDescription = null, tint = LumiBlue, modifier = Modifier.size(18.dp))
                     }
                 }
             }
             if (row.size == 1) Spacer(Modifier.weight(1f))
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(10.dp))
     }
 }
 
@@ -661,47 +652,89 @@ private val wordIdeas = listOf(
 
 @Composable
 private fun TextStep(vm: MainViewModel) {
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         ChoiceCard("🙂", "Tanpa kata", "Hanya ekspresi", !vm.useText, Modifier.weight(1f)) { vm.useText = false }
         ChoiceCard("💬", "Pakai kata", "${vm.count} kata", vm.useText, Modifier.weight(1f)) { vm.useText = true }
     }
     if (vm.useText) {
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(10.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "Tulis ${vm.count} kata (1 per stiker)",
-                fontWeight = FontWeight.Bold,
+                "1 kata per stiker • kata pendek paling rapi",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f)
             )
-            FilledTonalButton(onClick = { vm.randomAllWords() }) { Text("🎲 Acak semua") }
+            FilledTonalButton(
+                onClick = { vm.randomAllWords() },
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                modifier = Modifier.height(36.dp)
+            ) { Text("🎲 Acak semua", fontSize = 13.sp) }
         }
-        Spacer(Modifier.height(4.dp))
-        for (i in 0 until vm.count) {
-            OutlinedTextField(
-                value = vm.words[i],
-                onValueChange = { vm.words[i] = it.take(25) },
-                label = { Text("Stiker ${i + 1}") },
-                placeholder = { Text(wordIdeas[i % wordIdeas.size]) },
+        Spacer(Modifier.height(6.dp))
+        // 2 kolom supaya 10 kata tetap muat satu layar
+        (0 until vm.count).chunked(2).forEach { pair ->
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                pair.forEach { i ->
+                    WordField(
+                        value = vm.words[i],
+                        onChange = { vm.words[i] = it.take(25) },
+                        number = i + 1,
+                        placeholder = wordIdeas[i % wordIdeas.size],
+                        last = i == vm.count - 1,
+                        onDice = { vm.randomWord(i) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                if (pair.size == 1) Spacer(Modifier.weight(1f))
+            }
+            Spacer(Modifier.height(6.dp))
+        }
+    }
+}
+
+/** Kolom kata ringkas: nomor stiker, isian, dan tombol 🎲. */
+@Composable
+private fun WordField(
+    value: String,
+    onChange: (String) -> Unit,
+    number: Int,
+    placeholder: String,
+    last: Boolean,
+    onDice: () -> Unit,
+    modifier: Modifier,
+) {
+    Row(
+        modifier
+            .height(44.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+            .padding(start = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("$number", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = LumiBlue)
+        Spacer(Modifier.width(8.dp))
+        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+            if (value.isEmpty()) {
+                Text(placeholder, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), maxLines = 1)
+            }
+            androidx.compose.foundation.text.BasicTextField(
+                value = value,
+                onValueChange = onChange,
                 singleLine = true,
-                trailingIcon = {
-                    IconButton(onClick = { vm.randomWord(i) }) {
-                        Text("🎲", fontSize = 20.sp)
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = if (i == vm.count - 1) ImeAction.Done else ImeAction.Next
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface),
+                cursorBrush = androidx.compose.ui.graphics.SolidColor(LumiBlue),
+                keyboardOptions = KeyboardOptions(imeAction = if (last) ImeAction.Done else ImeAction.Next),
+                modifier = Modifier.fillMaxWidth()
             )
         }
-        Spacer(Modifier.height(4.dp))
-        Text(
-            "Tekan 🎲 untuk kata acak dari 1.600+ pilihan. Kata pendek (1–3 kata) paling rapi hasilnya.",
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Box(
+            Modifier
+                .size(40.dp)
+                .clickable(onClick = onDice),
+            contentAlignment = Alignment.Center
+        ) { Text("🎲", fontSize = 17.sp) }
     }
 }
 
@@ -714,23 +747,25 @@ private fun ChoiceCard(
     modifier: Modifier,
     onClick: () -> Unit,
 ) {
-    Column(
+    Row(
         modifier
-            .clip(RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(14.dp))
             .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
             .border(
                 if (selected) 2.dp else 1.dp,
                 if (selected) LumiBlue else MaterialTheme.colorScheme.outline,
-                RoundedCornerShape(18.dp)
+                RoundedCornerShape(14.dp)
             )
             .clickable(onClick = onClick)
-            .padding(18.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(emoji, fontSize = 32.sp)
-        Spacer(Modifier.height(6.dp))
-        Text(title, fontWeight = FontWeight.Bold)
-        Text(caption, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(emoji, fontSize = 22.sp)
+        Spacer(Modifier.width(10.dp))
+        Column {
+            Text(title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            Text(caption, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }
 
@@ -766,7 +801,12 @@ private fun GenerateStep(vm: MainViewModel) {
             Text(
                 "Biasanya 15–60 detik. Kamu boleh meninggalkan aplikasi, nanti ada notifikasi saat stiker sudah jadi.",
                 fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                lineHeight = 19.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
             )
         }
         return
@@ -776,8 +816,8 @@ private fun GenerateStep(vm: MainViewModel) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Column(Modifier.padding(18.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(horizontal = 30.dp)) {
                 vm.photos.mapNotNull { it?.image }.forEach { t ->
                     Box(
                         Modifier
@@ -792,7 +832,7 @@ private fun GenerateStep(vm: MainViewModel) {
                 // jaga ukuran thumbnail tetap sama walau fotonya hanya 1 atau 2
                 repeat(3 - vm.photoCount) { Spacer(Modifier.weight(1f)) }
             }
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(6.dp))
             SummaryRow(
                 "Wajah",
                 if (vm.peopleCount >= 2) "2 orang (stiker berdua)" else "1 orang",
@@ -812,7 +852,7 @@ private fun GenerateStep(vm: MainViewModel) {
             )
         }
     }
-    Spacer(Modifier.height(14.dp))
+    Spacer(Modifier.height(10.dp))
     InfoCard("AI membuat semua stiker dalam 1 gambar saja (hemat token), lalu aplikasi memotongnya otomatis.")
 }
 
@@ -822,11 +862,11 @@ private fun SummaryRow(label: String, value: String, target: Step, vm: MainViewM
         Modifier
             .fillMaxWidth()
             .clickable { vm.goTo(target) }
-            .padding(vertical = 12.dp),
+            .padding(vertical = 9.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.width(80.dp))
-        Text(value, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+        Text(value, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, maxLines = 2, modifier = Modifier.weight(1f))
         Text("Ubah", color = LumiBlue, fontSize = 13.sp)
     }
 }
@@ -925,8 +965,8 @@ private fun ResultStep(vm: MainViewModel) {
     }
     Spacer(Modifier.height(8.dp))
 
-    vm.stickers.withIndex().toList().chunked(3).forEach { row ->
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+    vm.stickers.withIndex().toList().chunked(4).forEach { row ->
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             row.forEach { (index, bmp) ->
                 val checked = index in vm.selection
                 Box(
@@ -973,9 +1013,9 @@ private fun ResultStep(vm: MainViewModel) {
                     }
                 }
             }
-            repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
+            repeat(4 - row.size) { Spacer(Modifier.weight(1f)) }
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(8.dp))
     }
 
     if (vm.selecting) {
@@ -1106,7 +1146,7 @@ private fun ResultStep(vm: MainViewModel) {
         colors = ButtonDefaults.buttonColors(containerColor = WhatsAppGreen),
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(50.dp)
     ) {
         Text(
             if (vm.targetPackId == null) "Tambahkan ke WhatsApp" else "Tambahkan ke paket & WhatsApp",
@@ -1114,30 +1154,32 @@ private fun ResultStep(vm: MainViewModel) {
             fontSize = 16.sp
         )
     }
-    Spacer(Modifier.height(12.dp))
-    // ditumpuk & selebar layar supaya tulisan tombol tidak terpotong di HP mana pun
-    OutlinedButton(
-        onClick = {
-            vm.goTo(Step.GENERATE)
-            vm.generate()
-        },
-        enabled = !vm.generating,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-    ) {
-        Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
-        Spacer(Modifier.width(8.dp))
-        Text("Buat ulang semua", maxLines = 1)
+    Spacer(Modifier.height(8.dp))
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        OutlinedButton(
+            onClick = {
+                vm.goTo(Step.GENERATE)
+                vm.generate()
+            },
+            enabled = !vm.generating,
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+            modifier = Modifier
+                .weight(1f)
+                .height(44.dp)
+        ) {
+            Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
+            Spacer(Modifier.width(6.dp))
+            Text("Ulang semua", maxLines = 1, fontSize = 14.sp)
+        }
+        OutlinedButton(
+            onClick = { vm.restart() },
+            enabled = !vm.generating,
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+            modifier = Modifier
+                .weight(1f)
+                .height(44.dp)
+        ) { Text("Mulai baru", maxLines = 1, fontSize = 14.sp) }
     }
-    Spacer(Modifier.height(10.dp))
-    OutlinedButton(
-        onClick = { vm.restart() },
-        enabled = !vm.generating,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-    ) { Text("Mulai baru", maxLines = 1) }
 }
 
 @Composable
@@ -1165,7 +1207,7 @@ private fun PackOption(
                 RoundedCornerShape(14.dp)
             )
             .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 12.dp),
+            .padding(horizontal = 12.dp, vertical = 9.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -1268,11 +1310,11 @@ private fun InfoCard(text: String) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(14.dp)
+            .padding(horizontal = 12.dp, vertical = 10.dp)
     ) {
-        Text("💡", fontSize = 16.sp)
-        Spacer(Modifier.width(10.dp))
-        Text(text, fontSize = 14.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text("💡", fontSize = 14.sp)
+        Spacer(Modifier.width(8.dp))
+        Text(text, fontSize = 13.sp, lineHeight = 18.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
     }
 }
 
