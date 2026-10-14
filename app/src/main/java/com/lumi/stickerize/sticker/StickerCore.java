@@ -194,6 +194,119 @@ public final class StickerCore {
     }
 
     /**
+     * Deteksi susunan grid yang benar-benar digambar AI. AI sering tidak menuruti jumlah kolom/baris
+     * yang diminta (mis. diminta 4×3 tapi menggambar 3×4), jadi beberapa kemungkinan susunan untuk
+     * [n] stiker dicoba, lalu dipilih yang garis potongnya paling cocok dengan celah kosong di gambar.
+     * @return {xCuts, yCuts}: masing-masing berisi posisi potong dari 0 sampai panjang sumbu
+     */
+    public static int[][] detectGrid(boolean[] bg, int w, int h, int n, int prefCols, int prefRows) {
+        int[] colProfile = new int[w];
+        int[] rowProfile = new int[h];
+        for (int y = 0; y < h; y++) {
+            int base = y * w;
+            for (int x = 0; x < w; x++) {
+                if (!bg[base + x]) {
+                    colProfile[x]++;
+                    rowProfile[y]++;
+                }
+            }
+        }
+        int[][] xGaps = findGaps(colProfile, h, w);
+        int[][] yGaps = findGaps(rowProfile, w, h);
+
+        double bestScore = Double.NEGATIVE_INFINITY;
+        int[] bestX = null, bestY = null;
+        for (int c = 1; c <= 5; c++) {
+            int r = (n + c - 1) / c;
+            if (r > 5 || c * r - n >= c) continue;
+            double[] sx = new double[1];
+            double[] sy = new double[1];
+            int[] xc = cutsFor(colProfile, xGaps, w, c, sx);
+            int[] yc = cutsFor(rowProfile, yGaps, h, r, sy);
+            double score = sx[0] + sy[0];
+            if (c == prefCols && r == prefRows) score += 0.4; // sedikit prioritas untuk susunan yang diminta
+            if (score > bestScore) {
+                bestScore = score;
+                bestX = xc;
+                bestY = yc;
+            }
+        }
+        if (bestX == null) {
+            bestX = findCuts(bg, w, h, prefCols, true);
+            bestY = findCuts(bg, w, h, prefRows, false);
+        }
+        return new int[][]{bestX, bestY};
+    }
+
+    /** Celah kosong di dalam gambar (bukan margin tepi): {awal, akhir} per celah. */
+    private static int[][] findGaps(int[] profile, int other, int len) {
+        int emptyMax = Math.max(1, (int) (other * 0.004));
+        int minRun = Math.max(2, (int) (len * 0.004));
+        java.util.ArrayList<int[]> gaps = new java.util.ArrayList<>();
+        int x = 0;
+        while (x < len) {
+            if (profile[x] > emptyMax) { x++; continue; }
+            int start = x;
+            while (x < len && profile[x] <= emptyMax) x++;
+            int end = x - 1;
+            if (start > 0 && end < len - 1 && end - start + 1 >= minRun) gaps.add(new int[]{start, end});
+        }
+        return gaps.toArray(new int[0][]);
+    }
+
+    /**
+     * Garis potong untuk [parts] bagian. Tiap garis ideal dicocokkan ke celah kosong terdekat;
+     * [score] bertambah untuk tiap kecocokan dan berkurang kalau tidak ada celah di sana.
+     */
+    private static int[] cutsFor(int[] profile, int[][] gaps, int len, int parts, double[] score) {
+        int[] cuts = new int[parts + 1];
+        cuts[0] = 0;
+        cuts[parts] = len;
+        double cell = (double) len / parts;
+        double tol = cell * 0.22;
+        for (int i = 1; i < parts; i++) {
+            double ideal = cell * i;
+            int[] best = null;
+            double bestDist = Double.MAX_VALUE;
+            for (int[] g : gaps) {
+                double center = (g[0] + g[1]) / 2.0;
+                double dist = Math.abs(center - ideal);
+                if (dist <= tol && dist < bestDist) {
+                    bestDist = dist;
+                    best = g;
+                }
+            }
+            if (best != null) {
+                cuts[i] = (best[0] + best[1]) / 2;
+                score[0] += 1.0 + Math.min(0.5, (best[1] - best[0] + 1) / cell);
+            } else {
+                // tidak ada celah: potong di kolom/baris paling "sepi" di sekitar posisi ideal
+                int from = Math.max(1, (int) (ideal - tol));
+                int to = Math.min(len - 2, (int) (ideal + tol));
+                int bestPos = (int) ideal;
+                long bestVal = Long.MAX_VALUE;
+                for (int a = from; a <= to; a++) {
+                    long v = (long) profile[a] * 1000 + (long) Math.abs(a - ideal);
+                    if (v < bestVal) {
+                        bestVal = v;
+                        bestPos = a;
+                    }
+                }
+                cuts[i] = bestPos;
+                score[0] -= 1.0;
+            }
+        }
+        // celah besar yang tidak terpakai sebagai garis potong = tanda susunannya salah
+        for (int[] g : gaps) {
+            int center = (g[0] + g[1]) / 2;
+            boolean used = false;
+            for (int i = 1; i < parts; i++) if (Math.abs(cuts[i] - center) <= (g[1] - g[0]) / 2 + 2) used = true;
+            if (!used && (g[1] - g[0] + 1) >= cell * 0.06) score[0] -= 0.6;
+        }
+        return cuts;
+    }
+
+    /**
      * Cari garis potong. AI jarang menaruh stiker tepat di grid, jadi di sekitar posisi ideal
      * kita cari kolom/baris yang paling "kosong" (celah putih di antara stiker).
      * @param vertical true = cari batas kolom (sumbu x), false = batas baris (sumbu y)

@@ -1003,7 +1003,7 @@ private fun ResultStep(vm: MainViewModel) {
                     onClick = { showRegenDialog = true },
                     enabled = n > 0 && !vm.generating,
                     modifier = Modifier.weight(1f)
-                ) { Text("✏️ Ubah kata") }
+                ) { Text("✏️ Ubah kata", maxLines = 1) }
                 Button(
                     onClick = { vm.regenerateSelected(emptyMap()) },
                     enabled = n > 0 && !vm.generating,
@@ -1011,7 +1011,7 @@ private fun ResultStep(vm: MainViewModel) {
                 ) {
                     Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("Buat ulang")
+                    Text("Buat ulang", maxLines = 1)
                 }
             }
         }
@@ -1115,29 +1115,29 @@ private fun ResultStep(vm: MainViewModel) {
         )
     }
     Spacer(Modifier.height(12.dp))
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        OutlinedButton(
-            onClick = {
-                vm.goTo(Step.GENERATE)
-                vm.generate()
-            },
-            enabled = !vm.generating,
-            modifier = Modifier
-                .weight(1f)
-                .height(48.dp)
-        ) {
-            Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
-            Spacer(Modifier.width(6.dp))
-            Text("Buat ulang semua")
-        }
-        OutlinedButton(
-            onClick = { vm.restart() },
-            enabled = !vm.generating,
-            modifier = Modifier
-                .weight(1f)
-                .height(48.dp)
-        ) { Text("Mulai baru") }
+    // ditumpuk & selebar layar supaya tulisan tombol tidak terpotong di HP mana pun
+    OutlinedButton(
+        onClick = {
+            vm.goTo(Step.GENERATE)
+            vm.generate()
+        },
+        enabled = !vm.generating,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+    ) {
+        Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(8.dp))
+        Text("Buat ulang semua", maxLines = 1)
     }
+    Spacer(Modifier.height(10.dp))
+    OutlinedButton(
+        onClick = { vm.restart() },
+        enabled = !vm.generating,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+    ) { Text("Mulai baru", maxLines = 1) }
 }
 
 @Composable

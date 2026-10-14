@@ -104,7 +104,11 @@ fun EraserDialog(
         version++
     }
 
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            // biar jarak tombol navigasi HP terbaca, jadi tombol bawah tidak tertutup
+            decorFitsSystemWindows = false,
+        )) {
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column(
                 Modifier
@@ -194,7 +198,8 @@ fun EraserDialog(
                         modifier = Modifier.weight(1f)
                     ) { Text("Ulang dari awal") }
                 }
-                Spacer(Modifier.weight(1f))
+                // tombol langsung di bawah kontrol (bukan di dasar layar) supaya tidak tertutup tombol HP
+                Spacer(Modifier.height(20.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     TextButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Batal") }
                     Button(
@@ -205,7 +210,7 @@ fun EraserDialog(
                             .height(50.dp)
                     ) { Text("Simpan", fontWeight = FontWeight.Bold) }
                 }
-                Spacer(Modifier.width(1.dp))
+                Spacer(Modifier.height(24.dp))
             }
         }
     }

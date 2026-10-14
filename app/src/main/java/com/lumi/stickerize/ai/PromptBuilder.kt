@@ -36,7 +36,9 @@ object PromptBuilder {
         val sb = StringBuilder()
         sb.appendLine(
             "Create ONE single image: a sticker sheet arranged as an invisible grid of " +
-                "${grid.cols} columns × ${grid.rows} rows (${grid.cells} equal square cells)."
+                "${grid.cols} columns × ${grid.rows} rows (${grid.cells} equal square cells): " +
+                "${grid.cols} stickers side by side in each horizontal row, ${grid.rows} rows stacked " +
+                "from top to bottom. Leave a wide empty white gap between neighbouring stickers."
         )
         if (people >= 2) {
             sb.appendLine(

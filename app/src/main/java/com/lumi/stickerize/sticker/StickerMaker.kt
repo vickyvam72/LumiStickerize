@@ -32,16 +32,21 @@ object StickerMaker {
         val px = IntArray(w * h)
         src.getPixels(px, 0, w, 0, 0, w, h)
 
-        // buang bingkai/kotak tipis yang kadang digambar AI di sekeliling stiker
-        StickerCore.removeFrameLines(px, w, h, (w / grid.cols * 0.45).toInt())
+        // buang bingkai/kotak/garis grid tipis yang kadang digambar AI di sekeliling stiker
+        val maxParts = maxOf(grid.cols, grid.rows)
+        StickerCore.removeFrameLines(px, w, h, (minOf(w, h) / maxParts * 0.45).toInt())
         val bg = StickerCore.backgroundMask(px, w, h)
-        val xCuts = StickerCore.findCuts(bg, w, h, grid.cols, true)
-        val yCuts = StickerCore.findCuts(bg, w, h, grid.rows, false)
+        // AI tidak selalu menuruti jumlah kolom/baris yang diminta, jadi susunannya dideteksi dari gambar
+        val cuts = StickerCore.detectGrid(bg, w, h, take, grid.cols, grid.rows)
+        val xCuts = cuts[0]
+        val yCuts = cuts[1]
+        val cols = xCuts.size - 1
+        val rows = yCuts.size - 1
 
         val result = ArrayList<Pair<Int, Bitmap>>()
         var index = 0
-        loop@ for (r in 0 until grid.rows) {
-            for (c in 0 until grid.cols) {
+        loop@ for (r in 0 until rows) {
+            for (c in 0 until cols) {
                 if (index >= take) break@loop
                 val cell = index++
                 val piece = StickerCore.extract(
