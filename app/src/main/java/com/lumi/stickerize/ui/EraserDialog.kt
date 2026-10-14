@@ -51,6 +51,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.runtime.SideEffect
+import androidx.core.view.WindowCompat
 
 /** Penghapus manual: gosok bagian stiker yang tidak terpotong rapi. */
 @Composable
@@ -109,6 +113,22 @@ fun EraserDialog(
             // biar jarak tombol navigasi HP terbaca, jadi tombol bawah tidak tertutup
             decorFitsSystemWindows = false,
         )) {
+        // Bilah status & navigasi jendela ini dibuat transparan (ikon gelap) supaya tidak ada
+        // kotak hitam di belakang tombol navigasi HP.
+        val dialogView = LocalView.current
+        SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.statusBarColor = android.graphics.Color.TRANSPARENT
+            window.navigationBarColor = android.graphics.Color.TRANSPARENT
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                window.isNavigationBarContrastEnforced = false
+                window.isStatusBarContrastEnforced = false
+            }
+            WindowCompat.getInsetsController(window, dialogView).apply {
+                isAppearanceLightNavigationBars = true
+                isAppearanceLightStatusBars = true
+            }
+        }
         Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column(
                 Modifier

@@ -121,7 +121,6 @@ fun LumiApp(vm: MainViewModel) {
         Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .navigationBarsPadding()
             .imePadding()
     ) {
         Header(step = vm.step, compact = imeVisible, onSettings = { showSettings = true })
@@ -149,6 +148,8 @@ fun LumiApp(vm: MainViewModel) {
         }
 
         BottomBar(vm)
+        // Halaman hasil tidak punya tombol bawah: sisakan ruang tombol navigasi HP dengan warna latar yang sama
+        if (vm.step == Step.RESULT) Spacer(Modifier.navigationBarsPadding())
     }
 
     if (showSettings) {
@@ -237,10 +238,13 @@ private fun Header(step: Step, compact: Boolean, onSettings: () -> Unit) {
 @Composable
 private fun BottomBar(vm: MainViewModel) {
     if (vm.step == Step.RESULT) return
-    Surface(shadowElevation = 8.dp, color = MaterialTheme.colorScheme.surface) {
+    // Latar putih tombol bawah ikut memanjang sampai belakang tombol navigasi HP,
+    // jadi tidak ada bayangan / warna lain di area itu.
+    Surface(shadowElevation = 3.dp, color = MaterialTheme.colorScheme.surface) {
         Row(
             Modifier
                 .fillMaxWidth()
+                .navigationBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
