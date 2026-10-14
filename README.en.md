@@ -121,7 +121,7 @@ On first launch, Lumi Stickerize shows 3 screens:
 2. **Hubungkan AI** (Connect AI): fill in **at least one**, or both:
    - **OpenRouter (paid):** create a key at [openrouter.ai/keys](https://openrouter.ai/keys), add credit at [openrouter.ai/credits](https://openrouter.ai/credits), then paste the key (starts with `sk-or-`).
    - **Cloudflare (free):** sign up at [dash.cloudflare.com](https://dash.cloudflare.com), copy your **Account ID**, create an **API Token** with the *Workers AI* template, and fill in both.
-3. **Satu langkah lagi** (One more step): the **required** permissions are **notifications** (to tell you when stickers are ready) and **running in the background** (so you can leave the app while the AI works). Xiaomi, Oppo, Vivo, Realme & Infinix users are also advised to turn on **Autostart** (optional).
+3. **Satu langkah lagi** (One more step): the **required** permissions are **notifications** (to tell you when stickers are ready) and **running in the background** (so you can leave the app while the AI works). Xiaomi, Oppo, Vivo, Realme & Infinix users are also advised to turn on **Autostart** (optional) — the button opens the phone's own Autostart page directly.
 
 You can change the model and keys any time via the ⚙️ icon at the top right → **Pengaturan AI** (AI settings):
 - **OpenRouter (paid):** create a key at [openrouter.ai/keys](https://openrouter.ai/keys), add credit at [openrouter.ai/credits](https://openrouter.ai/credits), then paste the key (starts with `sk-or-`).
