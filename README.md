@@ -10,6 +10,7 @@
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-kebutuhan-sistem)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#%EF%B8%8F-teknologi)
 [![WhatsApp](https://img.shields.io/badge/WhatsApp-Stiker-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](#-fitur)
+[![Lisensi](https://img.shields.io/badge/Lisensi-GPL--3.0-F57C00?style=for-the-badge)](LICENSE)
 
 **🌐 Bahasa / Language:** &nbsp; **🇮🇩 Bahasa Indonesia** &nbsp;|&nbsp; [🇬🇧 English](README.en.md)
 
@@ -239,7 +240,9 @@ Gunakan hanya foto milikmu sendiri atau foto orang yang sudah memberi izin. Biay
 
 ## 📄 Lisensi
 
-Hak cipta © 2026 **vickyvam72**. Seluruh hak dilindungi.
+Hak cipta © 2026 **vickyvam72**.
+
+Lumi Stickerize adalah perangkat lunak bebas: kamu boleh menyebarluaskan dan/atau mengubahnya di bawah ketentuan **[GNU General Public License v3.0](LICENSE)** yang diterbitkan oleh Free Software Foundation. Program ini disebarkan dengan harapan bermanfaat, tetapi **TANPA JAMINAN APA PUN**. Baca file [LICENSE](LICENSE) untuk detail lengkapnya.
 
 <div align="center">
 

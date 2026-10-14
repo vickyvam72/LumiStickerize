@@ -10,6 +10,7 @@
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-requirements)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#%EF%B8%8F-tech-stack)
 [![WhatsApp](https://img.shields.io/badge/WhatsApp-Stickers-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](#-features)
+[![License](https://img.shields.io/badge/License-GPL--3.0-F57C00?style=for-the-badge)](LICENSE)
 
 **🌐 Bahasa / Language:** &nbsp; [🇮🇩 Bahasa Indonesia](README.md) &nbsp;|&nbsp; **🇬🇧 English**
 
@@ -241,7 +242,9 @@ Only use photos of yourself or of people who have given their permission. AI usa
 
 ## 📄 License
 
-Copyright © 2026 **vickyvam72**. All rights reserved.
+Copyright © 2026 **vickyvam72**.
+
+Lumi Stickerize is free software: you can redistribute it and/or modify it under the terms of the **[GNU General Public License v3.0](LICENSE)** as published by the Free Software Foundation. It is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY**. See the [LICENSE](LICENSE) file for details.
 
 <div align="center">
 
