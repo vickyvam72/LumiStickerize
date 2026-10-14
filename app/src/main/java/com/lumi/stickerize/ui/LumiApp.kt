@@ -945,121 +945,113 @@ private fun ResultStep(vm: MainViewModel) {
         Spacer(Modifier.height(12.dp))
     }
 
-    // ---- baris kontrol: mode centang
+    // ---- baris kontrol: mode centang (satu baris ringkas)
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            if (vm.selecting) "Centang stiker yang mau diganti"
-            else "✏️ Ketuk stiker untuk merapikan",
-            fontSize = 13.sp,
+            if (vm.selecting) "Centang yang mau diganti" else "✏️ Ketuk stiker untuk merapikan",
+            fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
             modifier = Modifier.weight(1f)
         )
         if (vm.selecting) {
-            TextButton(onClick = { vm.selectAll() }, enabled = !vm.generating) { Text("Semua") }
-            TextButton(onClick = { vm.stopSelecting() }, enabled = !vm.generating) { Text("Batal") }
+            SmallChip("Semua", enabled = !vm.generating) { vm.selectAll() }
+            Spacer(Modifier.width(6.dp))
+            SmallChip("Batal", enabled = !vm.generating) { vm.stopSelecting() }
         } else {
-            FilledTonalButton(onClick = { vm.startSelecting() }, enabled = !vm.generating) {
-                Text("☑ Ganti sebagian")
-            }
+            SmallChip("☑ Ganti sebagian", enabled = !vm.generating, filled = true) { vm.startSelecting() }
         }
     }
     Spacer(Modifier.height(8.dp))
 
-    vm.stickers.withIndex().toList().chunked(4).forEach { row ->
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    // 5 stiker per baris: 10 stiker cukup 2 baris
+    vm.stickers.withIndex().toList().chunked(5).forEach { row ->
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             row.forEach { (index, bmp) ->
                 val checked = index in vm.selection
                 Box(
                     Modifier
                         .weight(1f)
                         .aspectRatio(1f)
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape(12.dp))
                         .background(if (checked) MaterialTheme.colorScheme.primaryContainer else LumiTile)
                         .border(
-                            if (checked) 3.dp else 0.dp,
+                            if (checked) 2.dp else 0.dp,
                             if (checked) LumiBlue else Color.Transparent,
-                            RoundedCornerShape(16.dp)
+                            RoundedCornerShape(12.dp)
                         )
                         .clickable(enabled = !vm.generating) {
                             if (vm.selecting) vm.toggleSelection(index) else editing = index
                         }
-                        .padding(6.dp)
+                        .padding(3.dp)
                 ) {
                     Image(bmp, contentDescription = "Stiker ${index + 1}", modifier = Modifier.fillMaxSize())
                     if (vm.selecting) {
                         Box(
                             Modifier
                                 .align(Alignment.TopEnd)
-                                .size(24.dp)
+                                .size(18.dp)
                                 .clip(CircleShape)
                                 .background(if (checked) LumiBlue else Color.White.copy(alpha = 0.9f))
-                                .border(2.dp, LumiBlue, CircleShape),
+                                .border(1.5.dp, LumiBlue, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             if (checked) {
-                                Icon(Icons.Filled.Check, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Filled.Check, null, tint = Color.White, modifier = Modifier.size(12.dp))
                             }
                         }
-                    } else {
-                        Text(
-                            "✏️",
-                            fontSize = 12.sp,
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.85f))
-                                .padding(4.dp)
-                        )
                     }
                 }
             }
-            repeat(4 - row.size) { Spacer(Modifier.weight(1f)) }
+            repeat(5 - row.size) { Spacer(Modifier.weight(1f)) }
         }
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(6.dp))
     }
 
     if (vm.selecting) {
         val n = vm.selection.size
-        Column(
+        Row(
             Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(MaterialTheme.colorScheme.surface)
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
-                .padding(14.dp)
+                .padding(top = 2.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                if (n == 0) "Belum ada stiker dicentang" else "$n stiker dicentang",
-                fontWeight = FontWeight.Bold
+                if (n == 0) "Belum dicentang" else "$n dicentang • 1x biaya",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
             )
-            Text(
-                "Hanya stiker yang dicentang yang dibuat ulang. Stiker lain tetap. Biayanya 1 kali pembuatan.",
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.height(10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                OutlinedButton(
-                    onClick = { showRegenDialog = true },
-                    enabled = n > 0 && !vm.generating,
-                    modifier = Modifier.weight(1f)
-                ) { Text("✏️ Ubah kata", maxLines = 1) }
-                Button(
-                    onClick = { vm.regenerateSelected(emptyMap()) },
-                    enabled = n > 0 && !vm.generating,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text("Buat ulang", maxLines = 1)
-                }
-            }
+            OutlinedButton(
+                onClick = { showRegenDialog = true },
+                enabled = n > 0 && !vm.generating,
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp),
+                modifier = Modifier.height(38.dp)
+            ) { Text("✏️ Ubah kata", maxLines = 1, fontSize = 13.sp) }
+            Button(
+                onClick = { vm.regenerateSelected(emptyMap()) },
+                enabled = n > 0 && !vm.generating,
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp),
+                modifier = Modifier.height(38.dp)
+            ) { Text("🔄 Buat ulang", maxLines = 1, fontSize = 13.sp) }
         }
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(4.dp))
     }
 
-    TextButton(onClick = { showSheet = !showSheet }) {
-        Text(if (showSheet) "Sembunyikan gambar asli AI" else "Lihat gambar asli dari AI")
+    // ---- pilih paket tujuan (dua pilihan bersebelahan)
+    Spacer(Modifier.height(6.dp))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text("Simpan ke paket", fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.weight(1f))
+        Text(
+            if (showSheet) "Tutup gambar AI" else "Lihat gambar asli AI",
+            color = LumiBlue,
+            fontSize = 12.sp,
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .clickable { showSheet = !showSheet }
+                .padding(horizontal = 6.dp, vertical = 6.dp)
+        )
     }
     if (showSheet) {
         vm.sheet?.let {
@@ -1068,50 +1060,39 @@ private fun ResultStep(vm: MainViewModel) {
                 contentDescription = "Gambar asli",
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(vertical = 6.dp)
                     .clip(RoundedCornerShape(12.dp))
             )
-            Spacer(Modifier.height(8.dp))
         }
     }
-
-    // ---- pilih paket tujuan
-    Spacer(Modifier.height(8.dp))
-    Text("Simpan ke paket", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-    Spacer(Modifier.height(8.dp))
-    PackOption(
-        selected = vm.targetPackId == null,
-        enabled = true,
-        title = "📦 Buat paket baru",
-        subtitle = "${vm.stickers.size} stiker",
-        onClick = { vm.targetPackId = null }
-    )
-    if (vm.targetPackId == null) {
-        OutlinedTextField(
-            value = vm.packName,
-            onValueChange = { vm.packName = it.take(60) },
-            label = { Text("Nama paket stiker") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp, bottom = 8.dp)
-        )
+    Spacer(Modifier.height(6.dp))
+    val hasPacks = vm.existingPacks.isNotEmpty()
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        PackChip(
+            text = "📦 Paket baru",
+            selected = vm.targetPackId == null,
+            enabled = true,
+            modifier = Modifier.weight(1f)
+        ) { vm.targetPackId = null }
+        PackChip(
+            text = if (hasPacks) "➕ Paket lama" else "➕ Belum ada paket",
+            selected = vm.targetPackId != null,
+            enabled = hasPacks,
+            modifier = Modifier.weight(1f)
+        ) {
+            // pilih otomatis paket lama pertama yang masih muat
+            vm.targetPackId = vm.existingPacks.firstOrNull { vm.stickers.size <= vm.freeSlots(it) }?.id
+                ?: vm.existingPacks.first().id
+        }
     }
-    if (vm.existingPacks.isEmpty()) {
-        PackOption(
-            selected = false,
-            enabled = false,
-            title = "➕ Tambah ke paket yang sudah ada",
-            subtitle = "Belum ada paket lain di aplikasi ini",
-            onClick = {}
+    Spacer(Modifier.height(8.dp))
+    if (vm.targetPackId == null) {
+        CompactField(
+            value = vm.packName,
+            onChange = { vm.packName = it.take(60) },
+            label = "Nama paket"
         )
     } else {
-        Text(
-            "➕ Atau tambahkan ke paket yang sudah ada:",
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 4.dp, bottom = 6.dp)
-        )
         vm.existingPacks.forEach { pack ->
             val free = vm.freeSlots(pack)
             val fits = vm.stickers.size <= free
@@ -1120,14 +1101,14 @@ private fun ResultStep(vm: MainViewModel) {
                 selected = vm.targetPackId == pack.id,
                 enabled = fits,
                 title = pack.name,
-                subtitle = if (fits) "$currentCount stiker → ${currentCount + vm.stickers.size} stiker"
-                else "Penuh: sisa $free tempat (maks. ${PackStore.MAX_PER_PACK} stiker per paket)",
+                subtitle = if (fits) "$currentCount → ${currentCount + vm.stickers.size} stiker"
+                else "Penuh: sisa $free tempat (maks. ${PackStore.MAX_PER_PACK})",
                 onClick = { vm.targetPackId = pack.id }
             )
         }
     }
 
-    Spacer(Modifier.height(16.dp))
+    Spacer(Modifier.height(10.dp))
     Button(
         onClick = {
             if (!WhatsAppHelper.isAnyInstalled(context)) {
@@ -1146,7 +1127,7 @@ private fun ResultStep(vm: MainViewModel) {
         colors = ButtonDefaults.buttonColors(containerColor = WhatsAppGreen),
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .height(48.dp)
     ) {
         Text(
             if (vm.targetPackId == null) "Tambahkan ke WhatsApp" else "Tambahkan ke paket & WhatsApp",
@@ -1179,6 +1160,74 @@ private fun ResultStep(vm: MainViewModel) {
                 .weight(1f)
                 .height(44.dp)
         ) { Text("Mulai baru", maxLines = 1, fontSize = 14.sp) }
+    }
+}
+
+/** Tombol kecil berbentuk pil. */
+@Composable
+private fun SmallChip(text: String, enabled: Boolean, filled: Boolean = false, onClick: () -> Unit) {
+    Box(
+        Modifier
+            .height(32.dp)
+            .clip(RoundedCornerShape(50))
+            .background(if (filled) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+            .border(if (filled) 0.dp else 1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(50))
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 12.dp),
+        contentAlignment = Alignment.Center
+    ) { Text(text, fontSize = 13.sp, color = LumiBlue, fontWeight = FontWeight.SemiBold, maxLines = 1) }
+}
+
+/** Pilihan paket (baru / lama) berbentuk tombol bersebelahan. */
+@Composable
+private fun PackChip(text: String, selected: Boolean, enabled: Boolean, modifier: Modifier, onClick: () -> Unit) {
+    Box(
+        modifier
+            .height(42.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
+            .border(
+                if (selected) 2.dp else 1.dp,
+                if (selected) LumiBlue else MaterialTheme.colorScheme.outline,
+                RoundedCornerShape(12.dp)
+            )
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+        )
+    }
+}
+
+/** Kolom isian ringkas (tinggi 46dp) dengan label di kiri. */
+@Composable
+private fun CompactField(value: String, onChange: (String) -> Unit, label: String) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(46.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.width(10.dp))
+        androidx.compose.foundation.text.BasicTextField(
+            value = value,
+            onValueChange = onChange,
+            singleLine = true,
+            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface),
+            cursorBrush = androidx.compose.ui.graphics.SolidColor(LumiBlue),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
