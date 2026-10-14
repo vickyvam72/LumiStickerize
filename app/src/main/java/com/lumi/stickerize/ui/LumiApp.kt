@@ -935,7 +935,9 @@ private fun ResultStep(vm: MainViewModel) {
         }
     }
 
-    vm.notice?.let {
+    // Saat mode Ganti sebagian aktif, kotak info disembunyikan agar baris tombol tambahan
+    // tetap muat dalam satu layar tanpa scroll.
+    if (!vm.selecting) vm.notice?.let {
         InfoCard(it)
         Spacer(Modifier.height(12.dp))
     }
