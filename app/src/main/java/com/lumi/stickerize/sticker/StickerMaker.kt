@@ -20,7 +20,11 @@ object StickerMaker {
     /**
      * Potong lembar menjadi [take] stiker pertama (urutan baca). Sel kosong dilewati.
      */
-    fun slice(sheet: Bitmap, grid: GridSpec, take: Int): List<Bitmap> {
+    fun slice(sheet: Bitmap, grid: GridSpec, take: Int): List<Bitmap> =
+        sliceIndexed(sheet, grid, take).map { it.second }
+
+    /** Sama seperti [slice], tapi tiap stiker disertai nomor selnya (0 = sel pertama). */
+    fun sliceIndexed(sheet: Bitmap, grid: GridSpec, take: Int): List<Pair<Int, Bitmap>> {
         val src = if (sheet.config == Bitmap.Config.ARGB_8888) sheet
         else sheet.copy(Bitmap.Config.ARGB_8888, false)
         val w = src.width
@@ -34,16 +38,16 @@ object StickerMaker {
         val xCuts = StickerCore.findCuts(bg, w, h, grid.cols, true)
         val yCuts = StickerCore.findCuts(bg, w, h, grid.rows, false)
 
-        val result = ArrayList<Bitmap>()
+        val result = ArrayList<Pair<Int, Bitmap>>()
         var index = 0
         loop@ for (r in 0 until grid.rows) {
             for (c in 0 until grid.cols) {
                 if (index >= take) break@loop
-                index++
+                val cell = index++
                 val piece = StickerCore.extract(
                     px, bg, w, xCuts[c], yCuts[r], xCuts[c + 1], yCuts[r + 1]
                 ) ?: continue
-                result.add(render(piece))
+                result.add(cell to render(piece))
             }
         }
         return result

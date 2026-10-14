@@ -14,6 +14,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.Column
@@ -61,6 +64,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -85,6 +89,7 @@ import com.lumi.stickerize.data.AppSettings
 import com.lumi.stickerize.data.Provider
 import com.lumi.stickerize.model.GridSpec
 import com.lumi.stickerize.model.StickerStyle
+import com.lumi.stickerize.sticker.PackStore
 import com.lumi.stickerize.ui.theme.LumiBlue
 import com.lumi.stickerize.ui.theme.LumiGradient
 import com.lumi.stickerize.ui.theme.LumiTile
@@ -94,6 +99,7 @@ import kotlinx.coroutines.delay
 
 private const val NEED_API_KEY = "NEED_API_KEY"
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LumiApp(vm: MainViewModel) {
     var showSettings by remember { mutableStateOf(false) }
@@ -107,12 +113,17 @@ fun LumiApp(vm: MainViewModel) {
 
     BackHandler(enabled = vm.step != Step.PHOTOS && !vm.generating) { vm.back() }
 
+    // Seluruh layar menyisakan ruang untuk tombol navigasi HP dan keyboard,
+    // jadi tombol & kolom isian tidak pernah tertutup.
+    val imeVisible = WindowInsets.isImeVisible
     Column(
         Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .navigationBarsPadding()
+            .imePadding()
     ) {
-        Header(step = vm.step, onSettings = { showSettings = true })
+        Header(step = vm.step, compact = imeVisible, onSettings = { showSettings = true })
 
         Box(Modifier.weight(1f)) {
             AnimatedContent(targetState = vm.step, label = "step") { step ->
@@ -157,13 +168,13 @@ fun LumiApp(vm: MainViewModel) {
 /* ---------------------------------------------------------------- header & navigasi */
 
 @Composable
-private fun Header(step: Step, onSettings: () -> Unit) {
+private fun Header(step: Step, compact: Boolean, onSettings: () -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()
             .background(LumiGradient)
             .statusBarsPadding()
-            .padding(start = 20.dp, end = 8.dp, top = 8.dp, bottom = 18.dp)
+            .padding(start = 20.dp, end = 8.dp, top = 8.dp, bottom = if (compact) 8.dp else 18.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
@@ -191,6 +202,8 @@ private fun Header(step: Step, onSettings: () -> Unit) {
                 Icon(Icons.Filled.Settings, contentDescription = "Pengaturan", tint = Color.White)
             }
         }
+        // saat keyboard terbuka, header diperkecil supaya kolom isian tetap kelihatan
+        if (compact) return@Column
         Spacer(Modifier.height(14.dp))
         Text(
             if (step == Step.RESULT) "Selesai" else "Langkah ${step.ordinal + 1} dari ${Step.entries.size - 1}",
@@ -219,8 +232,6 @@ private fun BottomBar(vm: MainViewModel) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .navigationBarsPadding()
-                .imePadding()
                 .padding(horizontal = 20.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -827,6 +838,8 @@ private fun ResultStep(vm: MainViewModel) {
     val context = LocalContext.current
     var showSheet by remember { mutableStateOf(false) }
     var editing by remember { mutableStateOf<Int?>(null) }
+    var showRegenDialog by remember { mutableStateOf(false) }
+
     editing?.let { idx ->
         val original = vm.stickerBitmaps.getOrNull(idx)
         if (original != null) {
@@ -841,6 +854,16 @@ private fun ResultStep(vm: MainViewModel) {
             )
         }
     }
+    if (showRegenDialog) {
+        RegenerateDialog(
+            vm = vm,
+            onDismiss = { showRegenDialog = false },
+            onConfirm = { captions ->
+                showRegenDialog = false
+                vm.regenerateSelected(captions)
+            }
+        )
+    }
     val waLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { res ->
@@ -849,6 +872,10 @@ private fun ResultStep(vm: MainViewModel) {
         } else {
             val reason = res.data?.getStringExtra("validation_error")
             if (reason != null) vm.error = "WhatsApp menolak paket ini:\n$reason"
+            else if (vm.targetPackId != null) {
+                vm.notice = "Stiker sudah disimpan ke paket. Kalau paket itu sudah ada di WhatsApp, " +
+                    "stiker baru muncul otomatis (tutup & buka lagi WhatsApp kalau belum terlihat)."
+            }
         }
     }
 
@@ -857,39 +884,138 @@ private fun ResultStep(vm: MainViewModel) {
         Spacer(Modifier.height(12.dp))
     }
 
-    Text(
-        "✏️ Ketuk stiker untuk merapikan / menghapus bagian yang tidak rapi",
-        fontSize = 13.sp,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
+    if (vm.regenerating > 0) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 3.dp)
+            Spacer(Modifier.width(12.dp))
+            Text(
+                "Membuat ulang ${vm.regenerating} stiker… (15–60 detik)",
+                modifier = Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            TextButton(onClick = { vm.cancel() }) { Text("Batal") }
+        }
+        Spacer(Modifier.height(12.dp))
+    }
+
+    // ---- baris kontrol: mode centang
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            if (vm.selecting) "Centang stiker yang mau diganti"
+            else "✏️ Ketuk stiker untuk merapikan",
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f)
+        )
+        if (vm.selecting) {
+            TextButton(onClick = { vm.selectAll() }, enabled = !vm.generating) { Text("Semua") }
+            TextButton(onClick = { vm.stopSelecting() }, enabled = !vm.generating) { Text("Batal") }
+        } else {
+            FilledTonalButton(onClick = { vm.startSelecting() }, enabled = !vm.generating) {
+                Text("☑ Ganti sebagian")
+            }
+        }
+    }
     Spacer(Modifier.height(8.dp))
+
     vm.stickers.withIndex().toList().chunked(3).forEach { row ->
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             row.forEach { (index, bmp) ->
+                val checked = index in vm.selection
                 Box(
                     Modifier
                         .weight(1f)
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(LumiTile)
-                        .clickable { editing = index }
+                        .background(if (checked) MaterialTheme.colorScheme.primaryContainer else LumiTile)
+                        .border(
+                            if (checked) 3.dp else 0.dp,
+                            if (checked) LumiBlue else Color.Transparent,
+                            RoundedCornerShape(16.dp)
+                        )
+                        .clickable(enabled = !vm.generating) {
+                            if (vm.selecting) vm.toggleSelection(index) else editing = index
+                        }
                         .padding(6.dp)
                 ) {
                     Image(bmp, contentDescription = "Stiker ${index + 1}", modifier = Modifier.fillMaxSize())
-                    Text(
-                        "✏️",
-                        fontSize = 12.sp,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.85f))
-                            .padding(4.dp)
-                    )
+                    if (vm.selecting) {
+                        Box(
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .size(24.dp)
+                                .clip(CircleShape)
+                                .background(if (checked) LumiBlue else Color.White.copy(alpha = 0.9f))
+                                .border(2.dp, LumiBlue, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (checked) {
+                                Icon(Icons.Filled.Check, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                            }
+                        }
+                    } else {
+                        Text(
+                            "✏️",
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.85f))
+                                .padding(4.dp)
+                        )
+                    }
                 }
             }
             repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
         }
         Spacer(Modifier.height(10.dp))
+    }
+
+    if (vm.selecting) {
+        val n = vm.selection.size
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
+                .padding(14.dp)
+        ) {
+            Text(
+                if (n == 0) "Belum ada stiker dicentang" else "$n stiker dicentang",
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                "Hanya stiker yang dicentang yang dibuat ulang. Stiker lain tetap. Biayanya 1 kali pembuatan.",
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(10.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                OutlinedButton(
+                    onClick = { showRegenDialog = true },
+                    enabled = n > 0 && !vm.generating,
+                    modifier = Modifier.weight(1f)
+                ) { Text("✏️ Ubah kata") }
+                Button(
+                    onClick = { vm.regenerateSelected(emptyMap()) },
+                    enabled = n > 0 && !vm.generating,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text("Buat ulang")
+                }
+            }
+        }
+        Spacer(Modifier.height(12.dp))
     }
 
     TextButton(onClick = { showSheet = !showSheet }) {
@@ -908,14 +1034,59 @@ private fun ResultStep(vm: MainViewModel) {
         }
     }
 
+    // ---- pilih paket tujuan
     Spacer(Modifier.height(8.dp))
-    OutlinedTextField(
-        value = vm.packName,
-        onValueChange = { vm.packName = it.take(60) },
-        label = { Text("Nama paket stiker") },
-        singleLine = true,
-        modifier = Modifier.fillMaxWidth()
+    Text("Simpan ke paket", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+    Spacer(Modifier.height(8.dp))
+    PackOption(
+        selected = vm.targetPackId == null,
+        enabled = true,
+        title = "📦 Buat paket baru",
+        subtitle = "${vm.stickers.size} stiker",
+        onClick = { vm.targetPackId = null }
     )
+    if (vm.targetPackId == null) {
+        OutlinedTextField(
+            value = vm.packName,
+            onValueChange = { vm.packName = it.take(60) },
+            label = { Text("Nama paket stiker") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp, bottom = 8.dp)
+        )
+    }
+    if (vm.existingPacks.isEmpty()) {
+        PackOption(
+            selected = false,
+            enabled = false,
+            title = "➕ Tambah ke paket yang sudah ada",
+            subtitle = "Belum ada paket lain di aplikasi ini",
+            onClick = {}
+        )
+    } else {
+        Text(
+            "➕ Atau tambahkan ke paket yang sudah ada:",
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp, bottom = 6.dp)
+        )
+        vm.existingPacks.forEach { pack ->
+            val free = vm.freeSlots(pack)
+            val fits = vm.stickers.size <= free
+            val currentCount = PackStore.MAX_PER_PACK - free
+            PackOption(
+                selected = vm.targetPackId == pack.id,
+                enabled = fits,
+                title = pack.name,
+                subtitle = if (fits) "$currentCount stiker → ${currentCount + vm.stickers.size} stiker"
+                else "Penuh: sisa $free tempat (maks. ${PackStore.MAX_PER_PACK} stiker per paket)",
+                onClick = { vm.targetPackId = pack.id }
+            )
+        }
+    }
+
     Spacer(Modifier.height(16.dp))
     Button(
         onClick = {
@@ -923,19 +1094,25 @@ private fun ResultStep(vm: MainViewModel) {
                 vm.error = "WhatsApp belum terpasang di HP ini."
                 return@Button
             }
-            val (id, name) = vm.commitPackName() ?: return@Button
-            try {
-                waLauncher.launch(WhatsAppHelper.addPackIntent(context, id, name))
-            } catch (e: ActivityNotFoundException) {
-                vm.error = "Versi WhatsApp kamu belum mendukung stiker dari aplikasi lain. Coba perbarui WhatsApp."
+            vm.commitToPack { id, name ->
+                try {
+                    waLauncher.launch(WhatsAppHelper.addPackIntent(context, id, name))
+                } catch (e: ActivityNotFoundException) {
+                    vm.error = "Versi WhatsApp kamu belum mendukung stiker dari aplikasi lain. Coba perbarui WhatsApp."
+                }
             }
         },
+        enabled = !vm.generating,
         colors = ButtonDefaults.buttonColors(containerColor = WhatsAppGreen),
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
     ) {
-        Text("Tambahkan ke WhatsApp", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text(
+            if (vm.targetPackId == null) "Tambahkan ke WhatsApp" else "Tambahkan ke paket & WhatsApp",
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
     }
     Spacer(Modifier.height(12.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -944,21 +1121,142 @@ private fun ResultStep(vm: MainViewModel) {
                 vm.goTo(Step.GENERATE)
                 vm.generate()
             },
+            enabled = !vm.generating,
             modifier = Modifier
                 .weight(1f)
                 .height(48.dp)
         ) {
             Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(6.dp))
-            Text("Buat ulang")
+            Text("Buat ulang semua")
         }
         OutlinedButton(
             onClick = { vm.restart() },
+            enabled = !vm.generating,
             modifier = Modifier
                 .weight(1f)
                 .height(48.dp)
         ) { Text("Mulai baru") }
     }
+}
+
+@Composable
+private fun PackOption(
+    selected: Boolean,
+    enabled: Boolean,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(
+                when {
+                    selected -> MaterialTheme.colorScheme.primaryContainer
+                    else -> MaterialTheme.colorScheme.surface
+                }
+            )
+            .border(
+                if (selected) 2.dp else 1.dp,
+                if (selected) LumiBlue else MaterialTheme.colorScheme.outline,
+                RoundedCornerShape(14.dp)
+            )
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            Modifier
+                .size(20.dp)
+                .clip(CircleShape)
+                .border(2.dp, if (enabled) LumiBlue else MaterialTheme.colorScheme.outline, CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            if (selected) {
+                Box(
+                    Modifier
+                        .size(10.dp)
+                        .clip(CircleShape)
+                        .background(LumiBlue)
+                )
+            }
+        }
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                title,
+                fontWeight = FontWeight.SemiBold,
+                color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+/** Dialog ubah kata untuk stiker yang dicentang, lalu buat ulang. */
+@Composable
+private fun RegenerateDialog(
+    vm: MainViewModel,
+    onDismiss: () -> Unit,
+    onConfirm: (Map<Int, String>) -> Unit,
+) {
+    val targets = remember { vm.selection.sorted() }
+    val values = remember {
+        mutableStateMapOf<Int, String>().apply {
+            targets.forEach { put(it, vm.stickerCaptions.getOrElse(it) { "" }) }
+        }
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Ubah kata") },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Text(
+                    "Tulis kata baru untuk tiap stiker yang dicentang. Kosongkan kalau mau tanpa kata.",
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(8.dp))
+                targets.forEach { i ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        vm.stickers.getOrNull(i)?.let {
+                            Image(
+                                it,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(52.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(LumiTile)
+                            )
+                        }
+                        Spacer(Modifier.width(10.dp))
+                        OutlinedTextField(
+                            value = values[i].orEmpty(),
+                            onValueChange = { values[i] = it.take(25) },
+                            label = { Text("Stiker ${i + 1}") },
+                            singleLine = true,
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    val others = vm.stickerCaptions.filterIndexed { j, _ -> j != i } +
+                                        values.filterKeys { it != i }.values
+                                    values[i] = vm.randomCaption(others)
+                                }) { Text("🎲", fontSize = 20.sp) }
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(values.toMap()) }) { Text("Buat ulang ${targets.size} stiker") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Batal") } },
+    )
 }
 
 /* ---------------------------------------------------------------- komponen kecil */

@@ -29,6 +29,8 @@ object PromptBuilder {
         captions: List<String>,
         people: Int = 1,
         photoCount: Int = 1,
+        poseOffset: Int = 0,
+        styleRefIndex: Int? = null,
     ): String {
         val extra = photoCount > 1
         val sb = StringBuilder()
@@ -64,6 +66,14 @@ object PromptBuilder {
                     "or accessories, and the same outfit as in the photos. Never draw a second person."
             )
         }
+        if (styleRefIndex != null) {
+            sb.appendLine(
+                "STYLE MATCH: reference image #$styleRefIndex is an existing sticker from the SAME pack " +
+                    "(not a photo). The new stickers must look like they belong to that pack: match its art " +
+                    "style, line weight, colours, proportions, character design and outfit exactly. " +
+                    "Do NOT copy its pose or caption."
+            )
+        }
         sb.appendLine("Art style: ${style.prompt}.")
         sb.appendLine()
         sb.appendLine("Strict layout rules:")
@@ -89,7 +99,7 @@ object PromptBuilder {
                 sb.appendLine("$n. $who, with a pose and facial expression that matches the meaning of the caption. Caption: \"$caption\"")
             } else {
                 val who = if (people >= 2) "PERSON A and PERSON B together, both" else "The character"
-                sb.appendLine("$n. $who ${poses[i % poses.size]}. No text.")
+                sb.appendLine("$n. $who ${poses[(i + poseOffset) % poses.size]}. No text.")
             }
         }
         if (people >= 2) {

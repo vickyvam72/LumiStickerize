@@ -17,10 +17,22 @@ data class StickerPack(
     val stickers: List<StickerEntry>,
 )
 
-/** Menyimpan paket stiker di penyimpanan internal aplikasi agar bisa dibaca WhatsApp. */
+class PackFullException(val pack: StickerPack, val free: Int) :
+    Exception("Paket \"${pack.name}\" hanya muat $free stiker lagi (maksimal ${PackStore.MAX_PER_PACK} per paket).")
+
+/**
+ * Menyimpan paket stiker di penyimpanan internal aplikasi agar bisa dibaca WhatsApp.
+ *
+ * Satu kali pembuatan stiker = satu "sesi" (tag). File stiker sesi diberi awalan tag-nya,
+ * jadi sesi yang sama bisa disimpan ulang (setelah diedit / dibuat ulang) tanpa dobel,
+ * baik ke paket baru maupun ditambahkan ke paket yang sudah ada.
+ */
 object PackStore {
 
     const val TRAY_FILE = "tray.png"
+
+    /** Batas WhatsApp: 3–30 stiker per paket. */
+    const val MAX_PER_PACK = 30
 
     private val defaultEmojis = listOf("😀", "😂", "👍", "😍", "😮", "😭", "😠", "😴", "🤔", "🎉", "😊", "✨")
 
@@ -30,54 +42,69 @@ object PackStore {
 
     private fun sanitize(id: String) = id.replace(Regex("[^A-Za-z0-9_.-]"), "_")
 
-    fun save(
+    /**
+     * Simpan stiker satu sesi ke paket [id]. Kalau paket belum ada, dibuat baru dengan [newName].
+     * Stiker sesi yang sama yang sudah ada di paket akan diganti (bukan ditambah lagi).
+     */
+    fun upsertSession(
         context: Context,
         id: String,
-        name: String,
+        newName: String?,
         publisher: String,
+        tag: String,
         stickers: List<Bitmap>,
         captions: List<String>,
     ): StickerPack {
         val dir = packDir(context, id)
-        dir.mkdirs()
-        val oldVersion = load(context, id)?.version ?: 0
+        val old = load(context, id)
+        val prefix = "${tag}_"
+        val kept = old?.stickers?.filterNot { it.fileName.startsWith(prefix) }.orEmpty()
 
-        val entries = stickers.mapIndexed { i, bmp ->
-            val file = "sticker_${i + 1}.webp"
+        val free = MAX_PER_PACK - kept.size
+        if (old != null && stickers.size > free) throw PackFullException(old, free)
+
+        dir.mkdirs()
+        // hapus file lama milik sesi ini; nama file baru selalu unik agar WhatsApp tidak memakai cache lama
+        old?.stickers?.filter { it.fileName.startsWith(prefix) }?.forEach { File(dir, it.fileName).delete() }
+        val stamp = System.currentTimeMillis().toString(36)
+        val added = stickers.mapIndexed { i, bmp ->
+            val file = "${prefix}${i + 1}_$stamp.webp"
             File(dir, file).writeBytes(StickerMaker.encodeWebp(bmp))
-            StickerEntry(file, listOf(defaultEmojis[i % defaultEmojis.size]), captions.getOrNull(i).orEmpty())
+            StickerEntry(
+                file,
+                listOf(defaultEmojis[(kept.size + i) % defaultEmojis.size]),
+                captions.getOrNull(i).orEmpty()
+            )
         }
-        File(dir, TRAY_FILE).writeBytes(StickerMaker.trayPng(stickers.first()))
+        // ikon tray: paket baru memakai stiker pertama; paket lama tetap memakai ikonnya
+        if (old == null || !File(dir, TRAY_FILE).exists() || kept.isEmpty()) {
+            File(dir, TRAY_FILE).writeBytes(StickerMaker.trayPng(stickers.first()))
+        }
 
         val pack = StickerPack(
             id = id,
-            name = name.take(128),
-            publisher = publisher.take(128),
+            name = (newName ?: old?.name ?: "Lumi Stickerize").take(128),
+            publisher = (old?.publisher ?: publisher).take(128),
             trayFile = TRAY_FILE,
-            version = oldVersion + 1,
-            stickers = entries,
+            version = (old?.version ?: 0) + 1,
+            stickers = kept + added,
         )
         File(dir, "pack.json").writeText(toJson(pack).toString())
         return pack
     }
 
-    /** Ganti satu stiker (mis. setelah dihapus manual). Versi paket dinaikkan agar WhatsApp memperbarui. */
-    fun updateSticker(context: Context, id: String, index: Int, bitmap: Bitmap): StickerPack? {
-        val pack = load(context, id) ?: return null
-        val entry = pack.stickers.getOrNull(index) ?: return null
+    /** Lepas stiker satu sesi dari paket. Paket yang jadi kosong dihapus. */
+    fun removeSession(context: Context, id: String, tag: String) {
+        val old = load(context, id) ?: return
         val dir = packDir(context, id)
-        File(dir, entry.fileName).writeBytes(StickerMaker.encodeWebp(bitmap))
-        if (index == 0) File(dir, TRAY_FILE).writeBytes(StickerMaker.trayPng(bitmap))
-        val updated = pack.copy(version = pack.version + 1)
-        File(dir, "pack.json").writeText(toJson(updated).toString())
-        return updated
-    }
-
-    fun rename(context: Context, id: String, newName: String): StickerPack? {
-        val pack = load(context, id) ?: return null
-        val updated = pack.copy(name = newName.take(128), version = pack.version + 1)
-        File(packDir(context, id), "pack.json").writeText(toJson(updated).toString())
-        return updated
+        val prefix = "${tag}_"
+        old.stickers.filter { it.fileName.startsWith(prefix) }.forEach { File(dir, it.fileName).delete() }
+        val kept = old.stickers.filterNot { it.fileName.startsWith(prefix) }
+        if (kept.isEmpty()) {
+            dir.deleteRecursively()
+            return
+        }
+        File(dir, "pack.json").writeText(toJson(old.copy(stickers = kept, version = old.version + 1)).toString())
     }
 
     fun load(context: Context, id: String): StickerPack? {

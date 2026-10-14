@@ -18,7 +18,9 @@ import com.lumi.stickerize.data.AppSettings
 import com.lumi.stickerize.data.WordBank
 import com.lumi.stickerize.model.GridSpec
 import com.lumi.stickerize.model.StickerStyle
+import com.lumi.stickerize.sticker.PackFullException
 import com.lumi.stickerize.sticker.PackStore
+import com.lumi.stickerize.sticker.StickerPack
 import com.lumi.stickerize.sticker.StickerMaker
 import com.lumi.stickerize.util.FaceFinder
 import com.lumi.stickerize.util.ImageUtils
@@ -74,9 +76,31 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         private set
     var stickers by mutableStateOf<List<ImageBitmap>>(emptyList())
         private set
-    var packId by mutableStateOf<String?>(null)
+    /** Kata yang tergambar di tiap stiker (kosong = tanpa kata). */
+    var stickerCaptions by mutableStateOf<List<String>>(emptyList())
+        private set
+
+    /** Penanda sesi pembuatan saat ini (dipakai sebagai awalan nama file di paket). */
+    private var sessionTag = ""
+    /** Id paket baru yang dibuat dari sesi ini (kalau user memilih "Paket baru"). */
+    private var newPackId: String? = null
+    /** Paket tempat stiker sesi ini sudah disimpan. */
+    var committedPackId by mutableStateOf<String?>(null)
+        private set
+    /** null = buat paket baru, selain itu = id paket yang sudah ada. */
+    var targetPackId by mutableStateOf<String?>(null)
+    var existingPacks by mutableStateOf<List<StickerPack>>(emptyList())
         private set
     var packName by mutableStateOf("")
+
+    /** Mode centang untuk mengganti sebagian stiker. */
+    var selecting by mutableStateOf(false)
+        private set
+    var selection by mutableStateOf<Set<Int>>(emptySet())
+        private set
+    /** Jumlah stiker yang sedang dibuat ulang (0 = tidak sedang). */
+    var regenerating by mutableIntStateOf(0)
+        private set
 
     private var job: Job? = null
 
@@ -205,56 +229,85 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun generate() {
-        if (generating) return
+    /** Apakah semua bahan untuk memanggil AI sudah lengkap. */
+    private fun readyForAi(): Boolean {
         if (!settings.hasCredentials) {
             error = "NEED_API_KEY"
-            return
+            return false
         }
-        val chosenStyle = style ?: return
-        val infos = photos.filterNotNull()
-        if (infos.isEmpty() || !facesReady) return
-        val chosen = selectedFaces.sorted()
-        val people = peopleCount
+        return style != null && photos[0] != null && facesReady
+    }
+
+    /**
+     * Siapkan foto referensi untuk AI.
+     *  1 orang : [foto 1 (wajah lain disamarkan), stiker contoh?, foto 2?, foto 3?]
+     *  2 orang : [foto 1 berdua, foto 1 hanya A, foto 1 hanya B, stiker contoh?, foto 2?, foto 3?]
+     * Foto 2 & 3 opsional dan ditaruh paling belakang, jadi kalau model membatasi jumlah
+     * referensi, foto tambahan yang dibuang lebih dulu.
+     * @return daftar JPEG + nomor urut (1-based) stiker contoh, kalau ada
+     */
+    private suspend fun buildRefs(styleRef: Bitmap?, maxRefs: Int): Pair<List<ByteArray>, Int?> =
+        withContext(Dispatchers.Default) {
+            val infos = photos.filterNotNull()
+            val chosen = selectedFaces.sorted()
+            val first = infos[0]
+            val list = ArrayList<ByteArray>()
+            fun add(bmp: Bitmap) {
+                list.add(ImageUtils.toJpeg(bmp))
+                bmp.recycle()
+            }
+            add(ImageUtils.buildReference(first.bitmap, first.faces, chosen.toSet()))
+            if (chosen.size >= 2) {
+                chosen.forEach { face -> add(ImageUtils.buildReference(first.bitmap, first.faces, setOf(face))) }
+            }
+            var styleIndex: Int? = null
+            if (styleRef != null && list.size < maxRefs) {
+                list.add(ImageUtils.toJpeg(flattenOnWhite(styleRef)))
+                styleIndex = list.size
+            }
+            for (i in 1 until infos.size) list.add(ImageUtils.toJpeg(infos[i].bitmap))
+            list.take(maxRefs) to styleIndex
+        }
+
+    /** Stiker transparan → latar putih (JPEG tidak punya transparansi). */
+    private fun flattenOnWhite(src: Bitmap): Bitmap {
+        val out = Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888)
+        val c = android.graphics.Canvas(out)
+        c.drawColor(android.graphics.Color.WHITE)
+        c.drawBitmap(src, 0f, 0f, null)
+        return out
+    }
+
+    /** Panggil AI sekali dan potong hasilnya. Mengembalikan lembar asli + (nomor sel, stiker). */
+    private suspend fun runAi(
+        total: Int,
+        captions: List<String>,
+        poseOffset: Int,
+        styleRef: Bitmap?,
+    ): Pair<Bitmap, List<Pair<Int, Bitmap>>> {
         val generator = settings.generator()
+        val grid = GridSpec.forCount(total)
+        val (refs, styleIndex) = buildRefs(styleRef, generator.maxReferences)
+        val prompt = PromptBuilder.build(
+            style!!, grid, total, captions, peopleCount, photoCount, poseOffset, styleIndex
+        )
+        val sheetBmp = generator.generateSheet(prompt, refs, grid.aspectRatio)
+        val pieces = withContext(Dispatchers.Default) { StickerMaker.sliceIndexed(sheetBmp, grid, total) }
+        return sheetBmp to pieces
+    }
+
+    fun generate() {
+        if (generating || !readyForAi()) return
+        val chosenStyle = style ?: return
 
         generating = true
         error = null
         job = viewModelScope.launch {
             try {
-                val app = getApplication<Application>()
                 val total = count
-                val grid = GridSpec.forCount(total)
-                val captions = if (useText) activeWords.map { it.trim() } else emptyList()
+                val captions = if (useText) activeWords.map { it.trim() } else List(total) { "" }
+                val (sheetBmp, pieces) = runAi(total, captions, 0, null)
 
-                // wajah yang tidak dipilih disamarkan, lalu foto dipotong di sekitar wajah terpilih
-                // Susunan referensi:
-                //  1 orang : [foto 1 (wajah lain disamarkan), foto 2?, foto 3?]
-                //  2 orang : [foto 1 berdua, foto 1 hanya orang A, foto 1 hanya orang B, foto 2?, foto 3?]
-                //  Foto 2 & 3 opsional, jadi daftar bisa hanya berisi foto 1.
-                val refs = withContext(Dispatchers.Default) {
-                    val first = infos[0]
-                    val list = ArrayList<ByteArray>()
-                    fun add(bmp: Bitmap) {
-                        list.add(ImageUtils.toJpeg(bmp))
-                        bmp.recycle()
-                    }
-                    add(ImageUtils.buildReference(first.bitmap, first.faces, chosen.toSet()))
-                    if (people >= 2) {
-                        chosen.forEach { face ->
-                            add(ImageUtils.buildReference(first.bitmap, first.faces, setOf(face)))
-                        }
-                    }
-                    for (i in 1 until infos.size) list.add(ImageUtils.toJpeg(infos[i].bitmap))
-                    list.take(generator.maxReferences)
-                }
-
-                val prompt = PromptBuilder.build(chosenStyle, grid, total, captions, people, infos.size)
-                val sheetBmp: Bitmap = generator.generateSheet(prompt, refs, grid.aspectRatio)
-
-                val pieces = withContext(Dispatchers.Default) {
-                    StickerMaker.slice(sheetBmp, grid, total)
-                }
                 if (pieces.size < GridSpec.WHATSAPP_MIN) {
                     sheet = sheetBmp.asImageBitmap()
                     throw IllegalStateException(
@@ -263,18 +316,21 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                     )
                 }
 
-                val id = "lumi_" + System.currentTimeMillis()
-                val name = "Lumi ${chosenStyle.label} " +
-                    SimpleDateFormat("d MMM HH.mm", Locale("id", "ID")).format(Date())
-                withContext(Dispatchers.IO) {
-                    PackStore.save(app, id, name, settings.publisher, pieces, captions)
-                }
+                // sesi baru: belum disimpan ke paket mana pun
+                sessionTag = "s" + System.currentTimeMillis().toString(36)
+                committedPackId = null
+                newPackId = null
+                targetPackId = null
+                selection = emptySet()
+                selecting = false
 
                 sheet = sheetBmp.asImageBitmap()
-                stickerBitmaps = pieces
-                stickers = pieces.map { it.asImageBitmap() }
-                packId = id
-                packName = name
+                stickerBitmaps = pieces.map { it.second }
+                stickers = stickerBitmaps.map { it.asImageBitmap() }
+                stickerCaptions = pieces.map { captions.getOrElse(it.first) { "" } }
+                packName = "Lumi ${chosenStyle.label} " +
+                    SimpleDateFormat("d MMM HH.mm", Locale("id", "ID")).format(Date())
+                refreshPacks()
                 notice = if (pieces.size < total) {
                     "Ada ${total - pieces.size} stiker yang tidak tergambar oleh AI, jadi hanya ${pieces.size} stiker yang dibuat."
                 } else null
@@ -289,30 +345,148 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /* ------------------------------------------------ pilih & buat ulang sebagian stiker */
+
+    fun startSelecting() {
+        selecting = true
+        selection = emptySet()
+    }
+
+    fun stopSelecting() {
+        selecting = false
+        selection = emptySet()
+    }
+
+    fun toggleSelection(index: Int) {
+        selection = if (index in selection) selection - index else selection + index
+    }
+
+    fun selectAll() {
+        selection = stickers.indices.toSet()
+    }
+
+    /** Kata acak untuk satu stiker di dialog "ubah kata" (tidak sama dengan kata stiker lain). */
+    fun randomCaption(exclude: Collection<String>): String = WordBank.random(getApplication(), exclude)
+
+    /**
+     * Buat ulang hanya stiker yang dicentang. [newCaptions] berisi kata baru per nomor stiker
+     * (kosong = tanpa kata). Stiker lain tidak berubah.
+     */
+    fun regenerateSelected(newCaptions: Map<Int, String>) {
+        if (generating || !readyForAi()) return
+        val targets = selection.sorted().filter { it in stickers.indices }
+        if (targets.isEmpty()) return
+
+        generating = true
+        regenerating = targets.size
+        error = null
+        job = viewModelScope.launch {
+            try {
+                val captions = targets.map { (newCaptions[it] ?: stickerCaptions.getOrElse(it) { "" }).trim() }
+                // stiker yang tidak dicentang dipakai sebagai contoh gaya agar hasilnya tetap senada
+                val styleRef = stickerBitmaps.filterIndexed { i, _ -> i !in targets }.firstOrNull()
+                val (sheetBmp, pieces) = runAi(targets.size, captions, (1..9).random(), styleRef)
+
+                val bitmaps = stickerBitmaps.toMutableList()
+                val caps = stickerCaptions.toMutableList()
+                pieces.forEach { (cell, bmp) ->
+                    val target = targets.getOrNull(cell) ?: return@forEach
+                    bitmaps[target] = bmp
+                    caps[target] = captions[cell]
+                }
+                sheet = sheetBmp.asImageBitmap()
+                stickerBitmaps = bitmaps
+                stickers = bitmaps.map { it.asImageBitmap() }
+                stickerCaptions = caps
+
+                val missed = targets.size - pieces.size
+                notice = if (missed > 0) {
+                    "${pieces.size} dari ${targets.size} stiker berhasil dibuat ulang. Sisanya tidak tergambar oleh AI, coba lagi untuk stiker itu."
+                } else "${targets.size} stiker berhasil dibuat ulang ✨"
+                stopSelecting()
+                recommitIfNeeded()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                error = e.message ?: "Terjadi kesalahan. Coba lagi."
+            } finally {
+                generating = false
+                regenerating = 0
+            }
+        }
+    }
+
     fun cancel() {
         job?.cancel()
         generating = false
+        regenerating = 0
     }
 
-    /** Simpan nama paket terbaru sebelum dikirim ke WhatsApp. */
-    fun commitPackName(): Pair<String, String>? {
-        val id = packId ?: return null
-        val name = packName.trim().ifEmpty { "Lumi Stickerize" }
-        PackStore.rename(getApplication(), id, name)
-        return id to name
+    /* ------------------------------------------------ simpan ke paket */
+
+    fun refreshPacks() {
+        existingPacks = PackStore.all(getApplication()).filter { it.id != newPackId }
     }
 
-    /** Simpan stiker yang sudah dihapus manual, lalu perbarui paket WhatsApp-nya. */
+    /** Sisa tempat di paket (stiker sesi ini yang sudah ada di sana tidak dihitung dua kali). */
+    fun freeSlots(pack: StickerPack): Int {
+        val mine = pack.stickers.count { it.fileName.startsWith("${sessionTag}_") }
+        return PackStore.MAX_PER_PACK - (pack.stickers.size - mine)
+    }
+
+    /**
+     * Simpan stiker ke paket tujuan (baru atau yang sudah ada), lalu panggil [onReady]
+     * dengan id & nama paket untuk dikirim ke WhatsApp.
+     */
+    fun commitToPack(onReady: (String, String) -> Unit) {
+        if (stickerBitmaps.isEmpty()) return
+        viewModelScope.launch {
+            try {
+                val pack = withContext(Dispatchers.IO) { writeToTarget() }
+                committedPackId = pack.id
+                refreshPacks()
+                onReady(pack.id, pack.name)
+            } catch (e: PackFullException) {
+                error = e.message
+            } catch (e: Exception) {
+                error = "Gagal menyimpan paket: ${e.message}"
+            }
+        }
+    }
+
+    private fun writeToTarget(): StickerPack {
+        val app = getApplication<Application>()
+        val existing = targetPackId
+        val id = existing ?: (newPackId ?: ("lumi_" + System.currentTimeMillis()).also { newPackId = it })
+        // kalau sebelumnya sudah disimpan ke paket lain, lepas dari paket itu dulu
+        val previous = committedPackId
+        if (previous != null && previous != id) PackStore.removeSession(app, previous, sessionTag)
+        if (existing != null && newPackId != null && previous == newPackId) newPackId = null
+        val name = if (existing == null) packName.trim().ifEmpty { "Lumi Stickerize" } else null
+        return PackStore.upsertSession(
+            app, id, name, settings.publisher, sessionTag, stickerBitmaps, stickerCaptions
+        )
+    }
+
+    /** Setelah stiker diedit / dibuat ulang, perbarui juga paket yang sudah disimpan. */
+    private fun recommitIfNeeded() {
+        if (committedPackId == null) return
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) { writeToTarget() }
+                refreshPacks()
+            } catch (e: Exception) {
+                error = "Gagal memperbarui paket: ${e.message}"
+            }
+        }
+    }
+
+    /** Simpan stiker yang sudah dihapus manual. */
     fun updateSticker(index: Int, edited: Bitmap) {
-        val id = packId ?: return
         stickerBitmaps = stickerBitmaps.toMutableList().also { it[index] = edited }
         stickers = stickers.toMutableList().also { it[index] = edited.asImageBitmap() }
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                PackStore.updateSticker(getApplication(), id, index, edited)
-            }
-            notice = "Stiker ${index + 1} diperbarui."
-        }
+        notice = "Stiker ${index + 1} diperbarui."
+        recommitIfNeeded()
     }
 
     fun restart() {
@@ -325,8 +499,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         sheet = null
         stickers = emptyList()
         stickerBitmaps = emptyList()
-        packId = null
+        stickerCaptions = emptyList()
+        committedPackId = null
+        newPackId = null
+        targetPackId = null
         packName = ""
+        stopSelecting()
         notice = null
         error = null
         step = Step.PHOTOS
