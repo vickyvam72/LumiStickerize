@@ -208,7 +208,7 @@ gradle :app:assembleRelease   # Gradle 8.11.1, JDK 17
 ```
 The APK is written to `app/build/outputs/apk/release/`.
 
-> 🔐 If the **GitHub Actions Secrets** `LUMI_KEYSTORE_BASE64`, `LUMI_KEYSTORE_PASSWORD` and `LUMI_KEY_ALIAS` are set, the APK is signed with that private key. Otherwise `app/lumi-debug.keystore` is used, which is fine for manual installs.
+> 🔐 Release builds are signed with a private key stored in **GitHub Actions Secrets** (`LUMI_KEYSTORE_BASE64`, `LUMI_KEYSTORE_PASSWORD`). The key is never committed to the repository. For a local build, place your own keystore at `keystore/lumistickerize.jks` and set `LUMI_KEYSTORE_PASSWORD`.
 
 ---
 

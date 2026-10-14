@@ -26,21 +26,20 @@ android {
         buildConfigField("String", "CONTENT_PROVIDER_AUTHORITY", "\"$stickerAuthority\"")
     }
 
+    // Kunci rilis pribadi: di GitHub Actions diambil dari Secrets, di komputer lokal dari
+    // keystore/lumistickerize.jks + env LUMI_KEYSTORE_PASSWORD. Kunci tidak pernah disimpan di repo.
+    val ksPath = System.getenv("LUMI_KEYSTORE_PATH")?.takeIf { it.isNotBlank() }
+        ?: rootProject.file("keystore/lumistickerize.jks").path
+    val ksPass = System.getenv("LUMI_KEYSTORE_PASSWORD")
+    val hasReleaseKey = file(ksPath).exists() && !ksPass.isNullOrBlank()
+
     signingConfigs {
-        create("lumi") {
-            // Kalau kamu punya keystore sendiri, isi env LUMI_KEYSTORE_PATH dkk.
-            // Kalau tidak, dipakai keystore debug bawaan repo (cukup untuk dipasang manual).
-            val ksPath = System.getenv("LUMI_KEYSTORE_PATH")
-            if (!ksPath.isNullOrBlank() && file(ksPath).exists()) {
+        if (hasReleaseKey) {
+            create("lumi") {
                 storeFile = file(ksPath)
-                storePassword = System.getenv("LUMI_KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("LUMI_KEY_ALIAS")
-                keyPassword = System.getenv("LUMI_KEY_PASSWORD")
-            } else {
-                storeFile = file("lumi-debug.keystore")
-                storePassword = "android"
-                keyAlias = "androiddebugkey"
-                keyPassword = "android"
+                storePassword = ksPass
+                keyAlias = System.getenv("LUMI_KEY_ALIAS")?.takeIf { it.isNotBlank() } ?: "lumistickerize"
+                keyPassword = System.getenv("LUMI_KEY_PASSWORD")?.takeIf { it.isNotBlank() } ?: ksPass
             }
         }
     }
@@ -48,10 +47,9 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("lumi")
-        }
-        debug {
-            signingConfig = signingConfigs.getByName("lumi")
+            // Tanpa kunci pribadi, build lokal memakai kunci debug bawaan Android Studio.
+            signingConfig = if (hasReleaseKey) signingConfigs.getByName("lumi")
+            else signingConfigs.getByName("debug")
         }
     }
 

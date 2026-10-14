@@ -206,7 +206,7 @@ gradle :app:assembleRelease   # Gradle 8.11.1, JDK 17
 ```
 APK hasil build ada di `app/build/outputs/apk/release/`.
 
-> 🔐 Kalau **GitHub Actions Secrets** `LUMI_KEYSTORE_BASE64`, `LUMI_KEYSTORE_PASSWORD`, dan `LUMI_KEY_ALIAS` diisi, APK ditandatangani dengan kunci pribadi itu. Kalau belum, dipakai `app/lumi-debug.keystore` yang cukup untuk pemasangan manual.
+> 🔐 Build rilis ditandatangani dengan kunci pribadi yang disimpan di **GitHub Actions Secrets** (`LUMI_KEYSTORE_BASE64`, `LUMI_KEYSTORE_PASSWORD`). Kunci tidak pernah disimpan di repo. Untuk build lokal, taruh keystore milikmu di `keystore/lumistickerize.jks` dan isi `LUMI_KEYSTORE_PASSWORD`.
 
 ---
 

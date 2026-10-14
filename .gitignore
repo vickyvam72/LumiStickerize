@@ -8,3 +8,8 @@ local.properties
 captures/
 .externalNativeBuild/
 .cxx/
+
+# Kunci rilis pribadi (jangan pernah di-commit)
+keystore/
+*.jks
+*.keystore

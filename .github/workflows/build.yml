@@ -25,23 +25,18 @@ jobs:
         with:
           gradle-version: "8.11.1"
 
-      # Kalau Secrets LUMI_KEYSTORE_BASE64 + LUMI_KEYSTORE_PASSWORD (+ LUMI_KEY_ALIAS) diisi,
-      # APK ditandatangani dengan kunci pribadi itu. Kalau belum, dipakai app/lumi-debug.keystore.
-      - name: Load signing key from Secrets (optional)
+      - name: Load signing key from Secrets
         env:
           KS_B64: ${{ secrets.LUMI_KEYSTORE_BASE64 }}
           KS_PASS: ${{ secrets.LUMI_KEYSTORE_PASSWORD }}
-          KS_ALIAS: ${{ secrets.LUMI_KEY_ALIAS }}
         run: |
-          if [ -n "$KS_B64" ] && [ -n "$KS_PASS" ]; then
-            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/lumistickerize.jks"
-            echo "LUMI_KEYSTORE_PATH=$RUNNER_TEMP/lumistickerize.jks" >> "$GITHUB_ENV"
-            echo "LUMI_KEYSTORE_PASSWORD=$KS_PASS" >> "$GITHUB_ENV"
-            echo "LUMI_KEY_PASSWORD=$KS_PASS" >> "$GITHUB_ENV"
-            echo "LUMI_KEY_ALIAS=${KS_ALIAS:-lumistickerize}" >> "$GITHUB_ENV"
-          else
-            echo "::notice::Secrets keystore belum diisi, memakai app/lumi-debug.keystore."
+          if [ -z "$KS_B64" ] || [ -z "$KS_PASS" ]; then
+            echo "::error::Secrets LUMI_KEYSTORE_BASE64 / LUMI_KEYSTORE_PASSWORD belum diisi (Settings > Secrets and variables > Actions)."
+            exit 1
           fi
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/lumistickerize.jks"
+          echo "LUMI_KEYSTORE_PATH=$RUNNER_TEMP/lumistickerize.jks" >> "$GITHUB_ENV"
+          echo "LUMI_KEYSTORE_PASSWORD=$KS_PASS" >> "$GITHUB_ENV"
 
       - name: Build release APK
         run: |
