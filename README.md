@@ -37,13 +37,28 @@
 
 ---
 
+## 📸 Tampilan
+
+<div align="center">
+
+| 1 · Pilih foto | 3 · Jumlah stiker |
+|:-:|:-:|
+| <img src="docs/screenshots/pilih-foto.jpg" width="230"> | <img src="docs/screenshots/jumlah-stiker.jpg" width="230"> |
+
+| 4 · Pilih tema | 5 · Tulisan |
+|:-:|:-:|
+| <img src="docs/screenshots/pilih-tema.jpg" width="230"> | <img src="docs/screenshots/tulisan.jpg" width="230"> |
+
+</div>
+
+---
+
 ## ✨ Fitur
 
 **🖼️ Foto & wajah**
 - **1 foto sudah cukup**; tambah foto 2 dan 3 (opsional) agar hasil lebih akurat
 - Pilih foto satu per satu atau **sekaligus**
 - Peringatan di awal: kalau memakai lebih dari 1 foto, semuanya harus memakai **outfit yang sama**
-- **Kartu tips** bergaya keluarga Lumi di langkah foto, wajah, jumlah, tema, dan tulisan, berisi saran singkat agar stiker makin mirip dan seru (otomatis menyesuaikan ruang, tetap satu layar)
 - **Deteksi wajah otomatis** di foto utama (berjalan di HP, tanpa internet)
 - Ketuk kotak di wajah untuk memilih, **maksimal 2 orang**
 - Wajah yang tidak dipilih **disamarkan** sebelum dikirim ke AI

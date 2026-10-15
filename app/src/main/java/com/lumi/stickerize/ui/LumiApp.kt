@@ -129,30 +129,22 @@ fun LumiApp(vm: MainViewModel) {
 
         Box(Modifier.weight(1f)) {
             AnimatedContent(targetState = vm.step, label = "step") { step ->
-                BoxWithConstraints(Modifier.fillMaxSize()) {
-                    // ruang yang masih terlihat tanpa scroll (dikurangi padding atas-bawah & spacer)
-                    val visible = maxHeight - 36.dp
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
-                    ) {
-                        // Ruang kosong di bawah langkah diisi kartu tips bergaya Lumi Signal,
-                        // hanya sebanyak baris yang muat supaya tetap satu layar.
-                        WithTips(available = visible, tips = tipsFor(step, vm.useText)) {
-                            when (step) {
-                                Step.PHOTOS -> PhotosStep(vm)
-                                Step.FACES -> FacesStep(vm)
-                                Step.COUNT -> CountStep(vm)
-                                Step.STYLE -> StyleStep(vm)
-                                Step.TEXT -> TextStep(vm)
-                                Step.GENERATE -> GenerateStep(vm)
-                                Step.RESULT -> ResultStep(vm)
-                            }
-                        }
-                        Spacer(Modifier.height(12.dp))
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+                    when (step) {
+                        Step.PHOTOS -> PhotosStep(vm)
+                        Step.FACES -> FacesStep(vm)
+                        Step.COUNT -> CountStep(vm)
+                        Step.STYLE -> StyleStep(vm)
+                        Step.TEXT -> TextStep(vm)
+                        Step.GENERATE -> GenerateStep(vm)
+                        Step.RESULT -> ResultStep(vm)
                     }
+                    Spacer(Modifier.height(12.dp))
                 }
             }
         }
