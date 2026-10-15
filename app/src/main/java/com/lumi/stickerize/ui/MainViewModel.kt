@@ -511,6 +511,32 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Siapkan file WebP stiker hasil ini untuk dikirim ke teman (folder sementara di cache). */
+    fun prepareShare(onReady: (ArrayList<Uri>) -> Unit) {
+        val app = getApplication<Application>()
+        val bitmaps = stickerBitmaps
+        if (bitmaps.isEmpty()) return
+        viewModelScope.launch {
+            try {
+                val uris = withContext(Dispatchers.IO) {
+                    val dir = java.io.File(app.cacheDir, "share").apply {
+                        deleteRecursively()
+                        mkdirs()
+                    }
+                    val stamp = System.currentTimeMillis()
+                    ArrayList(bitmaps.mapIndexed { i, bmp ->
+                        val f = java.io.File(dir, "lumi_stiker_${stamp}_${i + 1}.webp")
+                        f.writeBytes(StickerMaker.encodeWebp(bmp))
+                        androidx.core.content.FileProvider.getUriForFile(app, "${app.packageName}.share", f)
+                    })
+                }
+                onReady(uris)
+            } catch (e: Exception) {
+                error = "Gagal menyiapkan stiker untuk dikirim: ${e.message}"
+            }
+        }
+    }
+
     /** Simpan stiker yang sudah dihapus manual. */
     fun updateSticker(index: Int, edited: Bitmap) {
         stickerBitmaps = stickerBitmaps.toMutableList().also { it[index] = edited }

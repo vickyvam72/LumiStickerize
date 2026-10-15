@@ -77,6 +77,7 @@
 - Stiker 512×512 WebP di bawah 100 KB, sesuai syarat WhatsApp
 - Otomatis membuang latar putih, **kotak/bingkai**, **potongan garis**, dan bintik
 - **Rapikan stiker**: penghapus dengan ukuran kuas, Urungkan, dan Ulang dari awal
+- **📤 Kirim ke teman**: kirim stiker hasilmu ke chat WhatsApp teman; temanmu tinggal ketuk stiker → ⭐ Tambahkan ke Favorit
 - Lihat gambar asli dari AI untuk membandingkan
 - **Ganti sebagian**: centang 1 atau beberapa stiker, lalu **ubah katanya** atau **buat ulang** hanya stiker itu, tanpa membuat ulang semuanya
 - **Buat ulang semua** dengan pengaturan yang sama

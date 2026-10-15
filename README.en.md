@@ -77,6 +77,7 @@
 - 512×512 WebP stickers under 100 KB, meeting WhatsApp's requirements
 - Automatically removes white backgrounds, **boxes/frames**, **stray line fragments** and specks
 - **Rapikan stiker** (Tidy up sticker): an eraser with adjustable brush, Undo and Start over
+- **📤 Send to a friend**: send your new stickers to a friend's WhatsApp chat; they just tap a sticker → ⭐ Add to Favourites
 - View the original AI image for comparison
 - **Ganti sebagian** (Replace some): tick 1 or more stickers, then **change their captions** or **regenerate** only those, without remaking the whole set
 - **Buat ulang semua** (Regenerate all) with the same settings

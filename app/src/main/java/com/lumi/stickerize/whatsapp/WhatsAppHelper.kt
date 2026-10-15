@@ -36,4 +36,28 @@ object WhatsAppHelper {
             else -> base
         }
     }
+
+    /**
+     * Kirim stiker ke chat teman. WhatsApp mengirim file WebP 512×512 sebagai stiker,
+     * lalu teman bisa menyimpannya ke Favorit.
+     */
+    fun shareStickersIntent(context: Context, uris: ArrayList<android.net.Uri>): Intent {
+        val base = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            type = "image/webp"
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (uris.isNotEmpty()) {
+                val clip = android.content.ClipData.newRawUri("stiker", uris[0])
+                uris.drop(1).forEach { clip.addItem(android.content.ClipData.Item(it)) }
+                clipData = clip
+            }
+        }
+        val hasConsumer = installed(context, CONSUMER)
+        val hasBusiness = installed(context, BUSINESS)
+        return when {
+            hasConsumer && !hasBusiness -> base.setPackage(CONSUMER)
+            hasBusiness && !hasConsumer -> base.setPackage(BUSINESS)
+            else -> Intent.createChooser(base, "Kirim stiker lewat…")
+        }
+    }
 }

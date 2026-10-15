@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Folder sementara untuk stiker yang dikirim ke teman lewat WhatsApp -->
+<paths>
+    <cache-path name="share" path="share/" />
+</paths>

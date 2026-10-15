@@ -44,6 +44,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -1117,6 +1118,7 @@ private fun ResultStep(vm: MainViewModel) {
     }
 
     Spacer(Modifier.height(10.dp))
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
     Button(
         onClick = {
             if (!WhatsAppHelper.isAnyInstalled(context)) {
@@ -1133,15 +1135,39 @@ private fun ResultStep(vm: MainViewModel) {
         },
         enabled = !vm.generating,
         colors = ButtonDefaults.buttonColors(containerColor = WhatsAppGreen),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp),
         modifier = Modifier
-            .fillMaxWidth()
+            .weight(1f)
             .height(48.dp)
     ) {
         Text(
-            if (vm.targetPackId == null) "Tambahkan ke WhatsApp" else "Tambahkan ke paket & WhatsApp",
+            if (vm.targetPackId == null) "Tambahkan ke WhatsApp" else "Tambah ke paket & WA",
             fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
+            fontSize = 15.sp,
+            maxLines = 1
         )
+    }
+    // Kirim stiker hasil ini ke chat teman lewat WhatsApp
+    OutlinedButton(
+        onClick = {
+            vm.prepareShare { uris ->
+                try {
+                    context.startActivity(WhatsAppHelper.shareStickersIntent(context, uris))
+                    vm.notice = "Pilih chat temanmu di WhatsApp. Stikernya terkirim satu per satu, " +
+                        "lalu temanmu bisa ketuk stiker → ⭐ Tambahkan ke Favorit."
+                } catch (e: ActivityNotFoundException) {
+                    vm.error = "Tidak ada aplikasi untuk mengirim stiker."
+                }
+            }
+        },
+        enabled = !vm.generating && vm.stickers.isNotEmpty(),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp),
+        modifier = Modifier.height(48.dp)
+    ) {
+        Icon(Icons.Filled.Share, contentDescription = "Kirim ke teman", modifier = Modifier.size(17.dp))
+        Spacer(Modifier.width(6.dp))
+        Text("Kirim", maxLines = 1, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+    }
     }
     Spacer(Modifier.height(8.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
