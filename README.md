@@ -39,15 +39,19 @@
 
 ## 📸 Tampilan
 
+> Dari foto biasa jadi **satu paket stiker WhatsApp** dalam beberapa ketukan. Tiap langkah muat dalam **satu layar**, tanpa scroll dan tanpa ribet.
+
 <div align="center">
 
-| 1 · Pilih foto | 3 · Jumlah stiker |
+| 📷 **1 · Pilih foto** | 🔢 **3 · Jumlah stiker** |
 |:-:|:-:|
 | <img src="docs/screenshots/pilih-foto.jpg" width="230"> | <img src="docs/screenshots/jumlah-stiker.jpg" width="230"> |
+| **Satu foto pun jadi.**<br>Tambah foto 2 & 3 biar AI makin kenal wajahmu. | **Mau 3 atau 10, biayanya sama.**<br>Semua stiker digambar dalam 1 gambar AI. |
 
-| 4 · Pilih tema | 5 · Tulisan |
+| 🎨 **4 · Pilih tema** | 💬 **5 · Tulisan** |
 |:-:|:-:|
 | <img src="docs/screenshots/pilih-tema.jpg" width="230"> | <img src="docs/screenshots/tulisan.jpg" width="230"> |
+| **10 gaya, satu wajah.**<br>Dari Chibi yang gemas sampai Sketsa yang estetik. | **Kehabisan kata? Lempar dadu 🎲**<br>1.647 kata siap pakai, dari salam sampai bahasa gaul. |
 
 </div>
 

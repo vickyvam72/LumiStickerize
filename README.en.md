@@ -39,15 +39,19 @@
 
 ## 📸 Screenshots
 
+> From an everyday photo to **a full WhatsApp sticker pack** in a few taps. Every step fits on **one screen**: no scrolling, no fuss.
+
 <div align="center">
 
-| 1 · Pick photos | 3 · Sticker count |
+| 📷 **1 · Pick photos** | 🔢 **3 · Sticker count** |
 |:-:|:-:|
 | <img src="docs/screenshots/pilih-foto.jpg" width="230"> | <img src="docs/screenshots/jumlah-stiker.jpg" width="230"> |
+| **One photo is all it takes.**<br>Add photos 2 & 3 so the AI knows your face even better. | **3 or 10 stickers, same cost.**<br>Every sticker is drawn in a single AI image. |
 
-| 4 · Pick a style | 5 · Captions |
+| 🎨 **4 · Pick a style** | 💬 **5 · Captions** |
 |:-:|:-:|
 | <img src="docs/screenshots/pilih-tema.jpg" width="230"> | <img src="docs/screenshots/tulisan.jpg" width="230"> |
+| **10 styles, one face.**<br>From adorable Chibi to artsy Sketch. | **Out of words? Roll the dice 🎲**<br>1,647 ready-made captions, from greetings to slang. |
 
 </div>
 
