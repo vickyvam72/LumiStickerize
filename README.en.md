@@ -43,6 +43,7 @@
 - **1 photo is enough**; add photos 2 and 3 (optional) for more accurate results
 - Pick photos one by one or **all at once**
 - An upfront reminder that, when using more than 1 photo, they should all show the **same outfit**
+- Lumi-style **tip cards** on the photo, face, count, style and caption steps with short advice for better-looking stickers (they adapt to the free space, so each step still fits one screen)
 - **Automatic face detection** on the main photo (on-device, no internet needed)
 - Tap the box on a face to select it, **up to 2 people**
 - Unselected faces are **pixelated** before anything is sent to the AI
