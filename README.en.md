@@ -72,6 +72,7 @@
 - **10** art styles
 - **No text** (expressions only) or **with captions**, one per sticker
 - A 🎲 button on every field plus **🎲 Acak semua** (Randomize all), drawing from **1,647 Indonesian captions** in 33 categories: greetings, thanks, apologies, laughter, romance, work, school, food, Islamic phrases, slang, regional languages and more
+- **+ pose (optional)** on every caption: describe the sticker's pose yourself (e.g. "holding my nose") or pick a quick idea; handy for unusual captions
 
 **✂️ Results**
 - 512×512 WebP stickers under 100 KB, meeting WhatsApp's requirements

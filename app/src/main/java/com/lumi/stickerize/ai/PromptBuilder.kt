@@ -31,6 +31,7 @@ object PromptBuilder {
         photoCount: Int = 1,
         poseOffset: Int = 0,
         styleRefIndex: Int? = null,
+        customPoses: List<String> = emptyList(),
     ): String {
         val extra = photoCount > 1
         val sb = StringBuilder()
@@ -96,7 +97,13 @@ object PromptBuilder {
                 continue
             }
             val caption = captions.getOrNull(i)?.trim().orEmpty()
-            if (caption.isNotEmpty()) {
+            val pose = customPoses.getOrNull(i)?.trim().orEmpty()
+            if (pose.isNotEmpty()) {
+                // pose ditulis pengguna (bisa bahasa Indonesia): wajib diikuti persis
+                val who = if (people >= 2) "PERSON A and PERSON B together" else "The character"
+                val text = if (caption.isNotEmpty()) " Caption: \"$caption\"" else " No text."
+                sb.appendLine("$n. $who in EXACTLY this pose / action (described by the user, follow it closely): \"$pose\". Facial expression fits the pose${if (caption.isNotEmpty()) " and the caption" else ""}.$text")
+            } else if (caption.isNotEmpty()) {
                 val who = if (people >= 2) "PERSON A and PERSON B together" else "The character"
                 sb.appendLine("$n. $who, with a pose and facial expression that matches the meaning of the caption. Caption: \"$caption\"")
             } else {

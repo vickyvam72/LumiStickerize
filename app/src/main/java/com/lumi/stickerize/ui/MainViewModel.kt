@@ -65,6 +65,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var style by mutableStateOf<StickerStyle?>(null)
     var useText by mutableStateOf(false)
     val words = mutableStateListOf<String>().apply { repeat(MAX_STICKERS) { add("") } }
+    /** Pose opsional per kata (kosong = AI memilih pose sesuai arti kata). */
+    val poses = mutableStateListOf<String>().apply { repeat(MAX_STICKERS) { add("") } }
 
     var generating by mutableStateOf(false)
         private set
@@ -84,6 +86,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         private set
     /** Kata yang tergambar di tiap stiker (kosong = tanpa kata). */
     var stickerCaptions by mutableStateOf<List<String>>(emptyList())
+    var stickerPoses by mutableStateOf<List<String>>(emptyList())
         private set
 
     /** Penanda sesi pembuatan saat ini (dipakai sebagai awalan nama file di paket). */
@@ -290,12 +293,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         captions: List<String>,
         poseOffset: Int,
         styleRef: Bitmap?,
+        customPoses: List<String> = emptyList(),
     ): Pair<Bitmap, List<Pair<Int, Bitmap>>> {
         val generator = settings.generator()
         val grid = GridSpec.forCount(total)
         val (refs, styleIndex) = buildRefs(styleRef, generator.maxReferences)
         val prompt = PromptBuilder.build(
-            style!!, grid, total, captions, peopleCount, photoCount, poseOffset, styleIndex
+            style!!, grid, total, captions, peopleCount, photoCount, poseOffset, styleIndex, customPoses
         )
         val sheetBmp = generator.generateSheet(prompt, refs, grid.aspectRatio)
         val pieces = withContext(Dispatchers.Default) { StickerMaker.sliceIndexed(sheetBmp, grid, total) }
@@ -315,7 +319,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 val total = count
                 val captions = if (useText) activeWords.map { it.trim() } else List(total) { "" }
-                val (sheetBmp, pieces) = runAi(total, captions, 0, null)
+                val chosenPoses = if (useText) poses.take(total).map { it.trim() } else List(total) { "" }
+                val (sheetBmp, pieces) = runAi(total, captions, 0, null, chosenPoses)
 
                 if (pieces.size < GridSpec.WHATSAPP_MIN) {
                     sheet = sheetBmp.asImageBitmap()
@@ -337,6 +342,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 stickerBitmaps = pieces.map { it.second }
                 stickers = stickerBitmaps.map { it.asImageBitmap() }
                 stickerCaptions = pieces.map { captions.getOrElse(it.first) { "" } }
+                stickerPoses = pieces.map { chosenPoses.getOrElse(it.first) { "" } }
                 packName = "Lumi ${chosenStyle.label} " +
                     SimpleDateFormat("d MMM HH.mm", Locale("id", "ID")).format(Date())
                 refreshPacks()
@@ -406,19 +412,27 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 val captions = targets.map { (newCaptions[it] ?: stickerCaptions.getOrElse(it) { "" }).trim() }
                 // stiker yang tidak dicentang dipakai sebagai contoh gaya agar hasilnya tetap senada
                 val styleRef = stickerBitmaps.filterIndexed { i, _ -> i !in targets }.firstOrNull()
-                val (sheetBmp, pieces) = runAi(targets.size, captions, (1..9).random(), styleRef)
+                // pose pilihan tetap dipakai selama katanya tidak diganti
+                val regenPoses = targets.map {
+                    val changed = newCaptions[it]?.trim()?.let { c -> c != stickerCaptions.getOrElse(it) { "" }.trim() } ?: false
+                    if (changed) "" else stickerPoses.getOrElse(it) { "" }
+                }
+                val (sheetBmp, pieces) = runAi(targets.size, captions, (1..9).random(), styleRef, regenPoses)
 
                 val bitmaps = stickerBitmaps.toMutableList()
                 val caps = stickerCaptions.toMutableList()
+                val poseList = stickerPoses.toMutableList()
                 pieces.forEach { (cell, bmp) ->
                     val target = targets.getOrNull(cell) ?: return@forEach
                     bitmaps[target] = bmp
                     caps[target] = captions[cell]
+                    if (target < poseList.size) poseList[target] = regenPoses[cell]
                 }
                 sheet = sheetBmp.asImageBitmap()
                 stickerBitmaps = bitmaps
                 stickers = bitmaps.map { it.asImageBitmap() }
                 stickerCaptions = caps
+                stickerPoses = poseList
 
                 val missed = targets.size - pieces.size
                 notice = if (missed > 0) {
@@ -526,10 +540,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         style = null
         useText = false
         for (i in words.indices) words[i] = ""
+        for (i in poses.indices) poses[i] = ""
         sheet = null
         stickers = emptyList()
         stickerBitmaps = emptyList()
         stickerCaptions = emptyList()
+        stickerPoses = emptyList()
         committedPackId = null
         newPackId = null
         targetPackId = null

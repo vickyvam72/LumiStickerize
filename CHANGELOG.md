@@ -24,6 +24,7 @@
 - Wajah yang tidak dipilih disamarkan sebelum dikirim ke AI
 - **10 tema**: Cartoon, Chibi, Anime, 3D Lucu, Kawaii, Pixel Art, Komik, Cat Air, Clay, Sketsa
 - **Tanpa kata** atau **pakai kata**, dengan tombol 🎲 acak dari **1.647 kata** dalam 33 kategori
+- **+ pose (opsional)** di tiap kata: tulis sendiri gaya stikernya (mis. "menutup hidung") atau pilih dari ide cepat, cocok untuk kata yang tidak umum
 - Peringatan di awal agar foto-foto yang dipilih memakai **outfit yang sama**
 - **Tambahkan ke WhatsApp** sekali tekan (WhatsApp & WhatsApp Business)
 
@@ -78,6 +79,7 @@
 - Unselected faces are pixelated before anything is sent to the AI
 - **10 styles**: Cartoon, Chibi, Anime, Cute 3D, Kawaii, Pixel Art, Comic, Watercolor, Clay, Sketch
 - **No text** or **with captions**, with a 🎲 random button drawing from **1,647 captions** in 33 categories
+- **+ pose (optional)** on every caption: describe the sticker's pose yourself (e.g. "holding my nose") or pick a quick idea; handy for unusual captions
 - An upfront reminder that the chosen photos should show the **same outfit**
 - One-tap **Add to WhatsApp** (WhatsApp & WhatsApp Business)
 

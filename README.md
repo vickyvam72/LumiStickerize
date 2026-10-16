@@ -72,6 +72,7 @@
 - **10 tema** gaya gambar
 - **Tanpa kata** (hanya ekspresi) atau **pakai kata**, satu kata per stiker
 - Tombol 🎲 di tiap kolom dan **🎲 Acak semua**, dari **1.647 kata** dalam 33 kategori: salam, terima kasih, maaf, tertawa, bucin, kerja, sekolah, makan, Islami, bahasa gaul, bahasa daerah, dan lainnya
+- **+ pose (opsional)** di tiap kata: tulis sendiri gaya stikernya (mis. "menutup hidung") atau pilih dari ide cepat, cocok untuk kata yang tidak umum
 
 **✂️ Hasil**
 - Stiker 512×512 WebP di bawah 100 KB, sesuai syarat WhatsApp

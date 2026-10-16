@@ -684,6 +684,16 @@ private val wordIdeas = listOf(
 
 @Composable
 private fun TextStep(vm: MainViewModel) {
+    var poseFor by remember { mutableStateOf<Int?>(null) }
+    poseFor?.let { i ->
+        PoseDialog(
+            number = i + 1,
+            caption = vm.words[i],
+            initial = vm.poses[i],
+            onDismiss = { poseFor = null },
+            onSave = { vm.poses[i] = it.trim().take(120); poseFor = null }
+        )
+    }
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         ChoiceCard("🙂", "Tanpa kata", "Hanya ekspresi", !vm.useText, Modifier.weight(1f)) { vm.useText = false }
         ChoiceCard("💬", "Pakai kata", "${vm.count} kata", vm.useText, Modifier.weight(1f)) { vm.useText = true }
@@ -692,8 +702,9 @@ private fun TextStep(vm: MainViewModel) {
         Spacer(Modifier.height(10.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "1 kata per stiker • kata pendek paling rapi",
+                "Kata pendek paling rapi.\nPose opsional: ketuk + pose",
                 fontSize = 12.sp,
+                lineHeight = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f)
             )
@@ -715,6 +726,8 @@ private fun TextStep(vm: MainViewModel) {
                         placeholder = wordIdeas[i % wordIdeas.size],
                         last = i == vm.count - 1,
                         onDice = { vm.randomWord(i) },
+                        pose = vm.poses[i],
+                        onPose = { poseFor = i },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -734,11 +747,13 @@ private fun WordField(
     placeholder: String,
     last: Boolean,
     onDice: () -> Unit,
+    pose: String,
+    onPose: () -> Unit,
     modifier: Modifier,
 ) {
     Row(
         modifier
-            .height(44.dp)
+            .height(52.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface)
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
@@ -747,7 +762,8 @@ private fun WordField(
     ) {
         Text("$number", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = LumiBlue)
         Spacer(Modifier.width(8.dp))
-        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+        Column(Modifier.weight(1f)) {
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
             if (value.isEmpty()) {
                 Text(placeholder, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), maxLines = 1)
             }
@@ -761,6 +777,22 @@ private fun WordField(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+        // baris pose opsional di bawah kata
+        Text(
+            if (pose.isBlank()) "+ pose" else "🧍 $pose",
+            fontSize = 11.sp,
+            lineHeight = 13.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = if (pose.isBlank()) LumiBlue.copy(alpha = 0.75f) else LumiBlue,
+            maxLines = 1,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(6.dp))
+                .clickable(onClick = onPose)
+                .padding(top = 2.dp, bottom = 2.dp)
+        )
+        }
         Box(
             Modifier
                 .size(40.dp)
@@ -768,6 +800,75 @@ private fun WordField(
             contentAlignment = Alignment.Center
         ) { Text("🎲", fontSize = 17.sp) }
     }
+}
+
+private val poseIdeas = listOf(
+    "Menutup hidung", "Hormat ala tentara", "Tepuk tangan", "Menutup wajah malu",
+    "Menunjuk ke depan", "Memeluk erat", "Lari terburu-buru", "Rebahan santai",
+    "Melipat tangan, cemberut", "Mengintip dari balik tembok",
+)
+
+/** Jendela kecil untuk mengisi pose opsional satu stiker. */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun PoseDialog(
+    number: Int,
+    caption: String,
+    initial: String,
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit,
+) {
+    var text by remember { mutableStateOf(initial) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Pose stiker $number", fontWeight = FontWeight.Bold) },
+        text = {
+            Column {
+                Text(
+                    (if (caption.isNotBlank()) "Kata: \"${caption.trim()}\"\n" else "") +
+                        "Tulis gaya yang kamu mau. Kosongkan kalau AI boleh memilih sendiri.",
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(10.dp))
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it.take(120) },
+                    placeholder = { Text("contoh: menutup hidung sambil mengernyit", fontSize = 13.sp) },
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp),
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(10.dp))
+                Text("Ide cepat", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(6.dp))
+                androidx.compose.foundation.layout.FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    poseIdeas.forEach { idea ->
+                        Text(
+                            idea,
+                            fontSize = 12.sp,
+                            color = LumiBlue,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(50))
+                                .background(LumiBlue.copy(alpha = 0.08f))
+                                .border(1.dp, LumiBlue.copy(alpha = 0.3f), RoundedCornerShape(50))
+                                .clickable { text = idea }
+                                .padding(horizontal = 10.dp, vertical = 5.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = { onSave(text) }) { Text("Simpan", fontWeight = FontWeight.Bold) } },
+        dismissButton = {
+            if (initial.isNotBlank()) TextButton(onClick = { onSave("") }) { Text("Hapus pose") }
+            else TextButton(onClick = onDismiss) { Text("Batal") }
+        }
+    )
 }
 
 @Composable
