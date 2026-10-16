@@ -48,7 +48,7 @@
 
 ### 📦 Paket & ganti sebagian
 - Simpan ke **paket baru** atau **tambahkan ke paket yang sudah ada** (maks. 30 stiker per paket)
-- **Ganti sebagian**: centang 1 atau beberapa stiker, lalu ubah katanya atau buat ulang hanya stiker itu
+- **Ganti sebagian**: centang 1 atau beberapa stiker, lalu ubah **kata & pose**-nya atau buat ulang hanya stiker itu
 - Stiker yang dibuat ulang tetap senada dengan stiker lain di paket
 
 ### 🐞 Perbaikan
@@ -103,7 +103,7 @@
 
 ### 📦 Packs & partial regeneration
 - Save to a **new pack** or **add to an existing pack** (up to 30 stickers per pack)
-- **Replace some**: tick 1 or more stickers, then change their captions or regenerate only those
+- **Replace some**: tick 1 or more stickers, then change their **captions & poses** or regenerate only those
 - Regenerated stickers keep the same look as the rest of the pack
 
 ### 🐞 Fixes

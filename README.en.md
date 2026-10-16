@@ -79,7 +79,7 @@
 - Automatically removes white backgrounds, **boxes/frames**, **stray line fragments** and specks
 - **Rapikan stiker** (Tidy up sticker): an eraser with adjustable brush, Undo and Start over
 - View the original AI image for comparison
-- **Ganti sebagian** (Replace some): tick 1 or more stickers, then **change their captions** or **regenerate** only those, without remaking the whole set
+- **Ganti sebagian** (Replace some): tick 1 or more stickers, then **change their captions & poses** or **regenerate** only those, without remaking the whole set
 - **Buat ulang semua** (Regenerate all) with the same settings
 
 **🔔 Leave it, get notified**
@@ -162,7 +162,7 @@ Choose 3–10 stickers, pick a style, then choose **Tanpa kata** (No text) or **
 ### 5️⃣ Generate and tidy up
 Tap **✨ Buat Stiker** (Create stickers) and wait about 15–60 seconds. If anything looks untidy, tap that sticker to open **Rapikan stiker** (Tidy up sticker).
 
-Not happy with some stickers? Tap **☑ Ganti sebagian** (Replace some), tick them, then choose **✏️ Ubah kata** (Change caption) or **Buat ulang** (Regenerate). Only the ticked stickers change, and it still costs a single generation.
+Not happy with some stickers? Tap **☑ Ganti sebagian** (Replace some), tick them, then choose **✏️ Kata & pose** (Caption & pose) or **Buat ulang** (Regenerate). Only the ticked stickers change, and it still costs a single generation.
 
 ### 6️⃣ Add to WhatsApp
 Under **Simpan ke paket** (Save to pack), choose **Buat paket baru** (New pack, which you can name) or one of your **existing packs**, then tap **Tambahkan ke WhatsApp** (Add to WhatsApp).

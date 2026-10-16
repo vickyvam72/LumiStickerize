@@ -1015,9 +1015,9 @@ private fun ResultStep(vm: MainViewModel) {
         RegenerateDialog(
             vm = vm,
             onDismiss = { showRegenDialog = false },
-            onConfirm = { captions ->
+            onConfirm = { captions, poses ->
                 showRegenDialog = false
-                vm.regenerateSelected(captions)
+                vm.regenerateSelected(captions, poses)
             }
         )
     }
@@ -1147,7 +1147,7 @@ private fun ResultStep(vm: MainViewModel) {
                 enabled = n > 0 && !vm.generating,
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp),
                 modifier = Modifier.height(38.dp)
-            ) { Text("✏️ Ubah kata", maxLines = 1, fontSize = 13.sp) }
+            ) { Text("✏️ Kata & pose", maxLines = 1, fontSize = 13.sp) }
             Button(
                 onClick = { vm.regenerateSelected(emptyMap()) },
                 enabled = n > 0 && !vm.generating,
@@ -1401,7 +1401,7 @@ private fun PackOption(
 private fun RegenerateDialog(
     vm: MainViewModel,
     onDismiss: () -> Unit,
-    onConfirm: (Map<Int, String>) -> Unit,
+    onConfirm: (Map<Int, String>, Map<Int, String>) -> Unit,
 ) {
     val targets = remember { vm.selection.sorted() }
     val values = remember {
@@ -1409,54 +1409,120 @@ private fun RegenerateDialog(
             targets.forEach { put(it, vm.stickerCaptions.getOrElse(it) { "" }) }
         }
     }
+    val poseValues = remember {
+        mutableStateMapOf<Int, String>().apply {
+            targets.forEach { put(it, vm.stickerPoses.getOrElse(it) { "" }) }
+        }
+    }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Ubah kata") },
+        title = { Text("Ubah kata & pose") },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 Text(
-                    "Tulis kata baru untuk tiap stiker yang dicentang. Kosongkan kalau mau tanpa kata.",
+                    "Ganti kata dan/atau pose tiap stiker yang dicentang. Pose opsional: kosongkan kalau AI boleh memilih sendiri.",
                     fontSize = 13.sp,
+                    lineHeight = 18.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(10.dp))
                 targets.forEach { i ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        vm.stickers.getOrNull(i)?.let {
-                            Image(
-                                it,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(52.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(LumiTile)
-                            )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            vm.stickers.getOrNull(i)?.let {
+                                Image(
+                                    it,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(LumiTile)
+                                )
+                            }
+                            Text("${i + 1}", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = LumiBlue)
                         }
                         Spacer(Modifier.width(10.dp))
-                        OutlinedTextField(
-                            value = values[i].orEmpty(),
-                            onValueChange = { values[i] = it.take(25) },
-                            label = { Text("Stiker ${i + 1}") },
-                            singleLine = true,
-                            trailingIcon = {
-                                IconButton(onClick = {
+                        Column(Modifier.weight(1f)) {
+                            DialogField(
+                                value = values[i].orEmpty(),
+                                onChange = { values[i] = it.take(25) },
+                                prefix = "💬",
+                                placeholder = "Kata (kosong = tanpa kata)",
+                                onDice = {
                                     val others = vm.stickerCaptions.filterIndexed { j, _ -> j != i } +
                                         values.filterKeys { it != i }.values
                                     values[i] = vm.randomCaption(others)
-                                }) { Text("🎲", fontSize = 20.sp) }
-                            },
-                            modifier = Modifier.weight(1f)
-                        )
+                                }
+                            )
+                            Spacer(Modifier.height(5.dp))
+                            DialogField(
+                                value = poseValues[i].orEmpty(),
+                                onChange = { poseValues[i] = it.take(120) },
+                                prefix = "🧍",
+                                placeholder = "Pose (opsional), mis. hormat",
+                                onDice = null
+                            )
+                        }
                     }
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(10.dp))
                 }
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(values.toMap()) }) { Text("Buat ulang ${targets.size} stiker") }
+            TextButton(onClick = { onConfirm(values.toMap(), poseValues.toMap()) }) { Text("Buat ulang ${targets.size} stiker") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Batal") } },
     )
+}
+
+/** Kolom isian ringkas (40dp) untuk jendela Ubah kata & pose. */
+@Composable
+private fun DialogField(
+    value: String,
+    onChange: (String) -> Unit,
+    prefix: String,
+    placeholder: String,
+    onDice: (() -> Unit)?,
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(40.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
+            .padding(start = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(prefix, fontSize = 13.sp)
+        Spacer(Modifier.width(6.dp))
+        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+            if (value.isEmpty()) {
+                Text(
+                    placeholder,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    maxLines = 1
+                )
+            }
+            androidx.compose.foundation.text.BasicTextField(
+                value = value,
+                onValueChange = onChange,
+                singleLine = true,
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface),
+                cursorBrush = androidx.compose.ui.graphics.SolidColor(LumiBlue),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        if (onDice != null) {
+            Box(
+                Modifier
+                    .size(38.dp)
+                    .clickable(onClick = onDice),
+                contentAlignment = Alignment.Center
+            ) { Text("🎲", fontSize = 16.sp) }
+        } else Spacer(Modifier.width(8.dp))
+    }
 }
 
 /* ---------------------------------------------------------------- komponen kecil */

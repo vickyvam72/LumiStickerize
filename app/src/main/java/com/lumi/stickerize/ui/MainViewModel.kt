@@ -396,7 +396,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
      * Buat ulang hanya stiker yang dicentang. [newCaptions] berisi kata baru per nomor stiker
      * (kosong = tanpa kata). Stiker lain tidak berubah.
      */
-    fun regenerateSelected(newCaptions: Map<Int, String>) {
+    fun regenerateSelected(newCaptions: Map<Int, String>, newPoses: Map<Int, String> = emptyMap()) {
         if (generating || !readyForAi()) return
         val targets = selection.sorted().filter { it in stickers.indices }
         if (targets.isEmpty()) return
@@ -414,6 +414,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 val styleRef = stickerBitmaps.filterIndexed { i, _ -> i !in targets }.firstOrNull()
                 // pose pilihan tetap dipakai selama katanya tidak diganti
                 val regenPoses = targets.map {
+                    newPoses[it]?.let { p -> return@map p.trim() }
                     val changed = newCaptions[it]?.trim()?.let { c -> c != stickerCaptions.getOrElse(it) { "" }.trim() } ?: false
                     if (changed) "" else stickerPoses.getOrElse(it) { "" }
                 }

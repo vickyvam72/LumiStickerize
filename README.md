@@ -79,7 +79,7 @@
 - Otomatis membuang latar putih, **kotak/bingkai**, **potongan garis**, dan bintik
 - **Rapikan stiker**: penghapus dengan ukuran kuas, Urungkan, dan Ulang dari awal
 - Lihat gambar asli dari AI untuk membandingkan
-- **Ganti sebagian**: centang 1 atau beberapa stiker, lalu **ubah katanya** atau **buat ulang** hanya stiker itu, tanpa membuat ulang semuanya
+- **Ganti sebagian**: centang 1 atau beberapa stiker, lalu **ubah kata & pose**-nya atau **buat ulang** hanya stiker itu, tanpa membuat ulang semuanya
 - **Buat ulang semua** dengan pengaturan yang sama
 
 **🔔 Tinggal saja, nanti diberi tahu**
@@ -160,7 +160,7 @@ Tentukan jumlah stiker (3–10), pilih tema, lalu pilih **Tanpa kata** atau **Pa
 ### 5️⃣ Buat dan rapikan
 Tekan **✨ Buat Stiker** dan tunggu sekitar 15–60 detik. Kalau ada bagian yang kurang rapi, ketuk stikernya untuk membuka **Rapikan stiker**.
 
-Ada stiker yang kurang pas? Tekan **☑ Ganti sebagian**, centang stikernya, lalu pilih **✏️ Ubah kata** atau **Buat ulang**. Hanya stiker yang dicentang yang diganti, dan biayanya tetap 1 kali pembuatan.
+Ada stiker yang kurang pas? Tekan **☑ Ganti sebagian**, centang stikernya, lalu pilih **✏️ Kata & pose** atau **Buat ulang**. Hanya stiker yang dicentang yang diganti, dan biayanya tetap 1 kali pembuatan.
 
 ### 6️⃣ Tambahkan ke WhatsApp
 Di bagian **Simpan ke paket**, pilih **Buat paket baru** (bisa diberi nama) atau salah satu **paket yang sudah ada**, lalu tekan **Tambahkan ke WhatsApp**.
