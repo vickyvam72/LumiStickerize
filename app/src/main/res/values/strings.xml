@@ -151,7 +151,7 @@
     <string name="packs_delete_selected">Hapus %1$d stiker</string>
     <string name="packs_delete_pack">Hapus paket</string>
     <string name="packs_delete_pack_title">Hapus \"%1$s\"?</string>
-    <string name="packs_delete_pack_confirm">Semua stiker di paket ini akan dihapus dari aplikasi dan juga hilang dari WhatsApp. Tidak bisa dibatalkan.</string>
+    <string name="packs_delete_pack_confirm">Semua stiker di paket ini akan dihapus dari aplikasi dan tidak bisa dibatalkan. Paket yang sudah ditambahkan ke WhatsApp tetap tersimpan di WhatsApp; hapus juga dari sana kalau tidak dipakai lagi.</string>
     <string name="packs_delete_stickers_confirm">Akan tersisa %1$d stiker. WhatsApp memperbarui paketnya otomatis.</string>
     <string name="packs_min_three">WhatsApp butuh minimal %1$d stiker per paket. Pilih lebih sedikit stiker, atau hapus seluruh paket.</string>
     <string name="packs_renamed">Nama disimpan. Tambahkan lagi paket ke WhatsApp supaya namanya ikut berubah di sana.</string>
