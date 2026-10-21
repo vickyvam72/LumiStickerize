@@ -230,7 +230,7 @@ Perbarui WhatsApp ke versi terbaru. Kalau masih gagal, pesan error dari WhatsApp
 - ✅ Deteksi wajah berjalan **di HP**, tanpa internet
 - ✅ Foto hanya dikirim ke **penyedia AI yang kamu pilih** saat membuat stiker
 - ✅ Wajah yang tidak dipilih **disamarkan** sebelum dikirim
-- ✅ API key dan paket stiker disimpan **di HP-mu**
+- ✅ API key dan paket stiker disimpan **di HP-mu** dan tidak dicadangkan ke akun Google, jadi menghapus aplikasi berarti semuanya ikut terhapus (pasang ulang = mulai dari awal)
 
 ---
 

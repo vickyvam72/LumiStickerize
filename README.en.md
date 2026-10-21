@@ -228,7 +228,7 @@ Update WhatsApp to the latest version. If it still fails, the app shows WhatsApp
 - ✅ Face detection runs **on your device**, offline
 - ✅ Photos are sent only to **the AI provider you choose**, when you generate stickers
 - ✅ Unselected faces are **pixelated** before sending
-- ✅ API keys and sticker packs stay **on your device**
+- ✅ API keys and sticker packs stay **on your device** and are not backed up to your Google account, so uninstalling removes everything (reinstall = fresh start)
 
 ---
 
