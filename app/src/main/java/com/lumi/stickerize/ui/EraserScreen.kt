@@ -37,6 +37,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.lumi.stickerize.R
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -124,10 +126,10 @@ fun EraserScreen(
                     .navigationBarsPadding()
                     .padding(20.dp)
             ) {
-                Text("Rapikan stiker ${index + 1}", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+                Text(stringResource(R.string.tidy_title, index + 1), fontWeight = FontWeight.Bold, fontSize = 22.sp)
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Gosok dengan jari bagian yang mau dihapus (garis sisa, kotak, bintik). Kotak-kotak abu = transparan.",
+                    stringResource(R.string.tidy_help),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -178,11 +180,11 @@ fun EraserScreen(
                             )
                         }
                 ) {
-                    Image(image, contentDescription = "Stiker", modifier = Modifier.fillMaxSize())
+                    Image(image, contentDescription = null, modifier = Modifier.fillMaxSize())
                 }
 
                 Spacer(Modifier.height(16.dp))
-                Text("Ukuran penghapus: ${brush.toInt()}", fontSize = 14.sp)
+                Text(stringResource(R.string.tidy_brush, brush.toInt()), fontSize = 14.sp)
                 Slider(value = brush, onValueChange = { brush = it }, valueRange = 6f..90f)
 
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -195,7 +197,7 @@ fun EraserScreen(
                             }
                         },
                         modifier = Modifier.weight(1f)
-                    ) { Text("↶ Urungkan") }
+                    ) { Text("↶ " + stringResource(R.string.undo), maxLines = 1) }
                     OutlinedButton(
                         onClick = {
                             pushHistory()
@@ -203,7 +205,7 @@ fun EraserScreen(
                             edited = false
                         },
                         modifier = Modifier.weight(1f)
-                    ) { Text("Ulang dari awal") }
+                    ) { Text(stringResource(R.string.reset), maxLines = 1) }
                 }
                 // tombol langsung di bawah kontrol (bukan di dasar layar) supaya tidak tertutup tombol HP
                 Spacer(Modifier.height(20.dp))
@@ -213,14 +215,14 @@ fun EraserScreen(
                         modifier = Modifier
                             .weight(1f)
                             .height(50.dp)
-                    ) { Text("Batal", fontWeight = FontWeight.Bold) }
+                    ) { Text(stringResource(R.string.cancel), fontWeight = FontWeight.Bold) }
                     Button(
                         onClick = { onSave(working.copy(Bitmap.Config.ARGB_8888, false)) },
                         enabled = edited || history.isNotEmpty(),
                         modifier = Modifier
                             .weight(1f)
                             .height(50.dp)
-                    ) { Text("Simpan", fontWeight = FontWeight.Bold) }
+                    ) { Text(stringResource(R.string.save), fontWeight = FontWeight.Bold) }
                 }
                 Spacer(Modifier.height(24.dp))
             }
@@ -230,7 +232,7 @@ fun EraserScreen(
 
 /** Lapisan layar penuh berlatar terang yang menahan sentuhan agar tidak tembus ke halaman di bawahnya. */
 @Composable
-private fun FullScreenLayer(content: @Composable () -> Unit) {
+internal fun FullScreenLayer(content: @Composable () -> Unit) {
     Box(
         Modifier
             .fillMaxSize()
@@ -241,7 +243,7 @@ private fun FullScreenLayer(content: @Composable () -> Unit) {
 
 /** Selama layar terang tampil, ikon jam/baterai dibuat gelap supaya tetap terbaca. */
 @Composable
-private fun LightSystemBarIcons() {
+internal fun LightSystemBarIcons() {
     val view = LocalView.current
     DisposableEffect(view) {
         val window = (view.context as? Activity)?.window
@@ -264,10 +266,10 @@ fun SheetViewer(sheet: ImageBitmap, onClose: () -> Unit) {
                 .systemBarsPadding()
                 .padding(20.dp)
         ) {
-            Text("Gambar asli dari AI", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text(stringResource(R.string.sheet_title), fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(Modifier.height(4.dp))
             Text(
-                "Ini 1 gambar yang digambar AI sebelum dipotong menjadi stiker.",
+                stringResource(R.string.sheet_help),
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -280,7 +282,7 @@ fun SheetViewer(sheet: ImageBitmap, onClose: () -> Unit) {
             ) {
                 Image(
                     sheet,
-                    contentDescription = "Gambar asli",
+                    contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .fillMaxSize()
@@ -293,7 +295,7 @@ fun SheetViewer(sheet: ImageBitmap, onClose: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-            ) { Text("Tutup", fontWeight = FontWeight.Bold) }
+            ) { Text(stringResource(R.string.close), fontWeight = FontWeight.Bold) }
         }
     }
 }

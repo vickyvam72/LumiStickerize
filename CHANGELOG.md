@@ -10,11 +10,83 @@
 
 ---
 
-## ✦ v2.0 — 14 Oktober 2026 / 14 October 2026
+## ✦ v2.2 — 21 Oktober 2026 / 21 October 2026
 
 > 🌐 **Pilih bahasa / Choose your language** — ketuk salah satu untuk membuka / tap a section to expand it.
 
 <details open>
+<summary><h2>🇮🇩 Bahasa Indonesia</h2></summary>
+
+### 🌐 5 bahasa
+- Aplikasi kini tersedia dalam **English** (bawaan), **Bahasa Indonesia**, **Bahasa Melayu**, **Español**, dan **Português**
+- Ganti bahasa lewat 🌐 di layar pembuka atau di ⚙️ Pengaturan, tidak harus mengikuti bahasa HP
+- Kata acak 🎲, paket tema, notifikasi, dan pesan error ikut berganti bahasa
+
+### 🎁 30 paket tema siap pakai
+- Di langkah **Tulisan**, ketuk **🎁 Paket tema** untuk mengisi **kata dan pose** semua stiker sekaligus
+- Pilihan tema: Sapaan harian, Makasih & maaf, Bucin, Kantor, Sekolah & kuliah, Kulineran, Ngakak, Kesel & ngegas, Galau, Mager, Ulang tahun, Lebaran, Ramadan, Natal & Tahun Baru, Imlek, Islami, Selamat ya!, Hari Kemerdekaan, Reaksi chat, Sahabat, Pasangan, Grup keluarga, Jualan online, Semangat, Gajian & bokek, Mood harian, Gamer, Olahraga, Liburan, Cepat sembuh
+- Semua kata dan pose tetap bisa diubah setelah dipilih
+
+### ➕ Lengkapi stiker yang kurang
+- Kalau AI menggambar lebih sedikit dari yang diminta (mis. 8 dari 10), tekan **➕ Lengkapi** untuk membuat **hanya stiker yang kurang**
+- Stiker yang sudah jadi dipakai sebagai contoh gaya, jadi hasil tambahannya tetap senada
+
+### 📦 Paket saya
+- Tombol **📦 Paket saya** di kanan atas menampilkan semua paket stikermu
+- Lihat isi paket, **ganti nama**, centang lalu **hapus stiker**, **hapus paket**, tambahkan lagi ke WhatsApp, atau simpan seluruh paket ke Galeri
+- WhatsApp butuh minimal 3 stiker per paket, jadi aplikasi mencegah paket jadi kurang dari 3
+
+### ⬇ Simpan ke Galeri
+- Simpan stiker sebagai **PNG transparan** ke folder *Pictures/Lumi Stickerize*, untuk dipakai di Instagram Story, Telegram, dan aplikasi lain
+
+### 💬 Pesan error yang jelas
+- Tiap masalah punya judul dan saran yang jelas, plus tombol yang tepat:
+  - saldo OpenRouter habis → **Isi saldo**
+  - API key salah, model bermasalah, atau kuota gratis habis → **Buka Pengaturan**
+  - internet putus, AI sibuk, atau terlalu lama → **Coba lagi** (mengulang langkah terakhir)
+
+</details>
+
+<details>
+<summary><h2>🇬🇧 English</h2></summary>
+
+### 🌐 5 languages
+- The app is now available in **English** (default), **Bahasa Indonesia**, **Bahasa Melayu**, **Español** and **Português**
+- Switch language with 🌐 on the welcome screen or in ⚙️ Settings, independent of your phone's language
+- Random captions 🎲, theme packs, notifications and error messages follow the chosen language
+
+### 🎁 30 ready-made theme packs
+- On the **Captions** step, tap **🎁 Theme packs** to fill the **captions and poses** of every sticker at once
+- Themes: Daily greetings, Thanks & sorry, Love & crush, Office life, School & campus, Foodie, LOL, Annoyed, Feeling blue, Sleepy & lazy, Birthday, Eid, Ramadan, Christmas & New Year, Lunar New Year, Islamic phrases, Congrats!, Independence Day, Chat reactions, Besties, Couple goals, Family chat, Online seller, Motivation, Payday & broke, Mood of the week, Gamer, Sport & gym, Travel, Get well & care
+- Every caption and pose can still be edited afterwards
+
+### ➕ Add the missing stickers
+- If the AI draws fewer stickers than requested (e.g. 8 of 10), tap **➕ Add** to create **only the missing ones**
+- The finished stickers are used as a style reference, so the new ones match
+
+### 📦 My packs
+- The **📦 My packs** button at the top right lists all your sticker packs
+- See what's inside, **rename** a pack, tick and **delete stickers**, **delete a pack**, add it to WhatsApp again, or save the whole pack to your Gallery
+- WhatsApp needs at least 3 stickers per pack, so the app won't let a pack drop below 3
+
+### ⬇ Save to Gallery
+- Save stickers as **transparent PNGs** to *Pictures/Lumi Stickerize* for Instagram Stories, Telegram and other apps
+
+### 💬 Clear error messages
+- Every problem gets a clear title and advice, plus the right button:
+  - OpenRouter credit used up → **Top up credit**
+  - wrong API key, model problem or free quota used up → **Open Settings**
+  - no internet, busy AI or a timeout → **Try again** (repeats the last step)
+
+</details>
+
+---
+
+## ✦ v2.0 — 14 Oktober 2026 / 14 October 2026
+
+> 🌐 **Pilih bahasa / Choose your language** — ketuk salah satu untuk membuka / tap a section to expand it.
+
+<details>
 <summary><h2>🇮🇩 Bahasa Indonesia</h2></summary>
 
 ### ✨ Fitur

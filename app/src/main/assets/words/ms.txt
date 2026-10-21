@@ -1,0 +1,226 @@
+# Kata stiker Bahasa Melayu untuk Lumi Stickerize. Satu kata/frasa per baris, '#' = kategori.
+# Salam & sapaan
+Assalamualaikum
+Waalaikumussalam
+Hai!
+Helo!
+Selamat pagi
+Selamat tengah hari
+Selamat petang
+Selamat malam
+Selamat tidur
+Mimpi indah
+Apa khabar?
+Khabar baik
+Lama tak jumpa
+Hadir!
+Jumpa lagi!
+Bye bye!
+Jaga diri
+Selamat datang
+Hai geng!
+Pagi semua
+# Terima kasih & maaf
+Terima kasih!
+Terima kasih banyak
+Ribuan terima kasih
+Sama-sama
+Tak apa
+Maaf ya
+Maafkan aku
+Salah aku
+Minta maaf
+Terhutang budi
+Awak terbaik
+Jazakallah
+# Reaksi
+Ok!
+Okay
+Ya!
+Boleh
+Tak nak
+Tak boleh
+Mungkin...
+Hmm...
+Noted
+Faham
+Baik bos!
+Siap!
+Setuju!
+Jadi!
+Kejap...
+Eh, apa?
+Betul ke?
+Serius?
+Suka hati la
+Sama!
+Betul!
+Tepat!
+Kejap ya
+Tengah taip...
+Otw!
+Dah nak sampai
+Datang!
+# Ketawa
+Hahaha
+Wkwk
+Kahkah
+Gelak guling
+Lawak gila!
+Hehe
+Pfft
+Tak boleh berhenti gelak
+Lawak power!
+Tak larat
+# Sayang
+Sayang awak
+Sayang
+Rindu awak
+Rindu sangat
+Muah!
+Peluk!
+Peluk sikit
+Cintaku
+Awak milik aku
+Hanya awak
+Teringat awak
+Comel!
+Buah hati
+Selamanya
+Malu la...
+Cemburu!
+# Gembira
+Yeay!
+Wah!
+Power!
+Terbaik!
+Mantap!
+Best gila!
+Gempak!
+Cun!
+Hebat!
+Perfect!
+Jom!
+Gembira!
+Teruja!
+Tak sabar!
+Syok!
+Padu!
+# Sedih & penat
+Sedihnya
+Sedih...
+Haih...
+Penat
+Penat gila
+Mengantuk
+Zzz
+Bosan
+Malas
+Bukan hari ini
+Biar aku sendiri
+Perlukan pelukan
+Kenapa aku?
+Aku ok
+Tolong!
+Menangis
+Patah hati
+Sabar je la
+# Marah
+Hmph!
+Geram!
+Geram betul
+Aku marah
+Sudah la!
+Main-main ke?
+Tak lawak
+Eh hello?
+Bertenang
+Sabar...
+Jangan kacau
+Kurang ajar!
+# Makan
+Lapar...
+Jom makan!
+Sedapnya!
+Sedap gila
+Masa ngopi
+Teh tarik satu
+Roti canai?
+Nasi lemak!
+Kenyang!
+Belanja la
+Dah makan?
+Pedas!
+Makan besar
+Lapar lagi
+# Kerja & sekolah
+Tengah kerja
+Sibuk!
+Mesyuarat
+Deadline!
+Siap kerja
+Masa belajar
+Esok periksa
+Kerja rumah...
+Otak berasap
+Kerja lebih masa
+Diluluskan!
+Saya semak dulu
+Cuti!
+Aku genius
+# Semangat
+Awak boleh!
+Teruskan!
+Semangat!
+Jangan putus asa
+Percaya!
+Kekal kuat
+Semoga berjaya!
+Bangga dengan awak
+Syabas
+Jom jom jom!
+Naik level!
+# Perayaan
+Tahniah!
+Selamat hari jadi!
+Selamat Hari Raya!
+Maaf zahir batin
+Salam Ramadan
+Selamat berbuka
+Gong Xi Fa Cai!
+Selamat Deepavali!
+Selamat Hari Krismas!
+Selamat Tahun Baru!
+Merdeka!
+Juara!
+# Harian
+Kat rumah
+Hujan...
+Panas betul
+Sejuknya
+Hujung minggu!
+Isnin lagi
+Jumaat!
+Jem...
+Shopping!
+Pokai
+Gaji masuk!
+Selfie jap
+Masa gim
+Jom main!
+GG!
+Cuti-cuti!
+Ke pantai
+Rumahku syurgaku
+Chill
+Rehat dulu
+Lepak
+Bos
+Hero!
+Legend
+Alamak!
+Aduh!
+Malu...
+Shh!
+Surprise!
+Peace!

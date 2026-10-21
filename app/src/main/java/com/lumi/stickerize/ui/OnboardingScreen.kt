@@ -85,6 +85,9 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.lumi.stickerize.R
 import com.lumi.stickerize.data.AppSettings
 import com.lumi.stickerize.work.Notifier
+import com.lumi.stickerize.i18n.Lang
+import androidx.compose.ui.res.stringResource
+import androidx.compose.material3.AlertDialog
 
 // Palet gelap layar pembuka
 private val NightTop = Color(0xFF0A1330)
@@ -147,6 +150,9 @@ fun OnboardingScreen(settings: AppSettings, onFinished: () -> Unit) {
 
 @Composable
 private fun WelcomePage(onNext: () -> Unit) {
+    var pickLanguage by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    if (pickLanguage) LanguageDialog(onDismiss = { pickLanguage = false })
     // Isi selalu di tengah layar; kalau layar kecil / font besar, halaman bisa digeser
     BoxWithConstraints(Modifier.fillMaxSize()) {
         Column(
@@ -158,26 +164,42 @@ private fun WelcomePage(onNext: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            // pilihan bahasa (bawaan English)
+            val lang = Lang.option(Lang.current(context))
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+                Text(
+                    "🌐 ${lang.flag} ${lang.label}  ▾",
+                    color = TextMain,
+                    fontSize = 13.sp,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(50))
+                        .background(CardBg)
+                        .border(1.dp, CardBorder, RoundedCornerShape(50))
+                        .clickable { pickLanguage = true }
+                        .padding(horizontal = 12.dp, vertical = 7.dp)
+                )
+            }
+            Spacer(Modifier.height(12.dp))
             AppLogo(92)
             Spacer(Modifier.height(20.dp))
-            Text("Lumi Stickerize", color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Light)
+            Text(stringResource(R.string.app_name), color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Light)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Ubah fotomu jadi stiker WhatsApp yang mirip kamu, dibuat AI dalam sekali tekan.",
+                stringResource(R.string.ob_tagline),
                 color = TextSoft,
                 fontSize = 15.sp,
                 lineHeight = 21.sp,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(28.dp))
-            Feature(Icons.Filled.Face, "Stiker mirip kamu", "1–3 foto, 10 tema, bisa berdua — semua stiker digambar dalam 1 gambar AI.")
-            Feature(Icons.Filled.Edit, "Rapi otomatis", "Latar dihapus, tiap stiker dipotong & diberi garis tepi putih.")
-            Feature(Icons.Filled.Send, "Langsung ke WhatsApp", "Simpan ke paket baru atau tambahkan ke paket lama.")
+            Feature(Icons.Filled.Face, stringResource(R.string.ob_f1_title), stringResource(R.string.ob_f1_text))
+            Feature(Icons.Filled.Edit, stringResource(R.string.ob_f2_title), stringResource(R.string.ob_f2_text))
+            Feature(Icons.Filled.Send, stringResource(R.string.ob_f3_title), stringResource(R.string.ob_f3_text))
             Spacer(Modifier.height(28.dp))
-            GradientButton("Hubungkan AI", enabled = true, onClick = onNext, icon = Icons.Filled.Lock)
+            GradientButton(stringResource(R.string.ob_connect_ai), enabled = true, onClick = onNext, icon = Icons.Filled.Lock)
             Spacer(Modifier.height(12.dp))
             Text(
-                "Pakai API key OpenRouter (berbayar) atau Cloudflare (gratis). Key hanya disimpan di HP-mu dan tidak dikirim ke mana pun selain penyedia AI.",
+                stringResource(R.string.ob_keys_note),
                 color = TextSoft.copy(alpha = 0.7f),
                 fontSize = 12.sp,
                 lineHeight = 17.sp,
@@ -233,22 +255,22 @@ private fun KeysPage(settings: AppSettings, onNext: () -> Unit) {
     OnePage(
         top = {
             PageHeader(
-                "Hubungkan AI",
-                "Isi minimal salah satu, boleh keduanya. Key hanya disimpan di HP ini."
+                stringResource(R.string.ob_connect_ai),
+                stringResource(R.string.ob_keys_sub)
             )
             Spacer(Modifier.height(14.dp))
 
             // ---- OpenRouter
             DarkCard(done = hasOr) {
                 CardHeader(
-                    Icons.Filled.ShoppingCart, "OpenRouter", "Berbayar • hasil terbaik • 8 model", hasOr,
-                    link = "Buat key", onLink = { uri.openUri(AppSettings.API_KEY_URL) }
+                    Icons.Filled.ShoppingCart, "OpenRouter", stringResource(R.string.ob_or_sub), hasOr,
+                    link = stringResource(R.string.get_key), onLink = { uri.openUri(AppSettings.API_KEY_URL) }
                 )
                 Spacer(Modifier.height(10.dp))
                 DarkField(
                     value = orKey,
                     onChange = { orKey = it.trim() },
-                    label = "API key OpenRouter (sk-or-…)",
+                    label = stringResource(R.string.ob_or_label),
                     transformation = hidden,
                     onToggleReveal = { reveal = !reveal },
                     revealed = reveal
@@ -259,12 +281,12 @@ private fun KeysPage(settings: AppSettings, onNext: () -> Unit) {
             // ---- Cloudflare
             DarkCard(done = hasCf) {
                 CardHeader(
-                    Icons.Filled.Star, "Cloudflare Workers AI", "Gratis • ±6–80 pembuatan/hari", hasCf,
-                    link = "Buat token", onLink = { uri.openUri(AppSettings.CF_TOKEN_URL) }
+                    Icons.Filled.Star, "Cloudflare Workers AI", stringResource(R.string.ob_cf_sub), hasCf,
+                    link = stringResource(R.string.get_token), onLink = { uri.openUri(AppSettings.CF_TOKEN_URL) }
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Account ID ada di halaman Workers AI • token pakai template \"Workers AI\"",
+                    stringResource(R.string.ob_cf_hint),
                     color = TextSoft,
                     fontSize = 11.sp,
                     lineHeight = 15.sp
@@ -287,13 +309,13 @@ private fun KeysPage(settings: AppSettings, onNext: () -> Unit) {
                 )
                 if (cfHalf) {
                     Spacer(Modifier.height(4.dp))
-                    Text("Isi Account ID dan API Token, keduanya.", color = Warn, fontSize = 11.sp)
+                    Text(stringResource(R.string.ob_cf_both), color = Warn, fontSize = 11.sp)
                 }
             }
         },
         bottom = {
             GradientButton(
-                text = if (hasOr || hasCf) "Lanjut" else "Isi minimal salah satu dulu",
+                text = if (hasOr || hasCf) stringResource(R.string.next) else stringResource(R.string.ob_fill_one),
                 enabled = hasOr || hasCf,
                 onClick = {
                     settings.apiKey = orKey
@@ -310,7 +332,7 @@ private fun KeysPage(settings: AppSettings, onNext: () -> Unit) {
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                "Bisa diubah kapan saja lewat ⚙️ Pengaturan.",
+                stringResource(R.string.ob_change_later),
                 color = TextSoft.copy(alpha = 0.7f),
                 fontSize = 11.sp,
                 modifier = Modifier.fillMaxWidth(),
@@ -399,7 +421,7 @@ private fun DarkField(
         visualTransformation = transformation,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         trailingIcon = onToggleReveal?.let {
-            { TextButton(onClick = it) { Text(if (revealed) "Tutup" else "Lihat", color = Accent, fontSize = 13.sp) } }
+            { TextButton(onClick = it) { Text(if (revealed) stringResource(R.string.hide) else stringResource(R.string.show), color = Accent, fontSize = 13.sp) } }
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = TextMain,
@@ -521,17 +543,16 @@ private fun PermissionsPage(onFinished: () -> Unit) {
     OnePage(
         top = {
             PageHeader(
-                "Satu langkah lagi",
-                "Dengan dua izin wajib ini kamu bisa meninggalkan aplikasi selama AI bekerja, " +
-                    "lalu diberi tahu saat stiker sudah jadi."
+                stringResource(R.string.ob_perm_title),
+                stringResource(R.string.ob_perm_sub)
             )
             Spacer(Modifier.height(14.dp))
             PermissionCard(
                 icon = Icons.Filled.Notifications,
-                title = "Izinkan notifikasi",
-                text = "Kabar saat stiker sudah jadi, walau aplikasi tidak dibuka.",
+                title = stringResource(R.string.ob_notif_title),
+                text = stringResource(R.string.ob_notif_text),
                 granted = notifOk,
-                button = if (askedNotif) "Buka" else "Izinkan",
+                button = if (askedNotif) stringResource(R.string.open) else stringResource(R.string.allow),
                 onClick = {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !askedNotif) {
                         askedNotif = true
@@ -544,10 +565,10 @@ private fun PermissionsPage(onFinished: () -> Unit) {
             Spacer(Modifier.height(10.dp))
             PermissionCard(
                 icon = Icons.Filled.Refresh,
-                title = "Berjalan di latar belakang",
-                text = "Bebas dari penghemat baterai, jadi pembuatan tetap jalan saat pindah aplikasi.",
+                title = stringResource(R.string.ob_bg_title),
+                text = stringResource(R.string.ob_bg_text),
                 granted = bgOk,
-                button = "Izinkan",
+                button = stringResource(R.string.allow),
                 onClick = { requestBackground(context) }
             )
             Spacer(Modifier.height(10.dp))
@@ -569,7 +590,7 @@ private fun PermissionsPage(onFinished: () -> Unit) {
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        "Opsional",
+                        stringResource(R.string.optional),
                         color = Warn,
                         fontSize = 10.sp,
                         modifier = Modifier
@@ -580,7 +601,7 @@ private fun PermissionsPage(onFinished: () -> Unit) {
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Aktifkan \"Mulai otomatis\" untuk Lumi Stickerize, karena HP ini sering menutup aplikasi di latar belakang.",
+                    stringResource(R.string.ob_autostart_text),
                     color = TextSoft,
                     fontSize = 12.sp,
                     lineHeight = 16.sp
@@ -592,13 +613,13 @@ private fun PermissionsPage(onFinished: () -> Unit) {
                         .border(BorderStroke(1.dp, Warn.copy(alpha = 0.7f)), RoundedCornerShape(12.dp))
                         .clickable { openAutostartSettings(context) }
                         .padding(horizontal = 14.dp, vertical = 8.dp)
-                ) { Text("Buka pengaturan Mulai otomatis", color = Warn, fontSize = 13.sp) }
+                ) { Text(stringResource(R.string.ob_autostart_button), color = Warn, fontSize = 13.sp) }
             }
         },
         bottom = {
             val ready = notifOk && bgOk
             GradientButton(
-                text = if (ready) "Mulai buat stiker" else "Aktifkan kedua izin dulu",
+                text = if (ready) stringResource(R.string.ob_start) else stringResource(R.string.ob_enable_both),
                 enabled = ready,
                 onClick = onFinished
             )
@@ -631,7 +652,7 @@ private fun PermissionCard(
         Column(Modifier.weight(1f)) {
             Text(title, color = TextMain, fontSize = 15.sp)
             Text(
-                if (granted) "✓ Sudah diizinkan" else text,
+                if (granted) "✓ " + stringResource(R.string.ob_granted) else text,
                 color = if (granted) Success else TextSoft,
                 fontSize = 12.sp,
                 lineHeight = 16.sp
@@ -711,4 +732,46 @@ private fun GradientButton(
             )
         }
     }
+}
+
+/** Pilih bahasa aplikasi; layar dimuat ulang dengan bahasa baru. */
+@Composable
+fun LanguageDialog(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    val current = Lang.current(context)
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("🌐 " + stringResource(R.string.language)) },
+        text = {
+            Column {
+                Lang.OPTIONS.forEach { opt ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .clickable {
+                                onDismiss()
+                                if (opt.code != current) {
+                                    Lang.set(context, opt.code)
+                                    (context as? android.app.Activity)?.recreate()
+                                }
+                            }
+                            .padding(horizontal = 8.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(opt.flag, fontSize = 20.sp)
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            opt.label,
+                            fontSize = 16.sp,
+                            fontWeight = if (opt.code == current) FontWeight.Bold else FontWeight.Normal,
+                            modifier = Modifier.weight(1f)
+                        )
+                        if (opt.code == current) Text("✓", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } },
+    )
 }

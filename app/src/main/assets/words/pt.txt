@@ -1,0 +1,237 @@
+# Frases para figurinhas em português do Lumi Stickerize. Uma por linha, '#' = categoria.
+# Saudações
+Oi!
+Olá!
+Bom dia!
+Boa tarde
+Boa noite
+Bons sonhos
+Tudo bem?
+E aí?
+Beleza?
+Quanto tempo
+Cheguei!
+Até mais!
+Até logo
+Tchau!
+Se cuida
+Bem-vindo!
+Oi, amigo
+Fala!
+# Obrigado e desculpa
+Obrigado!
+Obrigada!
+Muito obrigado
+Valeu!
+Valeu demais
+Agradeço muito
+De nada
+Imagina
+Relaxa
+Desculpa
+Foi mal
+Me perdoa
+Ops!
+Te devo essa
+Você é demais
+# Reações
+Ok!
+Beleza
+Sim!
+Claro
+Com certeza!
+Não
+Nem pensar!
+Talvez...
+Hmm...
+Anotado
+Entendi
+Fechou!
+Tô nessa!
+Concordo!
+Combinado!
+Pronto!
+Peraí...
+Quê?
+Sério?
+Jura?
+Tanto faz
+Tá bom.
+Igualmente!
+Verdade!
+Exatamente!
+Interessante...
+Hã?
+Sem comentários
+Já volto
+Digitando...
+Tô indo!
+Quase chegando
+Já vou!
+# Risadas
+Kkkkk
+Hahaha
+Rsrs
+Hehe
+Morri
+Muito engraçado!
+Pfft
+Não paro de rir
+Essa foi boa!
+Não aguento
+Sem dó!
+# Amor
+Te amo!
+Amo você
+Saudade
+Muita saudade
+Beijos
+Beijo!
+Abraços!
+Me abraça
+Meu amor
+Amor
+Minha vida
+Você é meu
+Você é minha
+Só você
+Pensando em você
+Fofo
+Fofa
+Para sempre
+Que vergonha
+Ciúmes!
+# Feliz
+Eba!
+Uhuu!
+Incrível!
+Demais!
+Top!
+Massa!
+Show!
+Perfeito!
+Uau!
+Bora!
+Que alegria!
+Que emoção!
+Mal posso esperar
+Tô feliz
+Arrasou!
+# Triste e cansado
+Que triste
+Triste...
+Aff...
+Tô cansado
+Exausto
+Sono...
+Zzz
+Que tédio
+Que preguiça
+Hoje não
+Me deixa quieto
+Preciso de abraço
+Por que eu?
+Ugh
+Tô bem
+Socorro!
+Chorando
+Coração partido
+# Bravo
+Hmpf!
+Grrr
+Que raiva
+Tô bravo
+Para!
+Tá de brincadeira?
+Não tem graça
+Oi?
+Calma
+Paciência...
+Não fala comigo
+Que grosseria!
+# Comida
+Tô com fome
+Bora comer!
+Que delícia!
+Delicioso!
+Hora do café
+Café primeiro
+Pizza?
+Açaí?
+Satisfeito!
+Me paga um?
+Já comeu?
+Apimentado!
+Quero doce
+Churrasco!
+# Trabalho e estudo
+Trabalhando
+Ocupado!
+Reunião
+Prazo!
+Acabei por hoje
+Hora de estudar
+Prova amanhã
+Dever de casa...
+Cérebro fritou
+Hora extra
+Aprovado!
+Vou verificar
+De volta ao trabalho
+Folga!
+Sou um gênio
+# Motivação
+Você consegue!
+Continue!
+Força!
+Não desista
+Acredite!
+Seja forte
+Boa sorte!
+Orgulho de você
+Mandou bem
+Vai que é tua!
+Subi de nível!
+Nunca desista
+# Festas
+Parabéns!
+Feliz aniversário!
+Saúde!
+Hora da festa!
+Feliz Ano Novo!
+Feliz Natal!
+Boas festas
+Eid Mubarak!
+Campeão!
+Sextou!
+# Dia a dia
+Em casa
+Dia de chuva
+Que calor
+Que frio
+Fim de semana!
+Segunda de novo
+Trânsito...
+Compras!
+Tô liso
+Caiu o salário!
+Hora da selfie
+Academia
+Bora jogar!
+GG!
+Férias!
+Praia
+Lar doce lar
+De boa
+Relaxando
+Mood
+Chefe
+Herói!
+Lenda
+Rainha
+Rei
+Ah não!
+Que climão
+Psiu!
+Surpresa!
+Paz!

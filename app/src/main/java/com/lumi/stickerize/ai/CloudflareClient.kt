@@ -1,5 +1,6 @@
 package com.lumi.stickerize.ai
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
@@ -11,6 +12,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import com.lumi.stickerize.R
+import java.io.InterruptedIOException
+import java.net.UnknownHostException
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -24,6 +28,8 @@ class CloudflareClient(
     private val accountId: String,
     private val apiToken: String,
     private val model: String,
+    /** Context berbahasa aplikasi, untuk pesan error. */
+    private val res: Context,
 ) : ImageGenerator {
 
     private val http = OkHttpClient.Builder()
@@ -68,8 +74,12 @@ class CloudflareClient(
             http.newCall(request).execute().use { resp ->
                 Triple(resp.code, resp.header("Content-Type").orEmpty(), resp.body?.bytes() ?: ByteArray(0))
             }
+        } catch (e: UnknownHostException) {
+            throw AiException(res.getString(R.string.err_no_internet), ErrorKind.NETWORK)
+        } catch (e: InterruptedIOException) {
+            throw AiException(res.getString(R.string.err_timeout), ErrorKind.BUSY)
         } catch (e: IOException) {
-            throw AiException("Gagal terhubung ke Cloudflare. Cek koneksi internet kamu.\n(${e.message})")
+            throw AiException(res.getString(R.string.err_connection, e.message.orEmpty()), ErrorKind.NETWORK)
         }
         val (code, type, bytes) = result
 
@@ -78,11 +88,11 @@ class CloudflareClient(
         }
 
         val text = String(bytes)
-        if (code !in 200..299) throw AiException(describeError(code, text))
+        if (code !in 200..299) throw describeError(code, text)
         val json = try {
             JSONObject(text)
         } catch (e: Exception) {
-            throw AiException("Balasan Cloudflare tidak bisa dibaca.")
+            throw AiException(res.getString(R.string.err_bad_reply), ErrorKind.BUSY)
         }
         val b64 = json.optJSONObject("result")?.optString("image").orEmpty()
             .ifEmpty { json.optString("image") }
@@ -90,7 +100,7 @@ class CloudflareClient(
             val img = Base64.decode(b64.substringAfter("base64,"), Base64.DEFAULT)
             BitmapFactory.decodeByteArray(img, 0, img.size)?.let { return@withContext it }
         }
-        throw AiException("Cloudflare tidak mengirim gambar. " + firstError(text).ifEmpty { "Silakan coba lagi." })
+        throw AiException(res.getString(R.string.err_no_image) + firstError(text).let { if (it.isEmpty()) "" else "\n\n$it" }, ErrorKind.BUSY)
     }
 
     /** Foto referensi wajib < 512×512 untuk FLUX.2 Klein. */
@@ -113,16 +123,17 @@ class CloudflareClient(
         ""
     }
 
-    private fun describeError(code: Int, body: String): String {
+    private fun describeError(code: Int, body: String): AiException {
         val msg = firstError(body)
-        val friendly = when {
-            code == 401 || code == 403 -> "API Token atau Account ID Cloudflare salah. Periksa lagi di Pengaturan."
-            code == 404 -> "Model \"$model\" tidak ditemukan di Cloudflare."
+        val (friendly, kind) = when {
+            code == 401 || code == 403 -> res.getString(R.string.err_cf_auth) to ErrorKind.AUTH
+            code == 404 -> res.getString(R.string.err_cf_404, model) to ErrorKind.MODEL
             code == 429 || msg.contains("neuron", true) || msg.contains("limit", true) ->
-                "Kuota gratis Cloudflare hari ini sudah habis. Coba lagi besok (reset jam 07.00 WIB) atau pakai model OpenRouter."
-            code >= 500 -> "Server Cloudflare sedang sibuk. Coba lagi."
-            else -> "Terjadi kesalahan di Cloudflare (kode $code)."
+                res.getString(R.string.err_cf_quota) to ErrorKind.QUOTA
+            code >= 500 -> res.getString(R.string.err_cf_busy) to ErrorKind.BUSY
+            else -> res.getString(R.string.err_code, code) to ErrorKind.OTHER
         }
-        return if (msg.isNotEmpty() && !friendly.contains(msg)) "$friendly\n\n$msg" else friendly
+        val text = if (msg.isNotEmpty() && !friendly.contains(msg)) "$friendly\n\n$msg" else friendly
+        return AiException(text, kind)
     }
 }

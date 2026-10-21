@@ -1,45 +1,48 @@
 package com.lumi.stickerize.model
 
+import androidx.annotation.StringRes
+import com.lumi.stickerize.R
+
 /** Pilihan tema stiker yang bisa dipilih user. */
-enum class StickerStyle(val label: String, val emoji: String, val prompt: String) {
+enum class StickerStyle(@StringRes val label: Int, val emoji: String, val prompt: String) {
     CARTOON(
-        "Cartoon", "🎨",
+        R.string.style_cartoon, "🎨",
         "vibrant 2D cartoon illustration, thick clean outlines, flat bright colours, exaggerated friendly expressions"
     ),
     CHIBI(
-        "Chibi", "🍡",
+        R.string.style_chibi, "🍡",
         "super-deformed chibi style: big head, tiny body (about 2.5 heads tall), huge sparkling eyes, soft pastel cel shading"
     ),
     ANIME(
-        "Anime", "🌸",
+        R.string.style_anime, "🌸",
         "Japanese anime style, crisp line art, expressive large eyes, cel shading with soft highlights"
     ),
     CUTE_3D(
-        "3D Lucu", "🧸",
+        R.string.style_cute3d, "🧸",
         "cute stylised 3D character render, smooth rounded shapes, soft studio lighting, glossy toy-like look"
     ),
     KAWAII(
-        "Kawaii", "💖",
+        R.string.style_kawaii, "💖",
         "kawaii doodle style, round simple shapes, rosy blush cheeks, pastel colours, very soft and adorable"
     ),
     PIXEL(
-        "Pixel Art", "👾",
+        R.string.style_pixel, "👾",
         "retro 16-bit pixel art character, crisp visible pixels, limited bright palette"
     ),
     COMIC(
-        "Komik", "💥",
+        R.string.style_comic, "💥",
         "pop-art comic book style, bold black ink lines, halftone dot shading, punchy saturated colours"
     ),
     WATERCOLOR(
-        "Cat Air", "🖌️",
+        R.string.style_watercolor, "🖌️",
         "soft watercolour illustration with gentle colour washes, but with a clear defined outline around the character"
     ),
     CLAY(
-        "Clay", "🏺",
+        R.string.style_clay, "🏺",
         "handmade clay / plasticine figure look, soft matte texture, rounded chunky shapes"
     ),
     SKETCH(
-        "Sketsa", "✏️",
+        R.string.style_sketch, "✏️",
         "hand-drawn pencil and ink sketch, bold expressive lines with light colour accents"
     );
 }

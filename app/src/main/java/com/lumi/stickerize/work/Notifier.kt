@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.lumi.stickerize.R
+import com.lumi.stickerize.i18n.Lang
 
 /** Notifikasi proses pembuatan stiker & "stiker sudah jadi". */
 object Notifier {
@@ -28,13 +29,14 @@ object Notifier {
     fun ensureChannels(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val nm = context.getSystemService(NotificationManager::class.java)
+        val res = Lang.wrap(context)
         nm.createNotificationChannel(
-            NotificationChannel(CHANNEL_PROGRESS, "Proses pembuatan stiker", NotificationManager.IMPORTANCE_LOW)
-                .apply { description = "Muncul selama AI sedang membuat stiker" }
+            NotificationChannel(CHANNEL_PROGRESS, res.getString(R.string.channel_progress), NotificationManager.IMPORTANCE_LOW)
+                .apply { description = res.getString(R.string.channel_progress_desc) }
         )
         nm.createNotificationChannel(
-            NotificationChannel(CHANNEL_DONE, "Stiker sudah jadi", NotificationManager.IMPORTANCE_HIGH)
-                .apply { description = "Memberi tahu saat stiker selesai dibuat" }
+            NotificationChannel(CHANNEL_DONE, res.getString(R.string.channel_done), NotificationManager.IMPORTANCE_HIGH)
+                .apply { description = res.getString(R.string.channel_done_desc) }
         )
     }
 

@@ -4,7 +4,7 @@
 
 ### Pembuat stiker WhatsApp otomatis dengan AI untuk Android
 
-*1–3 foto · 1 gambar AI · 3–10 stiker · langsung masuk WhatsApp*
+*1–3 foto · 1 gambar AI · 3–10 stiker · 30 paket tema · 5 bahasa · langsung masuk WhatsApp*
 
 [![Rilis](https://img.shields.io/github/v/release/vickyvam72/LumiStickerize?label=rilis&color=3E84E8&style=for-the-badge)](https://github.com/vickyvam72/LumiStickerize/releases/latest)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-kebutuhan-sistem)
@@ -31,7 +31,10 @@
 | 💸 **Hemat token** | Semua stiker digambar dalam **1 gambar saja**, jadi biaya 3 atau 10 stiker sama. |
 | ✂️ **Potong otomatis** | Latar dihapus, bingkai dan garis sisa dibuang, lalu tiap stiker diberi garis tepi putih. |
 | 🎨 **10 tema** | Cartoon, Chibi, Anime, 3D Lucu, Kawaii, Pixel Art, Komik, Cat Air, Clay, dan Sketsa. |
-| 💬 **1.600+ kata siap pakai** | Tulis sendiri, atau tekan 🎲 untuk kata acak di tiap stiker. |
+| 🎁 **30 paket tema** | Lebaran, Bucin, Kantor, Ulang tahun, Gamer, Jualan online, dan lainnya: kata **dan** pose langsung terisi sekali ketuk. |
+| 💬 **Kata acak 🎲** | 1.647 kata Indonesia, plus ratusan kata untuk tiap bahasa lain. |
+| 🌐 **5 bahasa** | English (bawaan), Bahasa Indonesia, Bahasa Melayu, Español, dan Português. |
+| 📦 **Paket saya** | Lihat isi paket, ganti nama, hapus stiker atau paket, dan simpan ke Galeri. |
 | 🧽 **Penghapus manual** | Masih ada bagian yang kurang rapi? Gosok saja dengan jari. |
 | 🆓 **Ada opsi gratis** | Pakai model gratis harian dari Cloudflare, atau model OpenRouter untuk hasil terbaik. |
 
@@ -40,6 +43,8 @@
 ## 📸 Tampilan
 
 > Dari foto biasa jadi **satu paket stiker WhatsApp** dalam beberapa ketukan. Tiap langkah muat dalam **satu layar**, tanpa scroll dan tanpa ribet.
+>
+> *Tangkapan layar memakai Bahasa Indonesia. Aplikasi terbuka dalam English secara bawaan dan bahasanya bisa diganti kapan saja.*
 
 <div align="center">
 
@@ -59,6 +64,11 @@
 
 ## ✨ Fitur
 
+**🌐 Bahasa**
+- Tampilan dalam **English** (bawaan), **Bahasa Indonesia**, **Bahasa Melayu**, **Español**, dan **Português**
+- Ganti bahasa di layar pembuka atau di ⚙️ Pengaturan, tidak harus mengikuti bahasa HP
+- Kata acak 🎲, paket tema, notifikasi, dan pesan error ikut berganti bahasa
+
 **🖼️ Foto & wajah**
 - **1 foto sudah cukup**; tambah foto 2 dan 3 (opsional) agar hasil lebih akurat
 - Pilih foto satu per satu atau **sekaligus**
@@ -73,6 +83,7 @@
 - **Tanpa kata** (hanya ekspresi) atau **pakai kata**, satu kata per stiker
 - Tombol 🎲 di tiap kolom dan **🎲 Acak semua**, dari **1.647 kata** dalam 33 kategori: salam, terima kasih, maaf, tertawa, bucin, kerja, sekolah, makan, Islami, bahasa gaul, bahasa daerah, dan lainnya
 - **+ pose (opsional)** di tiap kata: tulis sendiri gaya stikernya (mis. "menutup hidung") atau pilih dari ide cepat, cocok untuk kata yang tidak umum
+- **🎁 30 paket tema siap pakai**: Sapaan harian, Makasih & maaf, Bucin, Kantor, Sekolah & kuliah, Kulineran, Ngakak, Kesel & ngegas, Galau, Mager, Ulang tahun, Lebaran, Ramadan, Natal & Tahun Baru, Imlek, Islami, Selamat ya!, Hari Kemerdekaan, Reaksi chat, Sahabat, Pasangan, Grup keluarga, Jualan online, Semangat, Gajian & bokek, Mood harian, Gamer, Olahraga, Liburan, Cepat sembuh. Sekali ketuk, **kata dan pose** semua stiker langsung terisi dan tetap bisa diubah
 
 **✂️ Hasil**
 - Stiker 512×512 WebP di bawah 100 KB, sesuai syarat WhatsApp
@@ -81,17 +92,20 @@
 - Lihat gambar asli dari AI untuk membandingkan
 - **Ganti sebagian**: centang 1 atau beberapa stiker, lalu **ubah kata & pose**-nya atau **buat ulang** hanya stiker itu, tanpa membuat ulang semuanya
 - **Buat ulang semua** dengan pengaturan yang sama
+- **⬇ Simpan ke Galeri** sebagai PNG transparan (folder *Pictures/Lumi Stickerize*), untuk dipakai di Instagram Story, Telegram, dan lainnya
 
 **🔔 Tinggal saja, nanti diberi tahu**
 - Selama AI bekerja, kamu boleh pindah aplikasi atau mematikan layar
 - **Notifikasi** muncul saat stiker sudah jadi (atau kalau gagal)
-- Kalau AI menggambar **lebih sedikit** stiker dari yang diminta, hanya stiker yang ada yang dipotong, dan kamu diberi saran untuk buat ulang atau ganti model AI
+- Kalau AI menggambar **lebih sedikit** stiker dari yang diminta (mis. 8 dari 10), tekan **➕ Lengkapi** untuk membuat **hanya stiker yang kurang**, dengan gaya yang senada
+- **Pesan error yang jelas** beserta tombol yang tepat: saldo habis → *Isi saldo*, key salah atau kuota habis → *Buka Pengaturan*, internet putus atau AI sibuk → *Coba lagi*
 
 **📲 Tambahkan ke WhatsApp**
 - Tombol **Tambahkan ke WhatsApp** resmi, mendukung WhatsApp dan WhatsApp Business
 - Simpan ke **paket baru** atau **tambahkan ke paket yang sudah ada** (maks. 30 stiker per paket)
 - Nama paket bisa diganti
 - Stiker yang diedit setelah ditambahkan ikut diperbarui di WhatsApp
+- **📦 Paket saya**: lihat semua paket, ganti nama, hapus beberapa stiker, hapus paket, tambahkan lagi ke WhatsApp, atau simpan seluruh paket ke Galeri
 
 ---
 
@@ -117,7 +131,7 @@
 ## ⬇️ Unduh & Pasang
 
 1. Buka halaman **[Releases](https://github.com/vickyvam72/LumiStickerize/releases/latest)**.
-2. Di bagian **Assets**, unduh `LumiStickerize-v2.0.apk`.
+2. Di bagian **Assets**, unduh `LumiStickerize-v2.2.apk`.
 3. Buka file yang sudah diunduh. Kalau Android meminta, izinkan **"Instal aplikasi tidak dikenal"** untuk browser atau pengelola file yang kamu pakai.
 4. Tekan **Instal**. Selesai! 🎉
 
@@ -136,7 +150,7 @@
 
 ### 1️⃣ Layar pembuka (sekali saja)
 Saat pertama kali dibuka, Lumi Stickerize menampilkan 3 layar:
-1. **Perkenalan** singkat, lalu tekan **Mulai**.
+1. **Perkenalan** singkat. Ketuk **🌐** di kanan atas untuk memilih bahasa (bawaan English), lalu tekan **Hubungkan AI**.
 2. **Hubungkan AI**: isi **minimal salah satu**, boleh juga keduanya:
    - **OpenRouter (berbayar):** buat key di [openrouter.ai/keys](https://openrouter.ai/keys), isi kredit di [openrouter.ai/credits](https://openrouter.ai/credits), lalu tempel key (diawali `sk-or-`).
    - **Cloudflare (gratis):** daftar di [dash.cloudflare.com](https://dash.cloudflare.com), salin **Account ID**, buat **API Token** dengan template *Workers AI*, lalu isi keduanya.
@@ -155,15 +169,20 @@ Key hanya disimpan **di HP-mu**.
 Ketuk kotak di wajah pada foto utama. Untuk stiker berdua, tekan **Pilih keduanya (stiker berdua)**.
 
 ### 4️⃣ Jumlah, tema, dan kata
-Tentukan jumlah stiker (3–10), pilih tema, lalu pilih **Tanpa kata** atau **Pakai kata**. Tekan 🎲 untuk kata acak.
+Tentukan jumlah stiker (3–10), pilih tema, lalu pilih **Tanpa kata** atau **Pakai kata**. Tekan 🎲 untuk kata acak, ketuk **+ pose** untuk mengatur gaya tiap stiker, atau tekan **🎁 Paket tema** untuk mengisi kata dan pose sekaligus dari 30 tema siap pakai.
 
 ### 5️⃣ Buat dan rapikan
 Tekan **✨ Buat Stiker** dan tunggu sekitar 15–60 detik. Kalau ada bagian yang kurang rapi, ketuk stikernya untuk membuka **Rapikan stiker**.
 
+AI menggambar kurang dari yang diminta? Tekan **➕ Lengkapi** di kotak info untuk membuat hanya stiker yang kurang.
+
 Ada stiker yang kurang pas? Tekan **☑ Ganti sebagian**, centang stikernya, lalu pilih **✏️ Kata & pose** atau **Buat ulang**. Hanya stiker yang dicentang yang diganti, dan biayanya tetap 1 kali pembuatan.
 
 ### 6️⃣ Tambahkan ke WhatsApp
-Di bagian **Simpan ke paket**, pilih **Buat paket baru** (bisa diberi nama) atau salah satu **paket yang sudah ada**, lalu tekan **Tambahkan ke WhatsApp**.
+Di bagian **Simpan ke paket**, pilih **Paket baru** (bisa diberi nama) atau salah satu **paket lama**, lalu tekan **Tambahkan ke WhatsApp**. Mau dipakai di aplikasi lain? Tekan **⬇ Galeri**.
+
+### 7️⃣ Kelola paket
+Ketuk **📦 Paket saya** di kanan atas untuk melihat semua paket. Ketuk satu paket untuk mengganti nama, mencentang lalu menghapus stiker (WhatsApp butuh minimal 3 stiker per paket), menghapus paket, menambahkannya lagi ke WhatsApp, atau menyimpannya ke Galeri.
 
 ---
 
@@ -191,6 +210,18 @@ Ganti foto utama dengan foto yang wajahnya lebih besar, terang, dan menghadap ka
 <summary><b>Muncul pesan kredit atau kuota habis</b></summary>
 
 Untuk OpenRouter, isi kredit di openrouter.ai/credits. Untuk Cloudflare, tunggu kuota reset pukul 07.00 WIB, atau pindah ke model lain di ⚙️ Pengaturan.
+</details>
+
+<details>
+<summary><b>AI hanya menggambar sebagian stiker</b></summary>
+
+Tekan **➕ Lengkapi** di halaman hasil. Aplikasi hanya membuat stiker yang kurang, memakai stiker yang sudah jadi sebagai contoh gaya, jadi hasilnya senada.
+</details>
+
+<details>
+<summary><b>Bagaimana cara mengganti bahasa?</b></summary>
+
+Buka ⚙️ Pengaturan lalu pilih bahasa di bagian **🌐 Bahasa**, atau ketuk 🌐 di layar pembuka. Aplikasi memakai English secara bawaan.
 </details>
 
 <details>
@@ -232,14 +263,18 @@ Perbarui WhatsApp ke versi terbaru. Kalau masih gagal, pesan error dari WhatsApp
 ### 📁 Struktur proyek
 ```
 app/src/main/java/com/lumi/stickerize/
-├── ai/          # PromptBuilder, klien OpenRouter & Cloudflare
-├── data/        # Pengaturan, daftar model, bank kata
+├── ai/          # PromptBuilder, klien OpenRouter & Cloudflare, jenis error
+├── data/        # Pengaturan, daftar model, bank kata, paket tema
+├── i18n/        # Pilihan bahasa aplikasi
 ├── model/       # Tema stiker dan tata letak grid
 ├── sticker/     # Pemotong stiker, penyimpanan paket, ContentProvider WhatsApp
-├── util/        # Deteksi wajah, pemrosesan foto
+├── util/        # Deteksi wajah, pemrosesan foto, simpan ke Galeri
 ├── whatsapp/    # Intent "Tambahkan ke WhatsApp"
-└── ui/          # Layar Compose: langkah-langkah, hasil, penghapus
-app/src/main/assets/kata_stiker.txt   # 1.647 kata untuk tombol 🎲
+└── ui/          # Layar Compose: langkah-langkah, hasil, penghapus, paket tema, Paket saya
+app/src/main/assets/words/<bahasa>.txt    # kata untuk tombol 🎲 (id: 1.647 kata)
+app/src/main/assets/themes/<bahasa>.json  # 30 paket tema (dibuat dari tools/themes)
+app/src/main/res/values*/strings.xml      # teks 5 bahasa (dibuat dari tools/strings)
+tools/                                    # skrip pembuat teks & paket tema
 ```
 
 ### 🏗️ Build dari kode sumber

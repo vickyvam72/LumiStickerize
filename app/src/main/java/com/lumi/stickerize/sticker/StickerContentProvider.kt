@@ -130,15 +130,15 @@ class StickerContentProvider : ContentProvider() {
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? =
-        throw UnsupportedOperationException("Tidak didukung")
+        throw UnsupportedOperationException("Not supported")
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int =
-        throw UnsupportedOperationException("Tidak didukung")
+        throw UnsupportedOperationException("Not supported")
 
     override fun update(
         uri: Uri,
         values: ContentValues?,
         selection: String?,
         selectionArgs: Array<out String>?,
-    ): Int = throw UnsupportedOperationException("Tidak didukung")
+    ): Int = throw UnsupportedOperationException("Not supported")
 }

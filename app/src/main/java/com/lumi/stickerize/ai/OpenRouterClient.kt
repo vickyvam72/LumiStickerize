@@ -1,5 +1,6 @@
 package com.lumi.stickerize.ai
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
@@ -11,7 +12,10 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import com.lumi.stickerize.R
 import java.io.IOException
+import java.io.InterruptedIOException
+import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
 /**
@@ -23,6 +27,8 @@ class OpenRouterClient(
     private val model: String,
     /** Batas tiap model (null = model diisi manual, pakai pengaturan aman). */
     private val spec: com.lumi.stickerize.data.AiModel? = null,
+    /** Context berbahasa aplikasi, untuk pesan error. */
+    private val res: Context,
 ) : ImageGenerator {
 
     override val maxReferences: Int = spec?.maxRefs ?: 4
@@ -84,20 +90,24 @@ class OpenRouterClient(
             http.newCall(request).execute().use { resp ->
                 Pair(resp.code, resp.body?.string().orEmpty())
             }
+        } catch (e: UnknownHostException) {
+            throw AiException(res.getString(R.string.err_no_internet), ErrorKind.NETWORK)
+        } catch (e: InterruptedIOException) {
+            throw AiException(res.getString(R.string.err_timeout), ErrorKind.BUSY)
         } catch (e: IOException) {
-            throw AiException("Gagal terhubung ke server AI. Cek koneksi internet kamu.\n(${e.message})")
+            throw AiException(res.getString(R.string.err_connection, e.message.orEmpty()), ErrorKind.NETWORK)
         }
 
-        if (code !in 200..299) throw AiException(describeHttpError(code, text))
+        if (code !in 200..299) throw describeHttpError(code, text)
 
         val json = try {
             JSONObject(text)
         } catch (e: Exception) {
-            throw AiException("Balasan AI tidak bisa dibaca.")
+            throw AiException(res.getString(R.string.err_bad_reply), ErrorKind.BUSY)
         }
 
         json.optJSONObject("error")?.let { err ->
-            throw AiException("AI gagal membuat gambar: " + err.optString("message"))
+            throw AiException(res.getString(R.string.err_ai_failed, err.optString("message")), ErrorKind.BUSY)
         }
 
         val data = json.optJSONArray("data")
@@ -111,26 +121,27 @@ class OpenRouterClient(
                 }
             }
         }
-        throw AiException("AI tidak mengirim gambar. Silakan coba lagi.")
+        throw AiException(res.getString(R.string.err_no_image), ErrorKind.BUSY)
     }
 
-    private fun describeHttpError(code: Int, body: String): String {
+    private fun describeHttpError(code: Int, body: String): AiException {
         val apiMsg = try {
             JSONObject(body).optJSONObject("error")?.optString("message").orEmpty()
         } catch (e: Exception) {
             ""
         }
-        val friendly = when (code) {
-            400 -> "Permintaan ditolak oleh AI (mungkin model ini tidak mendukung foto referensi)."
-            401 -> "API key OpenRouter tidak valid. Periksa lagi di Pengaturan."
-            402 -> "Saldo/kredit OpenRouter kamu habis. Isi ulang di openrouter.ai/credits."
-            403 -> "Permintaan diblokir oleh filter keamanan AI. Coba foto atau kata lain."
-            404 -> "Model \"$model\" tidak ditemukan di OpenRouter. Ganti model di Pengaturan."
-            408 -> "AI terlalu lama merespons. Coba lagi."
-            429 -> "Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi."
-            502, 503 -> "AI gagal membuat gambar kali ini (tidak dikenai biaya). Coba lagi."
-            else -> "Terjadi kesalahan (kode $code)."
+        val (friendly, kind) = when (code) {
+            400 -> res.getString(R.string.err_or_400) to ErrorKind.MODEL
+            401 -> res.getString(R.string.err_or_401) to ErrorKind.AUTH
+            402 -> res.getString(R.string.err_or_402) to ErrorKind.CREDIT
+            403 -> res.getString(R.string.err_or_403) to ErrorKind.BLOCKED
+            404 -> res.getString(R.string.err_or_404, model) to ErrorKind.MODEL
+            408 -> res.getString(R.string.err_timeout) to ErrorKind.BUSY
+            429 -> res.getString(R.string.err_or_429) to ErrorKind.BUSY
+            500, 502, 503, 504 -> res.getString(R.string.err_or_5xx) to ErrorKind.BUSY
+            else -> res.getString(R.string.err_code, code) to ErrorKind.OTHER
         }
-        return if (apiMsg.isNotEmpty() && apiMsg != friendly) "$friendly\n\n$apiMsg" else friendly
+        val msg = if (apiMsg.isNotEmpty() && apiMsg != friendly) "$friendly\n\n$apiMsg" else friendly
+        return AiException(msg, kind)
     }
 }

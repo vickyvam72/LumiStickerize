@@ -30,7 +30,7 @@ object WhatsAppHelper {
         val hasConsumer = installed(context, CONSUMER)
         val hasBusiness = installed(context, BUSINESS)
         return when {
-            hasConsumer && hasBusiness -> Intent.createChooser(base, "Tambahkan ke…")
+            hasConsumer && hasBusiness -> Intent.createChooser(base, com.lumi.stickerize.i18n.Lang.str(context, com.lumi.stickerize.R.string.wa_choose))
             hasConsumer -> base.setPackage(CONSUMER)
             hasBusiness -> base.setPackage(BUSINESS)
             else -> base

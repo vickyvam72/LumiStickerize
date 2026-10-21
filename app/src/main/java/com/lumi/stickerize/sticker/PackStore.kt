@@ -17,8 +17,8 @@ data class StickerPack(
     val stickers: List<StickerEntry>,
 )
 
-class PackFullException(val pack: StickerPack, val free: Int) :
-    Exception("Paket \"${pack.name}\" hanya muat $free stiker lagi (maksimal ${PackStore.MAX_PER_PACK} per paket).")
+/** Paket tujuan tidak muat. Pesannya dibuat di layar (sesuai bahasa aplikasi). */
+class PackFullException(val pack: StickerPack, val free: Int) : Exception("pack full")
 
 /**
  * Menyimpan paket stiker di penyimpanan internal aplikasi agar bisa dibaca WhatsApp.
@@ -32,6 +32,7 @@ object PackStore {
     const val TRAY_FILE = "tray.png"
 
     /** Batas WhatsApp: 3–30 stiker per paket. */
+    const val MIN_PER_PACK = 3
     const val MAX_PER_PACK = 30
 
     private val defaultEmojis = listOf("😀", "😂", "👍", "😍", "😮", "😭", "😠", "😴", "🤔", "🎉", "😊", "✨")
@@ -105,6 +106,37 @@ object PackStore {
             return
         }
         File(dir, "pack.json").writeText(toJson(old.copy(stickers = kept, version = old.version + 1)).toString())
+    }
+
+    /** File gambar satu stiker di paket. */
+    fun stickerFile(context: Context, id: String, fileName: String): File = File(packDir(context, id), fileName)
+
+    /** Ganti nama paket (WhatsApp memperbaruinya setelah paket ditambahkan ulang). */
+    fun rename(context: Context, id: String, name: String): StickerPack? {
+        val old = load(context, id) ?: return null
+        val pack = old.copy(name = name.trim().ifEmpty { old.name }.take(128), version = old.version + 1)
+        File(packDir(context, id), "pack.json").writeText(toJson(pack).toString())
+        return pack
+    }
+
+    /**
+     * Hapus beberapa stiker dari paket. WhatsApp butuh minimal [MIN_PER_PACK] stiker,
+     * jadi kalau sisanya kurang dari itu tidak ada yang dihapus (kembalikan null).
+     */
+    fun deleteStickers(context: Context, id: String, fileNames: Set<String>): StickerPack? {
+        val old = load(context, id) ?: return null
+        val kept = old.stickers.filterNot { it.fileName in fileNames }
+        if (kept.size < MIN_PER_PACK) return null
+        val dir = packDir(context, id)
+        old.stickers.filter { it.fileName in fileNames }.forEach { File(dir, it.fileName).delete() }
+        val pack = old.copy(stickers = kept, version = old.version + 1)
+        File(dir, "pack.json").writeText(toJson(pack).toString())
+        return pack
+    }
+
+    /** Hapus seluruh paket dari aplikasi (dan dari WhatsApp, karena WhatsApp membacanya dari sini). */
+    fun deletePack(context: Context, id: String) {
+        packDir(context, id).deleteRecursively()
     }
 
     fun load(context: Context, id: String): StickerPack? {

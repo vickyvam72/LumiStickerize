@@ -2,8 +2,10 @@ package com.lumi.stickerize.ui
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -13,16 +15,23 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.lumi.stickerize.R
+import com.lumi.stickerize.ai.AiException
+import com.lumi.stickerize.ai.ErrorKind
 import com.lumi.stickerize.ai.PromptBuilder
 import com.lumi.stickerize.data.AppSettings
+import com.lumi.stickerize.data.ThemePack
+import com.lumi.stickerize.data.ThemePacks
 import com.lumi.stickerize.data.WordBank
+import com.lumi.stickerize.i18n.Lang
 import com.lumi.stickerize.model.GridSpec
 import com.lumi.stickerize.model.StickerStyle
 import com.lumi.stickerize.sticker.PackFullException
 import com.lumi.stickerize.sticker.PackStore
-import com.lumi.stickerize.sticker.StickerPack
 import com.lumi.stickerize.sticker.StickerMaker
+import com.lumi.stickerize.sticker.StickerPack
 import com.lumi.stickerize.util.FaceFinder
+import com.lumi.stickerize.util.GallerySaver
 import com.lumi.stickerize.util.ImageUtils
 import com.lumi.stickerize.work.GenerationService
 import com.lumi.stickerize.work.Notifier
@@ -33,24 +42,32 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
-enum class Step(val title: String, val subtitle: String) {
-    PHOTOS("Pilih foto", "1 foto sudah cukup, 2–3 foto hasilnya lebih akurat"),
-    FACES("Pilih wajah", "Ketuk wajah di foto pertama yang mau dijadikan stiker"),
-    COUNT("Jumlah stiker", "Mau dibuatkan berapa stiker?"),
-    STYLE("Pilih tema", "Gaya gambar stikermu"),
-    TEXT("Tulisan", "Pakai kata di stiker atau tidak?"),
-    GENERATE("Siap dibuat", "Periksa lagi sebelum AI bekerja"),
-    RESULT("Stiker kamu", "Tambahkan langsung ke WhatsApp"),
+enum class Step(@StringRes val title: Int, @StringRes val subtitle: Int) {
+    PHOTOS(R.string.step_photos, R.string.step_photos_sub),
+    FACES(R.string.step_faces, R.string.step_faces_sub),
+    COUNT(R.string.step_count, R.string.step_count_sub),
+    STYLE(R.string.step_style, R.string.step_style_sub),
+    TEXT(R.string.step_text, R.string.step_text_sub),
+    GENERATE(R.string.step_generate, R.string.step_generate_sub),
+    RESULT(R.string.step_result, R.string.step_result_sub),
 }
 
 /** Satu foto referensi beserta hasil deteksi wajahnya. */
 class PhotoInfo(val bitmap: Bitmap, val image: ImageBitmap, val faces: List<Rect>)
 
+/** Pesan error beserta jenisnya, supaya layar error bisa menawarkan tombol yang tepat. */
+data class AppError(val message: String, val kind: ErrorKind = ErrorKind.OTHER, val canRetry: Boolean = false)
+
+/** Stiker di paket (untuk layar Paket saya). */
+class PackSticker(val fileName: String, val image: ImageBitmap)
+
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     val settings = AppSettings(app)
+
+    /** Teks sesuai bahasa aplikasi. */
+    private fun s(@StringRes id: Int, vararg args: Any): String = Lang.str(getApplication(), id, *args)
 
     var step by mutableStateOf(Step.PHOTOS)
         private set
@@ -67,15 +84,22 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val words = mutableStateListOf<String>().apply { repeat(MAX_STICKERS) { add("") } }
     /** Pose opsional per kata (kosong = AI memilih pose sesuai arti kata). */
     val poses = mutableStateListOf<String>().apply { repeat(MAX_STICKERS) { add("") } }
+    /** Paket tema yang terakhir dipakai (untuk ditandai di daftar). */
+    var appliedTheme by mutableStateOf<String?>(null)
+        private set
 
     var generating by mutableStateOf(false)
         private set
-    var error by mutableStateOf<String?>(null)
+    var error by mutableStateOf<AppError?>(null)
+    /** true = buka Pengaturan karena API key belum diisi. */
+    var askForKey by mutableStateOf(false)
     var notice by mutableStateOf<String?>(null)
 
     /** Layar penuh di atas halaman hasil: stiker yang sedang dirapikan & tampilan gambar asli AI. */
     var editingIndex by mutableStateOf<Int?>(null)
     var viewingSheet by mutableStateOf(false)
+    /** Layar penuh daftar paket tema (dibuka dari langkah Tulisan). */
+    var themePickerOpen by mutableStateOf(false)
 
     var sheet by mutableStateOf<ImageBitmap?>(null)
         private set
@@ -87,6 +111,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     /** Kata yang tergambar di tiap stiker (kosong = tanpa kata). */
     var stickerCaptions by mutableStateOf<List<String>>(emptyList())
     var stickerPoses by mutableStateOf<List<String>>(emptyList())
+        private set
+
+    /** Stiker yang diminta tapi tidak tergambar oleh AI (kata, pose) — bisa dilengkapi. */
+    var missing by mutableStateOf<List<Pair<String, String>>>(emptyList())
+        private set
+    /** Jumlah stiker yang sedang dilengkapi (0 = tidak sedang). */
+    var filling by mutableIntStateOf(0)
         private set
 
     /** Penanda sesi pembuatan saat ini (dipakai sebagai awalan nama file di paket). */
@@ -112,6 +143,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         private set
 
     private var job: Job? = null
+    /** Aksi AI terakhir, untuk tombol "Coba lagi" di layar error. */
+    private var lastAction: (() -> Unit)? = null
 
     /** Foto utama (foto 1) wajib, foto 2 & 3 opsional. Semua foto yang dipilih harus sudah selesai dimuat. */
     val photosReady: Boolean
@@ -128,7 +161,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val peopleCount: Int get() = selectedFaces.size.coerceIn(1, MAX_FACES)
     val activeWords: List<String> get() = words.take(count)
     val wordsReady: Boolean get() = !useText || activeWords.all { it.isNotBlank() }
-
 
     fun canGoNext(): Boolean = when (step) {
         Step.PHOTOS -> photosReady
@@ -154,6 +186,16 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         if (!generating) step = target
     }
 
+    private fun fail(message: String, kind: ErrorKind = ErrorKind.OTHER, canRetry: Boolean = false) {
+        error = AppError(message, kind, canRetry)
+    }
+
+    fun retry() {
+        val action = lastAction ?: return
+        error = null
+        action()
+    }
+
     fun setPhoto(index: Int, uri: Uri) {
         photoUris[index] = uri
         photos[index] = null
@@ -165,7 +207,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             if (photoUris[index] != uri) return@launch
             if (bmp == null) {
                 photoUris[index] = null
-                error = "Foto tidak bisa dibuka. Coba pilih foto lain."
+                fail(s(R.string.err_photo_open))
                 return@launch
             }
             // Wajah dideteksi di semua foto, supaya kalau foto utama dihapus,
@@ -184,7 +226,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         selectedFaces = when {
             face in cur -> cur - face
             cur.size >= MAX_FACES -> {
-                error = "Maksimal hanya 2 wajah yang bisa dijadikan stiker."
+                fail(s(R.string.err_max_faces))
                 cur
             }
             else -> cur + face
@@ -195,7 +237,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun selectAllFaces() {
         val p = photos[0] ?: return
         if (p.faces.size > MAX_FACES) {
-            error = "Foto ini punya ${p.faces.size} wajah. Maksimal hanya 2 wajah yang bisa dijadikan stiker, jadi pilih 2 saja."
+            fail(s(R.string.err_too_many_faces, p.faces.size))
             return
         }
         selectedFaces = p.faces.indices.toSet()
@@ -222,10 +264,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /* ------------------------------------------------ kata, pose & paket tema */
+
     /** Isi kata acak untuk satu stiker (tidak sama dengan kata di stiker lain). */
     fun randomWord(index: Int) {
         val others = words.filterIndexed { i, _ -> i != index && i < count }
         words[index] = WordBank.random(getApplication(), others)
+        appliedTheme = null
     }
 
     /** Isi kata acak untuk semua stiker. */
@@ -234,14 +279,31 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         for (i in 0 until count) {
             val w = WordBank.random(getApplication(), used)
             words[i] = w
+            poses[i] = ""
             used.add(w)
         }
+        appliedTheme = null
     }
+
+    fun themePacks(): List<ThemePack> = ThemePacks.all(getApplication())
+
+    /** Pakai paket tema: kata dan pose tiap stiker langsung terisi (tetap bisa diubah). */
+    fun applyTheme(pack: ThemePack) {
+        useText = true
+        for (i in 0 until MAX_STICKERS) {
+            val item = pack.items.getOrNull(i)
+            words[i] = item?.caption.orEmpty()
+            poses[i] = item?.pose.orEmpty()
+        }
+        appliedTheme = pack.id
+    }
+
+    /* ------------------------------------------------ AI */
 
     /** Apakah semua bahan untuk memanggil AI sudah lengkap. */
     private fun readyForAi(): Boolean {
         if (!settings.hasCredentials) {
-            error = "NEED_API_KEY"
+            askForKey = true
             return false
         }
         return style != null && photos[0] != null && facesReady
@@ -306,15 +368,28 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         return sheetBmp to pieces
     }
 
+    /** Pesan error yang ramah + jenisnya, dari exception apa pun. */
+    private fun handleFailure(e: Exception, @StringRes notifTitle: Int) {
+        val app = getApplication<Application>()
+        if (e is AiException) {
+            val retry = e.kind == ErrorKind.NETWORK || e.kind == ErrorKind.BUSY || e.kind == ErrorKind.OTHER
+            fail(e.message ?: s(R.string.err_generic), e.kind, retry)
+        } else {
+            fail(e.message ?: s(R.string.err_generic), ErrorKind.OTHER, canRetry = true)
+        }
+        Notifier.done(app, s(notifTitle), error?.message ?: s(R.string.notif_tap_retry))
+    }
+
     fun generate() {
         if (generating || !readyForAi()) return
         val chosenStyle = style ?: return
+        lastAction = { generate() }
 
         generating = true
         error = null
         val app = getApplication<Application>()
         Notifier.clearDone(app)
-        GenerationService.start(app, "AI sedang membuat $count stiker…")
+        GenerationService.start(app, s(R.string.notif_making, count))
         job = viewModelScope.launch {
             try {
                 val total = count
@@ -324,10 +399,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
                 if (pieces.size < GridSpec.WHATSAPP_MIN) {
                     sheet = sheetBmp.asImageBitmap()
-                    throw IllegalStateException(
-                        "AI hanya mampu membuat ${pieces.size} stiker (WhatsApp butuh minimal 3). " +
-                            "Coba buat ulang, atau ganti model AI di ⚙️ Pengaturan."
-                    )
+                    throw AiException(s(R.string.err_too_few, pieces.size), ErrorKind.BUSY)
                 }
 
                 // sesi baru: belum disimpan ke paket mana pun
@@ -343,27 +415,68 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 stickers = stickerBitmaps.map { it.asImageBitmap() }
                 stickerCaptions = pieces.map { captions.getOrElse(it.first) { "" } }
                 stickerPoses = pieces.map { chosenPoses.getOrElse(it.first) { "" } }
-                packName = "Lumi ${chosenStyle.label} " +
-                    SimpleDateFormat("d MMM HH.mm", Locale("id", "ID")).format(Date())
+                val drawn = pieces.map { it.first }.toSet()
+                missing = (0 until total).filter { it !in drawn }.map { captions[it] to chosenPoses[it] }
+                packName = "Lumi ${s(chosenStyle.label)} " +
+                    SimpleDateFormat("d MMM HH.mm", Lang.locale(Lang.current(app))).format(Date())
                 refreshPacks()
-                notice = if (pieces.size < total) {
-                    "AI hanya mampu membuat ${pieces.size} dari $total stiker yang diminta, jadi hanya " +
-                        "${pieces.size} stiker yang dipotong. Kalau ingin lengkap, tekan \"Buat ulang semua\" " +
-                        "atau ganti model AI di ⚙️ Pengaturan."
-                } else null
+                notice = null
                 step = Step.RESULT
                 Notifier.done(
-                    app, "Stiker sudah jadi! 🎉",
-                    if (pieces.size < total) "${pieces.size} dari $total stiker berhasil dibuat. Ketuk untuk melihat."
-                    else "${pieces.size} stiker siap ditambahkan ke WhatsApp. Ketuk untuk melihat."
+                    app, s(R.string.notif_done_title),
+                    if (pieces.size < total) s(R.string.notif_done_partial, pieces.size, total)
+                    else s(R.string.notif_done_text, pieces.size)
                 )
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                error = e.message ?: "Terjadi kesalahan. Coba lagi."
-                Notifier.done(app, "Pembuatan stiker gagal", error ?: "Ketuk untuk mencoba lagi.")
+                handleFailure(e, R.string.notif_failed)
             } finally {
                 generating = false
+                GenerationService.stop(app)
+            }
+        }
+    }
+
+    /** Buat hanya stiker yang tidak tergambar oleh AI, lalu tambahkan ke hasil. */
+    fun fillMissing() {
+        if (generating || missing.isEmpty() || !readyForAi()) return
+        val wanted = missing.take(MAX_STICKERS - stickers.size)
+        if (wanted.isEmpty()) return
+        lastAction = { fillMissing() }
+        generating = true
+        filling = wanted.size
+        error = null
+        val app = getApplication<Application>()
+        Notifier.clearDone(app)
+        GenerationService.start(app, s(R.string.notif_filling, wanted.size))
+        job = viewModelScope.launch {
+            try {
+                val captions = wanted.map { it.first }
+                val customPoses = wanted.map { it.second }
+                // stiker yang sudah jadi dipakai sebagai contoh gaya agar senada
+                val styleRef = stickerBitmaps.firstOrNull()
+                val (sheetBmp, pieces) = runAi(wanted.size, captions, (1..9).random(), styleRef, customPoses)
+                if (pieces.isEmpty()) throw AiException(s(R.string.err_fill_none), ErrorKind.BUSY)
+
+                sheet = sheetBmp.asImageBitmap()
+                val drawn = pieces.map { it.first }.toSet()
+                stickerBitmaps = stickerBitmaps + pieces.map { it.second }
+                stickers = stickerBitmaps.map { it.asImageBitmap() }
+                stickerCaptions = stickerCaptions + pieces.map { captions.getOrElse(it.first) { "" } }
+                stickerPoses = stickerPoses + pieces.map { customPoses.getOrElse(it.first) { "" } }
+                missing = wanted.filterIndexed { i, _ -> i !in drawn }
+                notice = if (missing.isEmpty()) s(R.string.notice_filled, pieces.size)
+                else s(R.string.notice_filled_partial, pieces.size, wanted.size)
+                recommitIfNeeded()
+                Notifier.done(app, s(R.string.notif_updated_title), notice ?: "")
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                handleFailure(e, R.string.notif_failed)
+            } finally {
+                generating = false
+                filling = 0
                 GenerationService.stop(app)
             }
         }
@@ -400,13 +513,14 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         if (generating || !readyForAi()) return
         val targets = selection.sorted().filter { it in stickers.indices }
         if (targets.isEmpty()) return
+        lastAction = { regenerateSelected(newCaptions, newPoses) }
 
         generating = true
         regenerating = targets.size
         error = null
         val app = getApplication<Application>()
         Notifier.clearDone(app)
-        GenerationService.start(app, "AI sedang membuat ulang ${targets.size} stiker…")
+        GenerationService.start(app, s(R.string.notif_remaking, targets.size))
         job = viewModelScope.launch {
             try {
                 val captions = targets.map { (newCaptions[it] ?: stickerCaptions.getOrElse(it) { "" }).trim() }
@@ -436,17 +550,15 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 stickerPoses = poseList
 
                 val missed = targets.size - pieces.size
-                notice = if (missed > 0) {
-                    "${pieces.size} dari ${targets.size} stiker berhasil dibuat ulang. Sisanya tidak tergambar oleh AI, coba lagi untuk stiker itu."
-                } else "${targets.size} stiker berhasil dibuat ulang ✨"
+                notice = if (missed > 0) s(R.string.notice_remade_partial, pieces.size, targets.size)
+                else s(R.string.notice_remade, targets.size)
                 stopSelecting()
                 recommitIfNeeded()
-                Notifier.done(app, "Stiker sudah diperbarui ✨", notice ?: "Ketuk untuk melihat.")
+                Notifier.done(app, s(R.string.notif_updated_title), notice ?: "")
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                error = e.message ?: "Terjadi kesalahan. Coba lagi."
-                Notifier.done(app, "Pembuatan ulang gagal", error ?: "Ketuk untuk mencoba lagi.")
+                handleFailure(e, R.string.notif_remake_failed)
             } finally {
                 generating = false
                 regenerating = 0
@@ -459,6 +571,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         job?.cancel()
         generating = false
         regenerating = 0
+        filling = 0
         GenerationService.stop(getApplication())
     }
 
@@ -492,9 +605,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 refreshPacks()
                 onReady(pack.id, pack.name)
             } catch (e: PackFullException) {
-                error = e.message
+                fail(s(R.string.err_pack_full, e.pack.name, e.free, PackStore.MAX_PER_PACK))
             } catch (e: Exception) {
-                error = "Gagal menyimpan paket: ${e.message}"
+                fail(s(R.string.err_pack_save, e.message.orEmpty()))
             }
         }
     }
@@ -520,8 +633,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 withContext(Dispatchers.IO) { writeToTarget() }
                 refreshPacks()
+            } catch (e: PackFullException) {
+                fail(s(R.string.err_pack_full, e.pack.name, e.free, PackStore.MAX_PER_PACK))
             } catch (e: Exception) {
-                error = "Gagal memperbarui paket: ${e.message}"
+                fail(s(R.string.err_pack_update, e.message.orEmpty()))
             }
         }
     }
@@ -530,8 +645,111 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun updateSticker(index: Int, edited: Bitmap) {
         stickerBitmaps = stickerBitmaps.toMutableList().also { it[index] = edited }
         stickers = stickers.toMutableList().also { it[index] = edited.asImageBitmap() }
-        notice = "Stiker ${index + 1} diperbarui."
+        notice = s(R.string.notice_sticker_updated, index + 1)
         recommitIfNeeded()
+    }
+
+    /* ------------------------------------------------ simpan ke Galeri */
+
+    fun saveToGallery(bitmaps: List<Bitmap> = stickerBitmaps, name: String = "lumi") {
+        if (bitmaps.isEmpty()) return
+        val app = getApplication<Application>()
+        viewModelScope.launch {
+            val ok = withContext(Dispatchers.IO) { GallerySaver.save(app, bitmaps, name) }
+            if (ok > 0) notice = s(R.string.notice_gallery, ok, GallerySaver.FOLDER)
+            else fail(s(R.string.err_gallery))
+        }
+    }
+
+    /* ------------------------------------------------ layar "Paket saya" */
+
+    var managerOpen by mutableStateOf(false)
+    var managerPackId by mutableStateOf<String?>(null)
+    var managerStickers by mutableStateOf<List<PackSticker>>(emptyList())
+        private set
+    var managerMessage by mutableStateOf<String?>(null)
+
+    fun openManager() {
+        refreshAllPacks()
+        managerPackId = null
+        managerMessage = null
+        managerOpen = true
+    }
+
+    /** Semua paket (termasuk paket baru dari sesi ini). */
+    var allPacks by mutableStateOf<List<StickerPack>>(emptyList())
+        private set
+
+    private fun refreshAllPacks() {
+        allPacks = PackStore.all(getApplication())
+        refreshPacks()
+        // paket sesi ini dihapus dari layar Paket saya → sesi dianggap belum disimpan
+        val committed = committedPackId
+        if (committed != null && allPacks.none { it.id == committed }) {
+            committedPackId = null
+            if (newPackId == committed) newPackId = null
+            if (targetPackId == committed) targetPackId = null
+        }
+        if (targetPackId != null && existingPacks.none { it.id == targetPackId }) targetPackId = null
+    }
+
+    fun openPack(id: String) {
+        managerPackId = id
+        managerStickers = emptyList()
+        managerMessage = null
+        loadManagerStickers()
+    }
+
+    private fun loadManagerStickers() {
+        val id = managerPackId ?: return
+        val app = getApplication<Application>()
+        viewModelScope.launch {
+            managerStickers = withContext(Dispatchers.IO) {
+                val pack = PackStore.load(app, id) ?: return@withContext emptyList()
+                pack.stickers.mapNotNull { st ->
+                    val f = PackStore.stickerFile(app, id, st.fileName)
+                    BitmapFactory.decodeFile(f.absolutePath)?.let { PackSticker(st.fileName, it.asImageBitmap()) }
+                }
+            }
+        }
+    }
+
+    fun renamePack(id: String, name: String) {
+        if (name.isBlank()) return
+        PackStore.rename(getApplication(), id, name)
+        refreshAllPacks()
+        managerMessage = s(R.string.packs_renamed)
+    }
+
+    /** @return false kalau sisa stiker kurang dari 3 (tidak ada yang dihapus) */
+    fun deletePackStickers(id: String, files: Set<String>): Boolean {
+        val result = PackStore.deleteStickers(getApplication(), id, files) ?: return false
+        refreshAllPacks()
+        loadManagerStickers()
+        managerMessage = s(R.string.packs_deleted_stickers, files.size, result.stickers.size)
+        return true
+    }
+
+    fun deletePack(id: String) {
+        PackStore.deletePack(getApplication(), id)
+        managerPackId = null
+        managerStickers = emptyList()
+        refreshAllPacks()
+        managerMessage = s(R.string.packs_deleted_pack)
+    }
+
+    fun savePackToGallery(id: String) {
+        val app = getApplication<Application>()
+        viewModelScope.launch {
+            val ok = withContext(Dispatchers.IO) {
+                val pack = PackStore.load(app, id) ?: return@withContext 0
+                val bitmaps = pack.stickers.mapNotNull {
+                    BitmapFactory.decodeFile(PackStore.stickerFile(app, id, it.fileName).absolutePath)
+                }
+                GallerySaver.save(app, bitmaps, "lumi_pack")
+            }
+            managerMessage = if (ok > 0) s(R.string.notice_gallery, ok, GallerySaver.FOLDER) else s(R.string.err_gallery)
+        }
     }
 
     fun restart() {
@@ -542,11 +760,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         useText = false
         for (i in words.indices) words[i] = ""
         for (i in poses.indices) poses[i] = ""
+        appliedTheme = null
         sheet = null
         stickers = emptyList()
         stickerBitmaps = emptyList()
         stickerCaptions = emptyList()
         stickerPoses = emptyList()
+        missing = emptyList()
         committedPackId = null
         newPackId = null
         targetPackId = null

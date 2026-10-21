@@ -1,0 +1,262 @@
+# English sticker captions for Lumi Stickerize. One caption per line, '#' = category.
+# Greetings
+Hi!
+Hello!
+Hey there!
+Good morning!
+Morning!
+Good afternoon
+Good evening
+Good night
+Night night
+Sweet dreams
+How are you?
+What's up?
+Sup?
+Long time no see
+I'm here!
+See you!
+See ya later
+Bye bye!
+Take care
+Welcome!
+Rise and shine
+Hello friend
+Yo!
+# Thanks & sorry
+Thank you!
+Thanks!
+Thanks a lot!
+Thank you so much
+Much appreciated
+You're welcome
+No problem
+No worries
+Anytime!
+Sorry!
+So sorry
+My bad
+Forgive me
+Oops!
+I owe you one
+You're the best
+Bless you
+# Yes, no & reactions
+OK!
+Okay
+Yes!
+Yep
+Sure!
+Of course!
+Nope
+No way!
+Maybe...
+Hmm...
+Noted
+Got it
+Roger that
+On it!
+Agreed!
+Deal!
+Done!
+Wait...
+Wait, what?
+Really?
+Seriously?
+Whatever
+Fine.
+Same!
+True!
+Exactly!
+Interesting...
+Say what?
+Huh?
+For real?
+No comment
+Brb
+Typing...
+On my way!
+Almost there
+Coming!
+# Laughing
+LOL
+Haha
+Hahaha
+LMAO
+I'm dying
+So funny!
+Hehe
+Pfft
+Can't stop laughing
+Good one!
+That's hilarious
+I can't
+Savage!
+# Love
+Love you!
+Love ya
+Miss you
+Miss you so much
+XOXO
+Mwah!
+Hugs!
+Hug me
+My love
+Babe
+Sweetheart
+You're mine
+Only you
+Thinking of you
+Cutie
+Crush!
+Kiss kiss
+Forever
+Be mine
+# Happy & excited
+Yay!
+Woohoo!
+Awesome!
+Amazing!
+Cool!
+So cool!
+Nice!
+Great!
+Perfect!
+Wow!
+Oh wow!
+Lit!
+Let's go!
+So happy!
+Best day ever
+Hooray!
+Yesss!
+Excited!
+Can't wait!
+Feeling good
+# Sad & tired
+So sad
+Sad...
+Sigh...
+I'm tired
+Exhausted
+Sleepy...
+So sleepy
+Zzz
+I'm bored
+Meh
+Not today
+Leave me alone
+Need a hug
+Why me?
+Ugh
+I'm fine
+Help!
+Crying
+Heartbroken
+# Angry
+Hmph!
+Grrr
+So annoying
+I'm mad
+Stop it!
+Are you kidding?
+Not funny
+Excuse me?
+Calm down
+Patience...
+Don't talk to me
+Rude!
+# Food
+I'm hungry
+Let's eat!
+Yummy!
+Delicious!
+So good!
+Coffee time
+Coffee first
+Snack time
+Pizza?
+Full!
+Treat me?
+Dinner's ready
+Spicy!
+Feed me
+Tea time
+# Work & school
+Working
+Busy!
+Meeting
+Deadline!
+Done for today
+Study time
+Exam tomorrow
+Homework...
+Brain overload
+Overtime
+Approved!
+Let me check
+Back to work
+Day off!
+I'm a genius
+# Motivation
+You got this!
+Keep going!
+Fighting!
+Don't give up
+Believe!
+Stay strong
+Good luck!
+Proud of you
+Well done
+Go go go!
+Level up!
+Never give up
+# Celebration
+Congrats!
+Happy birthday!
+HBD!
+Cheers!
+Party time!
+Happy New Year!
+Merry Christmas!
+Happy holidays
+Eid Mubarak!
+Ramadan Kareem
+Well deserved
+Champion!
+# Everyday
+At home
+Rainy day
+So hot
+So cold
+Weekend!
+Monday again
+Friday!
+Traffic...
+Shopping!
+I'm broke
+Payday!
+Selfie time
+Gym time
+Let's play!
+GG!
+Game over
+Holiday!
+Beach vibes
+Home sweet home
+Chill
+Relax
+Vibing
+Mood
+Boss
+Hero!
+Legend
+Queen
+King
+Oh no!
+Uh-oh
+Awkward...
+Shh!
+Surprise!
+Cheese!
+Peace!
