@@ -44,6 +44,46 @@ enum class StickerStyle(@StringRes val label: Int, val emoji: String, val prompt
     SKETCH(
         R.string.style_sketch, "✏️",
         "hand-drawn pencil and ink sketch, bold expressive lines with light colour accents"
+    ),
+    CARICATURE(
+        R.string.style_caricature, "🤪",
+        "funny caricature: oversized head with exaggerated but still recognisable facial features, small body, bold clean outlines, bright flat colours"
+    ),
+    FLAT(
+        R.string.style_flat, "🔷",
+        "modern flat vector illustration, simple geometric shapes, no gradients, crisp edges, limited cheerful colour palette"
+    ),
+    LINE_ART(
+        R.string.style_line, "〰️",
+        "minimalist line art: clean single-weight black outlines with only a few soft pastel colour fills, lots of white space"
+    ),
+    POP_ART(
+        R.string.style_pop, "🟡",
+        "bold pop art in the spirit of 1960s screen prints, thick black outlines, bright primary colours, halftone dots on the character only"
+    ),
+    RETRO(
+        R.string.style_retro, "📼",
+        "retro 90s cartoon style, slightly grainy colours, bold outlines, playful exaggerated expressions like Saturday-morning cartoons"
+    ),
+    CRAYON(
+        R.string.style_crayon, "🖍️",
+        "childlike crayon drawing with waxy textured strokes and bright colours, but with a clear dark outline around the character"
+    ),
+    NEON(
+        R.string.style_neon, "💡",
+        "glowing neon light outline illustration, vivid pink, cyan and purple glowing strokes on the character, but the background must stay pure white"
+    ),
+    OIL(
+        R.string.style_oil, "🖼️",
+        "classic oil painting portrait style with visible brush strokes and rich warm colours, the character clearly outlined and isolated"
+    ),
+    KNIT(
+        R.string.style_knit, "🧶",
+        "cute knitted amigurumi doll look, visible yarn stitches, soft fuzzy wool texture, rounded chunky shapes"
+    ),
+    PAPER(
+        R.string.style_paper, "✂️",
+        "layered papercraft cut-out style, stacked coloured paper layers with soft drop shadows inside the character, clean cut edges"
     );
 }
 

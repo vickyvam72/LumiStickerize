@@ -88,45 +88,13 @@ fun ThemePackScreen(
                 )
             }
             Spacer(Modifier.height(12.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                contentPadding = PaddingValues(bottom = 16.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(packs, key = { it.id }) { pack ->
-                    val isSel = pack.id == selected
-                    // cukup emoji & judul tema
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(58.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(if (isSel) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
-                            .border(
-                                if (isSel) 2.dp else 1.dp,
-                                if (isSel) LumiBlue else MaterialTheme.colorScheme.outline,
-                                RoundedCornerShape(16.dp)
-                            )
-                            .clickable { onPick(pack) }
-                            .padding(horizontal = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(pack.emoji, fontSize = 24.sp)
-                        Spacer(Modifier.width(10.dp))
-                        Text(
-                            pack.name,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            lineHeight = 17.sp,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
+            // 20 tema dalam 4 kolom × 5 baris, cukup emoji & judul, tanpa scroll
+            EmojiTileGrid(
+                items = packs.map { Triple(it.id, it.emoji, it.name) },
+                selected = selected,
+                onPick = { id -> packs.firstOrNull { it.id == id }?.let(onPick) },
+                tileHeight = 78
+            )
         }
     }
 }

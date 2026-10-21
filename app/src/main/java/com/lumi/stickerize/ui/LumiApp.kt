@@ -733,36 +733,63 @@ private fun RoundButton(label: String, enabled: Boolean, onClick: () -> Unit) {
 
 @Composable
 private fun StyleStep(vm: MainViewModel) {
-    StickerStyle.entries.chunked(2).forEach { row ->
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            row.forEach { s ->
-                val selected = vm.style == s
-                Row(
+    // 20 gaya dalam 4 kolom × 5 baris supaya muat satu layar
+    EmojiTileGrid(
+        items = StickerStyle.entries.map { Triple(it.name, it.emoji, stringResource(it.label)) },
+        selected = vm.style?.name,
+        onPick = { name -> vm.style = StickerStyle.valueOf(name) }
+    )
+}
+
+/**
+ * Grid kotak kecil (emoji di atas, nama di bawah), 4 per baris.
+ * Dipakai untuk 20 gaya gambar dan 20 paket tema agar muat satu layar tanpa scroll.
+ */
+@Composable
+internal fun EmojiTileGrid(
+    items: List<Triple<String, String, String>>,
+    selected: String?,
+    onPick: (String) -> Unit,
+    columns: Int = 4,
+    tileHeight: Int = 74,
+) {
+    items.chunked(columns).forEach { row ->
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            row.forEach { (id, emoji, label) ->
+                val isSel = id == selected
+                Column(
                     Modifier
                         .weight(1f)
-                        .height(54.dp)
+                        .height(tileHeight.dp)
                         .clip(RoundedCornerShape(14.dp))
-                        .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
+                        .background(if (isSel) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
                         .border(
-                            if (selected) 2.dp else 1.dp,
-                            if (selected) LumiBlue else MaterialTheme.colorScheme.outline,
+                            if (isSel) 2.dp else 1.dp,
+                            if (isSel) LumiBlue else MaterialTheme.colorScheme.outline,
                             RoundedCornerShape(14.dp)
                         )
-                        .clickable { vm.style = s }
-                        .padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .clickable { onPick(id) }
+                        .padding(horizontal = 4.dp, vertical = 6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Text(s.emoji, fontSize = 22.sp)
-                    Spacer(Modifier.width(10.dp))
-                    Text(stringResource(s.label), fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.weight(1f), maxLines = 1)
-                    if (selected) {
-                        Icon(Icons.Filled.Check, contentDescription = null, tint = LumiBlue, modifier = Modifier.size(18.dp))
-                    }
+                    Text(emoji, fontSize = 22.sp)
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        label,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 11.sp,
+                        lineHeight = 13.sp,
+                        maxLines = 2,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis,
+                        color = if (isSel) LumiBlue else MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
-            if (row.size == 1) Spacer(Modifier.weight(1f))
+            repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(8.dp))
     }
 }
 

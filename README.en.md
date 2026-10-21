@@ -4,7 +4,7 @@
 
 ### An AI-powered WhatsApp sticker maker for Android
 
-*1–3 photos · 1 AI image · 3–10 stickers · 38 theme packs · straight into WhatsApp*
+*1–3 photos · 1 AI image · 3–10 stickers · 20 theme packs · 2,000 captions & poses · straight into WhatsApp*
 
 [![Release](https://img.shields.io/github/v/release/vickyvam72/LumiStickerize?label=release&color=3E84E8&style=for-the-badge)](https://github.com/vickyvam72/LumiStickerize/releases/latest)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-requirements)
@@ -30,8 +30,8 @@
 | 💑 **Couple stickers** | Automatic face detection. Pick 1 person, or 2 people for **couple stickers**. |
 | 💸 **Token-saving** | All stickers are drawn in **a single image**, so 3 or 10 stickers cost the same. |
 | ✂️ **Auto cut-out** | Background removed, stray frames and lines cleaned up, and a white sticker border added. |
-| 🎨 **10 styles** | Cartoon, Chibi, Anime, Cute 3D, Kawaii, Pixel Art, Comic, Watercolor, Clay and Sketch. |
-| 🎁 **38 theme packs** | Eid, Love, Office life, Moms, Singles, Football night and more. Each has **20 captions & poses**, filled in randomly with one tap. |
+| 🎨 **20 art styles** | Cartoon, Chibi, Anime, Cute 3D, Kawaii, Pixel Art, Comic, Watercolor, Clay, Sketch, Caricature, Flat vector, Line art, Pop art, Retro 90s, Crayon, Neon, Oil painting, Knitted and Papercraft. |
+| 🎁 **20 theme packs** | The most-used themes: greetings, love, LOL, office, Eid, online seller and more. Each has **100 captions & poses**, filled in randomly with one tap. |
 | 💬 **1,600+ ready-made captions** | Write your own, or tap 🎲 for a random caption on each sticker. |
 | 📦 **My packs** | See what's in each pack, rename it, delete stickers or whole packs, and save to your Gallery. |
 | 🧽 **Manual eraser** | Something still not clean? Just rub it away with your finger. |
@@ -53,7 +53,7 @@
 | 🎨 **4 · Pick a style** | 💬 **5 · Captions** |
 |:-:|:-:|
 | <img src="docs/screenshots/pilih-tema.jpg" width="230"> | <img src="docs/screenshots/tulisan.jpg" width="230"> |
-| **10 styles, one face.**<br>From adorable Chibi to artsy Sketch. | **Out of words? Roll the dice 🎲**<br>1,647 ready-made captions, from greetings to slang. |
+| **20 styles, one face.**<br>From adorable Chibi to artsy Sketch. | **Out of words? Roll the dice 🎲**<br>1,647 ready-made captions, from greetings to slang. |
 
 </div>
 
@@ -71,11 +71,11 @@
 
 **🎨 Sticker settings**
 - **3 to 10** stickers (WhatsApp requires at least 3)
-- **10** art styles
+- **20** art styles, all on one screen
 - **No text** (expressions only) or **with captions**, one per sticker
 - A 🎲 button on every field plus **🎲 Acak semua** (Randomize all), drawing from **1,647 Indonesian captions** in 33 categories
 - **+ pose (optional)** on every caption: describe the sticker's pose yourself (e.g. "holding my nose") or pick a quick idea; handy for unusual captions
-- **🎁 38 ready-made theme packs**, each with **20 captions & poses** (in Indonesian), from Daily greetings, Love, Office life and Eid to Moms, Regional languages, Singles, Healing, Cat lovers, Football night, Coffee hangouts and K-pop fans. One tap fills captions and poses **randomly** from that theme; tap again for a new mix, or tap 🎲 to swap a single sticker
+- **🎁 20 ready-made theme packs**, each with **100 captions & poses** in Indonesian (2,000 in total): Daily greetings, Thanks & sorry, Chat reactions, LOL, Love, Feeling blue, Annoyed, Lazy, Office life, School & campus, Foodie, Besties, Family chat, Islamic phrases, Eid, Ramadan, Birthday, Congrats, Motivation and Online seller. One tap fills captions and poses **randomly** from that theme; tap again for a new mix, or tap 🎲 to swap a single sticker. The theme list shows just emoji and title, all on one screen
 
 **✂️ Results**
 - 512×512 WebP stickers under 100 KB, meeting WhatsApp's requirements
@@ -159,7 +159,7 @@ You can change the model and keys any time via the ⚙️ icon at the top right 
 Tap the box on a face in the main photo. For couple stickers, tap **Pilih keduanya (stiker berdua)** (Pick both — couple stickers).
 
 ### 4️⃣ Count, style and captions
-Choose 3–10 stickers, pick a style, then choose **Tanpa kata** (No text) or **Pakai kata** (With text). Tap 🎲 for random captions, tap **+ pose** to set each sticker's pose, or tap **🎁 Paket tema** (Theme packs) to fill captions and poses at once from 38 ready-made themes.
+Choose 3–10 stickers, pick a style, then choose **Tanpa kata** (No text) or **Pakai kata** (With text). Tap 🎲 for random captions, tap **+ pose** to set each sticker's pose, or tap **🎁 Paket tema** (Theme packs) to fill captions and poses at once from 20 ready-made themes.
 
 ### 5️⃣ Create and tidy up
 Tap **✨ Buat Stiker** (Create stickers) and wait about 15–60 seconds. If anything looks untidy, tap that sticker to open **Rapikan stiker** (Tidy up sticker).
@@ -255,7 +255,7 @@ app/src/main/java/com/lumi/stickerize/
 ├── whatsapp/    # "Add to WhatsApp" intent
 └── ui/          # Compose screens: wizard steps, results, eraser, theme packs, My packs
 app/src/main/assets/kata_stiker.txt   # 1,647 captions for the 🎲 button
-app/src/main/assets/tema.json         # 38 theme packs (generated from tools/themes/tema.py)
+app/src/main/assets/tema.json         # 20 theme packs × 100 captions & poses (generated from tools/themes/tema.py)
 ```
 
 ### 🏗️ Building from source

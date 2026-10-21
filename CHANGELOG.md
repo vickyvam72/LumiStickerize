@@ -17,12 +17,16 @@
 <details open>
 <summary><h2>🇮🇩 Bahasa Indonesia</h2></summary>
 
-### 🎁 38 paket tema siap pakai
+### 🎁 20 paket tema siap pakai
 - Di langkah **Tulisan**, ketuk **🎁 Paket tema** untuk mengisi **kata dan pose** semua stiker sekaligus
-- Tiap tema berisi **20 kata & pose**. Yang dipakai dipilih **acak**, jadi ketuk tema lagi untuk kombinasi lain, atau tekan 🎲 untuk mengganti satu stiker dengan kata & pose lain dari tema yang sama
-- Pilihan tema: Sapaan harian, Makasih & maaf, Bucin, Kantor, Sekolah & kuliah, Kulineran, Ngakak, Kesel & ngegas, Galau, Mager, Ulang tahun, Lebaran, Ramadan, Natal & Tahun Baru, Imlek, Islami, Selamat ya!, Hari Kemerdekaan, Reaksi chat, Sahabat, Pasangan, Grup keluarga, Jualan online, Semangat, Gajian & bokek, Mood harian, Gamer, Olahraga, Liburan, Cepat sembuh, Emak-emak, Bahasa daerah, Jomblo, Healing, Pecinta kucing, Nobar bola, Ngopi & nongkrong, Fangirl & K-pop
-- Daftar tema ringkas: cukup emoji dan judul, jadi mudah dipilih
+- 20 tema yang paling sering dipakai: Sapaan harian, Makasih & maaf, Reaksi chat, Ngakak, Bucin, Galau, Kesel & ngegas, Mager, Kantor, Sekolah & kuliah, Kulineran, Sahabat, Grup keluarga, Islami, Lebaran, Ramadan, Ulang tahun, Selamat ya!, Semangat, Jualan online
+- Tiap tema berisi **100 kata & pose** (total 2.000). Yang dipakai dipilih **acak**, jadi ketuk tema lagi untuk kombinasi lain, atau tekan 🎲 untuk mengganti satu stiker dengan kata & pose lain dari tema yang sama
+- Daftar tema cukup emoji dan judul, muat **satu layar tanpa scroll**
 - Semua kata dan pose tetap bisa diubah setelah dipilih
+
+### 🎨 20 gaya gambar
+- 10 gaya baru: Karikatur, Flat Vektor, Line Art, Pop Art, Retro 90-an, Krayon, Neon, Lukisan Minyak, Rajut, dan Kertas
+- Ke-20 gaya tampil dalam kotak kecil 4 kolom, muat **satu layar tanpa scroll**
 
 ### ➕ Lengkapi stiker yang kurang
 - Kalau AI menggambar lebih sedikit dari yang diminta (mis. 8 dari 10), tekan **➕ Lengkapi** untuk membuat **hanya stiker yang kurang**
@@ -47,12 +51,16 @@
 <details>
 <summary><h2>🇬🇧 English</h2></summary>
 
-### 🎁 38 ready-made theme packs
+### 🎁 20 ready-made theme packs
 - On the **Tulisan** (Captions) step, tap **🎁 Paket tema** (Theme packs) to fill the **captions and poses** of every sticker at once
-- Each theme holds **20 captions & poses** (in Indonesian). They're picked **at random**, so tap the theme again for a new mix, or tap 🎲 to swap one sticker for another caption & pose from the same theme
-- Themes include Daily greetings, Thanks & sorry, Love, Office life, School, Food, LOL, Annoyed, Feeling blue, Lazy, Birthday, Eid, Ramadan, Christmas & New Year, Lunar New Year, Islamic phrases, Congrats, Independence Day, Chat reactions, Besties, Couples, Family chat, Online seller, Motivation, Payday & broke, Mood of the week, Gamer, Sport, Travel, Get well, Moms, Regional languages, Singles, Healing, Cat lovers, Football night, Coffee hangouts and K-pop fans
-- A compact list: just the emoji and the title, easy to pick
+- The 20 most-used themes: Daily greetings, Thanks & sorry, Chat reactions, LOL, Love, Feeling blue, Annoyed, Lazy, Office life, School & campus, Foodie, Besties, Family chat, Islamic phrases, Eid, Ramadan, Birthday, Congrats, Motivation and Online seller
+- Each theme holds **100 captions & poses** in Indonesian (2,000 in total). They're picked **at random**, so tap the theme again for a new mix, or tap 🎲 to swap one sticker for another caption & pose from the same theme
+- The theme list shows just emoji and title and fits on **one screen, no scrolling**
 - Every caption and pose can still be edited afterwards
+
+### 🎨 20 art styles
+- 10 new styles: Caricature, Flat vector, Line art, Pop art, Retro 90s, Crayon, Neon, Oil painting, Knitted and Papercraft
+- All 20 styles appear as small tiles in 4 columns and fit on **one screen, no scrolling**
 
 ### ➕ Add the missing stickers
 - If the AI draws fewer stickers than requested (e.g. 8 of 10), tap **➕ Lengkapi** to create **only the missing ones**

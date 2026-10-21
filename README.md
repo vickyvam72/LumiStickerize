@@ -4,7 +4,7 @@
 
 ### Pembuat stiker WhatsApp otomatis dengan AI untuk Android
 
-*1–3 foto · 1 gambar AI · 3–10 stiker · 38 paket tema · langsung masuk WhatsApp*
+*1–3 foto · 1 gambar AI · 3–10 stiker · 20 paket tema · 2.000 kata & pose · langsung masuk WhatsApp*
 
 [![Rilis](https://img.shields.io/github/v/release/vickyvam72/LumiStickerize?label=rilis&color=3E84E8&style=for-the-badge)](https://github.com/vickyvam72/LumiStickerize/releases/latest)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-kebutuhan-sistem)
@@ -30,8 +30,8 @@
 | 💑 **Bisa berdua** | Deteksi wajah otomatis. Pilih 1 orang, atau 2 orang sekaligus untuk **stiker couple**. |
 | 💸 **Hemat token** | Semua stiker digambar dalam **1 gambar saja**, jadi biaya 3 atau 10 stiker sama. |
 | ✂️ **Potong otomatis** | Latar dihapus, bingkai dan garis sisa dibuang, lalu tiap stiker diberi garis tepi putih. |
-| 🎨 **10 tema** | Cartoon, Chibi, Anime, 3D Lucu, Kawaii, Pixel Art, Komik, Cat Air, Clay, dan Sketsa. |
-| 🎁 **38 paket tema** | Lebaran, Bucin, Kantor, Emak-emak, Jomblo, Nobar bola, dan lainnya. Tiap tema berisi **20 kata & pose**, terisi acak sekali ketuk. |
+| 🎨 **20 gaya gambar** | Cartoon, Chibi, Anime, 3D Lucu, Kawaii, Pixel Art, Komik, Cat Air, Clay, Sketsa, Karikatur, Flat Vektor, Line Art, Pop Art, Retro 90-an, Krayon, Neon, Lukisan Minyak, Rajut, dan Kertas. |
+| 🎁 **20 paket tema** | Tema yang paling sering dipakai: Sapaan, Bucin, Ngakak, Kantor, Lebaran, Jualan online, dan lainnya. Tiap tema berisi **100 kata & pose**, terisi acak sekali ketuk. |
 | 💬 **1.600+ kata siap pakai** | Tulis sendiri, atau tekan 🎲 untuk kata acak di tiap stiker. |
 | 📦 **Paket saya** | Lihat isi paket, ganti nama, hapus stiker atau paket, dan simpan ke Galeri. |
 | 🧽 **Penghapus manual** | Masih ada bagian yang kurang rapi? Gosok saja dengan jari. |
@@ -53,7 +53,7 @@
 | 🎨 **4 · Pilih tema** | 💬 **5 · Tulisan** |
 |:-:|:-:|
 | <img src="docs/screenshots/pilih-tema.jpg" width="230"> | <img src="docs/screenshots/tulisan.jpg" width="230"> |
-| **10 gaya, satu wajah.**<br>Dari Chibi yang gemas sampai Sketsa yang estetik. | **Kehabisan kata? Lempar dadu 🎲**<br>1.647 kata siap pakai, dari salam sampai bahasa gaul. |
+| **20 gaya, satu wajah.**<br>Dari Chibi yang gemas sampai Sketsa yang estetik. | **Kehabisan kata? Lempar dadu 🎲**<br>1.647 kata siap pakai, dari salam sampai bahasa gaul. |
 
 </div>
 
@@ -71,11 +71,11 @@
 
 **🎨 Pengaturan stiker**
 - Jumlah stiker **3 sampai 10** (minimal 3 sesuai aturan WhatsApp)
-- **10 tema** gaya gambar
+- **20 gaya gambar**, semuanya muat dalam satu layar
 - **Tanpa kata** (hanya ekspresi) atau **pakai kata**, satu kata per stiker
 - Tombol 🎲 di tiap kolom dan **🎲 Acak semua**, dari **1.647 kata** dalam 33 kategori: salam, terima kasih, maaf, tertawa, bucin, kerja, sekolah, makan, Islami, bahasa gaul, bahasa daerah, dan lainnya
 - **+ pose (opsional)** di tiap kata: tulis sendiri gaya stikernya (mis. "menutup hidung") atau pilih dari ide cepat, cocok untuk kata yang tidak umum
-- **🎁 38 paket tema siap pakai**, masing-masing berisi **20 kata & pose**: Sapaan harian, Makasih & maaf, Bucin, Kantor, Sekolah & kuliah, Kulineran, Ngakak, Kesel & ngegas, Galau, Mager, Ulang tahun, Lebaran, Ramadan, Natal & Tahun Baru, Imlek, Islami, Selamat ya!, Hari Kemerdekaan, Reaksi chat, Sahabat, Pasangan, Grup keluarga, Jualan online, Semangat, Gajian & bokek, Mood harian, Gamer, Olahraga, Liburan, Cepat sembuh, Emak-emak, Bahasa daerah, Jomblo, Healing, Pecinta kucing, Nobar bola, Ngopi & nongkrong, Fangirl & K-pop. Sekali ketuk, kata dan pose terisi **acak** dari tema itu; ketuk lagi untuk kombinasi lain, atau tekan 🎲 untuk mengganti satu stiker saja
+- **🎁 20 paket tema siap pakai**, masing-masing berisi **100 kata & pose** (total 2.000): Sapaan harian, Makasih & maaf, Reaksi chat, Ngakak, Bucin, Galau, Kesel & ngegas, Mager, Kantor, Sekolah & kuliah, Kulineran, Sahabat, Grup keluarga, Islami, Lebaran, Ramadan, Ulang tahun, Selamat ya!, Semangat, Jualan online. Sekali ketuk, kata dan pose terisi **acak** dari tema itu; ketuk lagi untuk kombinasi lain, atau tekan 🎲 untuk mengganti satu stiker saja. Daftar tema cukup emoji dan judul, muat satu layar
 
 **✂️ Hasil**
 - Stiker 512×512 WebP di bawah 100 KB, sesuai syarat WhatsApp
@@ -161,7 +161,7 @@ Key hanya disimpan **di HP-mu**.
 Ketuk kotak di wajah pada foto utama. Untuk stiker berdua, tekan **Pilih keduanya (stiker berdua)**.
 
 ### 4️⃣ Jumlah, tema, dan kata
-Tentukan jumlah stiker (3–10), pilih tema, lalu pilih **Tanpa kata** atau **Pakai kata**. Tekan 🎲 untuk kata acak, ketuk **+ pose** untuk mengatur gaya tiap stiker, atau tekan **🎁 Paket tema** untuk mengisi kata dan pose sekaligus dari 38 tema siap pakai.
+Tentukan jumlah stiker (3–10), pilih tema, lalu pilih **Tanpa kata** atau **Pakai kata**. Tekan 🎲 untuk kata acak, ketuk **+ pose** untuk mengatur gaya tiap stiker, atau tekan **🎁 Paket tema** untuk mengisi kata dan pose sekaligus dari 20 tema siap pakai.
 
 ### 5️⃣ Buat dan rapikan
 Tekan **✨ Buat Stiker** dan tunggu sekitar 15–60 detik. Kalau ada bagian yang kurang rapi, ketuk stikernya untuk membuka **Rapikan stiker**.
@@ -257,7 +257,7 @@ app/src/main/java/com/lumi/stickerize/
 ├── whatsapp/    # Intent "Tambahkan ke WhatsApp"
 └── ui/          # Layar Compose: langkah-langkah, hasil, penghapus, paket tema, Paket saya
 app/src/main/assets/kata_stiker.txt   # 1.647 kata untuk tombol 🎲
-app/src/main/assets/tema.json         # 38 paket tema (dibuat dari tools/themes/tema.py)
+app/src/main/assets/tema.json         # 20 paket tema × 100 kata & pose (dibuat dari tools/themes/tema.py)
 ```
 
 ### 🏗️ Build dari kode sumber
