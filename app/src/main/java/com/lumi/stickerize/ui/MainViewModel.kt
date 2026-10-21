@@ -772,6 +772,116 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /* ------------------------------------------------ edit stiker di paket lama */
+
+    /** Stiker paket yang sedang dirapikan dengan penghapus (layar Paket saya). */
+    var managerEditFile by mutableStateOf<String?>(null)
+        private set
+    var managerEditBitmap by mutableStateOf<Bitmap?>(null)
+        private set
+    /** Jumlah stiker paket yang sedang dibuat ulang (0 = tidak sedang). */
+    var managerBusy by mutableIntStateOf(0)
+        private set
+    private var managerJob: Job? = null
+
+    fun openPackEraser(id: String, fileName: String) {
+        val app = getApplication<Application>()
+        viewModelScope.launch {
+            val bmp = withContext(Dispatchers.IO) {
+                BitmapFactory.decodeFile(PackStore.stickerFile(app, id, fileName).absolutePath)
+            } ?: return@launch
+            managerEditBitmap = bmp
+            managerEditFile = fileName
+        }
+    }
+
+    fun closePackEraser() {
+        managerEditFile = null
+        managerEditBitmap = null
+    }
+
+    fun savePackEraser(id: String, edited: Bitmap) {
+        val file = managerEditFile ?: return
+        val app = getApplication<Application>()
+        closePackEraser()
+        viewModelScope.launch {
+            val ok = withContext(Dispatchers.IO) { PackStore.replaceSticker(app, id, file, edited) } != null
+            refreshAllPacks()
+            loadManagerStickers()
+            managerMessage = if (ok) s(R.string.packs_edit_saved) else s(R.string.err_generic)
+        }
+    }
+
+    /**
+     * Buat ulang beberapa stiker di paket yang sudah jadi. Foto asli tidak disimpan, jadi
+     * stiker lain di paket itu dipakai sebagai contoh wajah & gaya.
+     * @param captions kata baru per nama file, @param newPoses pose baru per nama file (opsional)
+     */
+    fun regeneratePackStickers(id: String, files: List<String>, captions: Map<String, String>, newPoses: Map<String, String>) {
+        if (files.isEmpty() || generating || managerBusy > 0) return
+        if (!settings.hasCredentials) {
+            askForKey = true
+            return
+        }
+        val app = getApplication<Application>()
+        val pack = PackStore.load(app, id) ?: return
+        val targets = files.filter { f -> pack.stickers.any { it.fileName == f } }.take(MAX_STICKERS)
+        if (targets.isEmpty()) return
+        lastAction = { regeneratePackStickers(id, files, captions, newPoses) }
+
+        managerBusy = targets.size
+        error = null
+        Notifier.clearDone(app)
+        GenerationService.start(app, s(R.string.notif_remaking, targets.size))
+        managerJob = viewModelScope.launch {
+            try {
+                val generator = settings.generator()
+                // contoh: utamakan stiker yang tidak dibuat ulang, lalu stiker yang dibuat ulang
+                val refFiles = (pack.stickers.map { it.fileName }.filterNot { it in targets } + targets)
+                    .take(generator.maxReferences.coerceIn(1, 3))
+                val refs = withContext(Dispatchers.IO) {
+                    refFiles.mapNotNull { f ->
+                        BitmapFactory.decodeFile(PackStore.stickerFile(app, id, f).absolutePath)?.let { bmp ->
+                            ImageUtils.toJpeg(flattenOnWhite(bmp)).also { bmp.recycle() }
+                        }
+                    }
+                }
+                if (refs.isEmpty()) throw AiException(s(R.string.err_generic), ErrorKind.OTHER)
+                val caps = targets.map { f -> (captions[f] ?: pack.stickers.first { it.fileName == f }.caption).trim() }
+                val posesList = targets.map { newPoses[it].orEmpty().trim() }
+                val grid = GridSpec.forCount(targets.size)
+                val prompt = PromptBuilder.buildFromStickers(grid, targets.size, caps, posesList, refs.size)
+                val sheetBmp = generator.generateSheet(prompt, refs, grid.aspectRatio)
+                val pieces = withContext(Dispatchers.Default) { StickerMaker.sliceIndexed(sheetBmp, grid, targets.size) }
+                if (pieces.isEmpty()) throw AiException(s(R.string.err_fill_none), ErrorKind.BUSY)
+                withContext(Dispatchers.IO) {
+                    pieces.forEach { (cell, bmp) ->
+                        val f = targets.getOrNull(cell) ?: return@forEach
+                        PackStore.replaceSticker(app, id, f, bmp, caps[cell])
+                    }
+                }
+                refreshAllPacks()
+                if (managerPackId == id) loadManagerStickers()
+                managerMessage = if (pieces.size < targets.size) s(R.string.notice_remade_partial, pieces.size, targets.size)
+                else s(R.string.packs_remade, pieces.size)
+                Notifier.done(app, s(R.string.notif_updated_title), managerMessage ?: "")
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                handleFailure(e, R.string.notif_remake_failed)
+            } finally {
+                managerBusy = 0
+                GenerationService.stop(app)
+            }
+        }
+    }
+
+    fun cancelPackRegenerate() {
+        managerJob?.cancel()
+        managerBusy = 0
+        GenerationService.stop(getApplication())
+    }
+
     fun restart() {
         if (generating) return
         for (i in 0 until 3) clearPhoto(i)

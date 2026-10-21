@@ -33,7 +33,7 @@
 | 🎨 **20 gaya gambar** | Cartoon, Chibi, Anime, 3D Lucu, Kawaii, Pixel Art, Komik, Cat Air, Clay, Sketsa, Karikatur, Flat Vektor, Line Art, Pop Art, Retro 90-an, Krayon, Neon, Lukisan Minyak, Rajut, dan Kertas. |
 | 🎁 **20 paket tema** | Tema yang paling sering dipakai: Sapaan, Bucin, Ngakak, Kantor, Jomblo, Jualan online, dan lainnya. Tiap tema berisi **100 kata & pose**, terisi acak sekali ketuk. |
 | 💬 **1.600+ kata siap pakai** | Tulis sendiri, atau tekan 🎲 untuk kata acak di tiap stiker. |
-| 📦 **Paket saya** | Lihat isi paket, ganti nama, hapus stiker atau paket, dan simpan ke Galeri. |
+| 📦 **Paket saya** | Lihat isi paket, ganti nama, **rapikan atau buat ulang stiker lama**, hapus stiker atau paket, dan simpan ke Galeri. |
 | 🧽 **Penghapus manual** | Masih ada bagian yang kurang rapi? Gosok saja dengan jari. |
 | 🆓 **Ada opsi gratis** | Pakai model gratis harian dari Cloudflare, atau model OpenRouter untuk hasil terbaik. |
 
@@ -97,7 +97,7 @@
 - Simpan ke **paket baru** atau **tambahkan ke paket yang sudah ada** (maks. 30 stiker per paket)
 - Nama paket bisa diganti
 - Stiker yang diedit setelah ditambahkan ikut diperbarui di WhatsApp
-- **📦 Paket saya**: lihat semua paket, ganti nama, hapus beberapa stiker, hapus paket, tambahkan lagi ke WhatsApp, atau simpan seluruh paket ke Galeri
+- **📦 Paket saya**: lihat semua paket, ganti nama, rapikan atau buat ulang stiker di paket yang sudah jadi, hapus beberapa stiker, hapus paket, tambahkan lagi ke WhatsApp, atau simpan seluruh paket ke Galeri
 
 ---
 
@@ -175,6 +175,8 @@ Di bagian **Simpan ke paket**, pilih **Paket baru** (bisa diberi nama) atau sala
 
 ### 7️⃣ Kelola paket
 Ketuk **📦 Paket saya** di kanan atas untuk melihat semua paket. Ketuk satu paket untuk mengganti nama, mencentang lalu menghapus stiker (WhatsApp butuh minimal 3 stiker per paket), menghapus paket, menambahkannya lagi ke WhatsApp, atau menyimpannya ke Galeri.
+
+Mau mengubah satu atau beberapa stiker di paket yang sudah jadi? Centang stikernya, lalu tekan **✏️ Rapikan** (penghapus, untuk 1 stiker) atau **🔄 Buat ulang** untuk menggambar ulang dengan kata & pose baru. Foto asli tidak disimpan, jadi AI memakai stiker lain di paket itu sebagai contoh wajah & gaya. Kalau paketnya sudah ada di WhatsApp dan stikernya belum berubah, tekan **Tambahkan ke WhatsApp** lagi.
 
 ---
 

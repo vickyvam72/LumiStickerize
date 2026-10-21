@@ -111,6 +111,30 @@ object PackStore {
     /** File gambar satu stiker di paket. */
     fun stickerFile(context: Context, id: String, fileName: String): File = File(packDir(context, id), fileName)
 
+    /**
+     * Ganti satu stiker di paket (setelah dirapikan atau dibuat ulang dari layar Paket saya).
+     * Urutan & emoji tetap; nama file baru agar WhatsApp tidak memakai gambar lama dari cache.
+     * @param caption kata baru, null = tetap
+     */
+    fun replaceSticker(context: Context, id: String, oldFile: String, bitmap: Bitmap, caption: String? = null): StickerPack? {
+        val old = load(context, id) ?: return null
+        val index = old.stickers.indexOfFirst { it.fileName == oldFile }
+        if (index < 0) return null
+        val dir = packDir(context, id)
+        val stamp = System.currentTimeMillis().toString(36)
+        val base = oldFile.removeSuffix(".webp").substringBeforeLast('_', "")
+        var file = if (base.isEmpty()) "e_$stamp.webp" else "${base}_$stamp.webp"
+        if (file == oldFile) file = "e${index}_$stamp.webp"
+        File(dir, file).writeBytes(StickerMaker.encodeWebp(bitmap))
+        File(dir, oldFile).delete()
+        val entry = old.stickers[index].let { it.copy(fileName = file, caption = caption ?: it.caption) }
+        val list = old.stickers.toMutableList().also { it[index] = entry }
+        if (index == 0) File(dir, TRAY_FILE).writeBytes(StickerMaker.trayPng(bitmap))
+        val pack = old.copy(stickers = list, version = old.version + 1)
+        File(dir, "pack.json").writeText(toJson(pack).toString())
+        return pack
+    }
+
     /** Ganti nama paket (WhatsApp memperbaruinya setelah paket ditambahkan ulang). */
     fun rename(context: Context, id: String, name: String): StickerPack? {
         val old = load(context, id) ?: return null

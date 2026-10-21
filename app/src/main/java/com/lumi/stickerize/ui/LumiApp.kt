@@ -1628,7 +1628,7 @@ private fun RegenerateDialog(
 
 /** Kolom isian ringkas (40dp) untuk jendela Ubah kata & pose. */
 @Composable
-private fun DialogField(
+internal fun DialogField(
     value: String,
     onChange: (String) -> Unit,
     prefix: String,

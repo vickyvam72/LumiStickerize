@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +49,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -94,6 +97,87 @@ fun PackManagerScreen(vm: MainViewModel) {
             if (pack == null) PackList(vm) else PackDetail(vm, pack)
         }
     }
+    // Rapikan stiker paket lama dengan penghapus, di atas layar Paket saya
+    val editFile = vm.managerEditFile
+    val editBmp = vm.managerEditBitmap
+    if (openId != null && editFile != null && editBmp != null) {
+        val number = vm.managerStickers.indexOfFirst { it.fileName == editFile }.coerceAtLeast(0)
+        key(editFile) {
+            EraserScreen(
+                index = number,
+                original = editBmp,
+                onDismiss = { vm.closePackEraser() },
+                onSave = { vm.savePackEraser(openId, it) }
+            )
+        }
+    }
+}
+
+/** Dialog ubah kata & pose untuk stiker paket lama yang dicentang. */
+@Composable
+private fun PackRemakeDialog(
+    vm: MainViewModel,
+    files: List<String>,
+    captions: Map<String, String>,
+    onDismiss: () -> Unit,
+    onConfirm: (Map<String, String>, Map<String, String>) -> Unit,
+) {
+    val values = remember { mutableStateMapOf<String, String>().apply { files.forEach { put(it, captions[it].orEmpty()) } } }
+    val poseValues = remember { mutableStateMapOf<String, String>().apply { files.forEach { put(it, "") } } }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.regen_title)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Text(
+                    stringResource(R.string.packs_remake_help),
+                    fontSize = 13.sp,
+                    lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(10.dp))
+                files.forEach { f ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        val img = vm.managerStickers.firstOrNull { it.fileName == f }?.image
+                        Box(
+                            Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(LumiTile)
+                        ) { if (img != null) Image(img, null, modifier = Modifier.fillMaxSize()) }
+                        Spacer(Modifier.width(10.dp))
+                        Column(Modifier.weight(1f)) {
+                            DialogField(
+                                value = values[f].orEmpty(),
+                                onChange = { values[f] = it.take(25) },
+                                prefix = "💬",
+                                placeholder = stringResource(R.string.regen_caption_hint),
+                                onDice = {
+                                    val others = captions.filterKeys { it != f }.values + values.filterKeys { it != f }.values
+                                    values[f] = vm.randomCaption(others)
+                                }
+                            )
+                            Spacer(Modifier.height(5.dp))
+                            DialogField(
+                                value = poseValues[f].orEmpty(),
+                                onChange = { poseValues[f] = it.take(120) },
+                                prefix = "🧍",
+                                placeholder = stringResource(R.string.regen_pose_hint),
+                                onDice = null
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(values.toMap(), poseValues.toMap()) }) {
+                Text(stringResource(R.string.regen_confirm, files.size))
+            }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
+    )
 }
 
 @Composable
@@ -194,8 +278,14 @@ private fun PackDetail(vm: MainViewModel, pack: StickerPack) {
     var selection by remember(pack.id) { mutableStateOf(setOf<String>()) }
     var confirmDeletePack by remember { mutableStateOf(false) }
     var confirmDeleteStickers by remember { mutableStateOf(false) }
+    var remakeOpen by remember { mutableStateOf(false) }
 
     LaunchedEffect(pack.id) { if (vm.managerStickers.isEmpty()) vm.openPack(pack.id) }
+    // stiker yang diganti (dirapikan / dibuat ulang) punya nama file baru → buang centang yang usang
+    LaunchedEffect(vm.managerStickers) {
+        val names = vm.managerStickers.map { it.fileName }.toSet()
+        if (names.isNotEmpty()) selection = selection.filter { it in names }.toSet()
+    }
 
     val waLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         vm.managerMessage = if (res.resultCode == Activity.RESULT_OK) context.getString(R.string.wa_added)
@@ -290,7 +380,54 @@ private fun PackDetail(vm: MainViewModel, pack: StickerPack) {
             Spacer(Modifier.height(8.dp))
         }
         Spacer(Modifier.height(6.dp))
+        if (vm.managerBusy > 0) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(10.dp))
+                Text(
+                    stringResource(R.string.packs_remaking, vm.managerBusy),
+                    fontSize = 13.sp,
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = { vm.cancelPackRegenerate() }) { Text(stringResource(R.string.cancel)) }
+            }
+            Spacer(Modifier.height(8.dp))
+        }
         if (selection.isNotEmpty()) {
+            val busy = vm.managerBusy > 0 || vm.generating
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        if (selection.size == 1) vm.openPackEraser(pack.id, selection.first())
+                        else vm.managerMessage = context.getString(R.string.packs_tidy_one)
+                    },
+                    enabled = !busy,
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(46.dp)
+                ) { Text(stringResource(R.string.packs_tidy), maxLines = 1, fontSize = 14.sp) }
+                Button(
+                    onClick = {
+                        if (selection.size > MainViewModel.MAX_STICKERS)
+                            vm.managerMessage = context.getString(R.string.packs_remake_max, MainViewModel.MAX_STICKERS)
+                        else remakeOpen = true
+                    },
+                    enabled = !busy,
+                    contentPadding = PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(46.dp)
+                ) { Text(stringResource(R.string.packs_remake, selection.size), maxLines = 1, fontSize = 14.sp) }
+            }
+            Spacer(Modifier.height(8.dp))
             OutlinedButton(
                 onClick = { confirmDeleteStickers = true },
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = DangerRed),
@@ -364,6 +501,21 @@ private fun PackDetail(vm: MainViewModel, pack: StickerPack) {
                 if (remaining >= PackStore.MIN_PER_PACK) TextButton(onClick = { confirmDeleteStickers = false }) {
                     Text(stringResource(R.string.cancel))
                 }
+            }
+        )
+    }
+    if (remakeOpen) {
+        val order = pack.stickers.map { it.fileName }
+        val files = selection.sortedBy { order.indexOf(it) }
+        PackRemakeDialog(
+            vm = vm,
+            files = files,
+            captions = pack.stickers.associate { it.fileName to it.caption },
+            onDismiss = { remakeOpen = false },
+            onConfirm = { caps, ps ->
+                remakeOpen = false
+                vm.regeneratePackStickers(pack.id, files, caps, ps)
+                selection = emptySet()
             }
         )
     }

@@ -282,4 +282,12 @@
     <string name="style_oil">Lukisan Minyak</string>
     <string name="style_knit">Rajut</string>
     <string name="style_paper">Kertas</string>
+    <string name="packs_tidy">✏️ Rapikan</string>
+    <string name="packs_remake">🔄 Buat ulang %1$d</string>
+    <string name="packs_tidy_one">Rapikan hanya bisa untuk 1 stiker. Centang satu saja.</string>
+    <string name="packs_remake_max">Buat ulang maksimal %1$d stiker sekaligus.</string>
+    <string name="packs_remake_help">Ganti kata dan/atau pose. Foto asli tidak disimpan, jadi AI memakai stiker lain di paket ini sebagai contoh wajah &amp; gaya, hasilnya tetap senada.</string>
+    <string name="packs_remaking">AI sedang membuat ulang %1$d stiker…</string>
+    <string name="packs_remade">%1$d stiker berhasil dibuat ulang ✨ Kalau paket sudah ada di WhatsApp dan stikernya belum berubah, tekan Tambahkan ke WhatsApp lagi.</string>
+    <string name="packs_edit_saved">Stiker sudah dirapikan ✨ Kalau paket sudah ada di WhatsApp dan stikernya belum berubah, tekan Tambahkan ke WhatsApp lagi.</string>
 </resources>

@@ -33,7 +33,7 @@
 | 🎨 **20 art styles** | Cartoon, Chibi, Anime, Cute 3D, Kawaii, Pixel Art, Comic, Watercolor, Clay, Sketch, Caricature, Flat vector, Line art, Pop art, Retro 90s, Crayon, Neon, Oil painting, Knitted and Papercraft. |
 | 🎁 **20 theme packs** | The most-used themes: greetings, love, LOL, office, singles, online seller and more. Each has **100 captions & poses**, filled in randomly with one tap. |
 | 💬 **1,600+ ready-made captions** | Write your own, or tap 🎲 for a random caption on each sticker. |
-| 📦 **My packs** | See what's in each pack, rename it, delete stickers or whole packs, and save to your Gallery. |
+| 📦 **My packs** | See what's in each pack, rename it, **tidy up or remake old stickers**, delete stickers or whole packs, and save to your Gallery. |
 | 🧽 **Manual eraser** | Something still not clean? Just rub it away with your finger. |
 | 🆓 **Free option** | Use free daily models from Cloudflare, or OpenRouter models for the best results. |
 
@@ -97,7 +97,7 @@
 - Save to a **new pack** or **add to an existing pack** (up to 30 stickers per pack)
 - Rename the sticker pack
 - Stickers edited after adding are updated in WhatsApp too
-- **📦 Paket saya** (My packs): see all packs, rename, delete some stickers, delete a pack, add it to WhatsApp again, or save a whole pack to your Gallery
+- **📦 Paket saya** (My packs): see all packs, rename, tidy up or remake stickers in a finished pack, delete some stickers, delete a pack, add it to WhatsApp again, or save a whole pack to your Gallery
 
 ---
 
@@ -173,6 +173,8 @@ Under **Simpan ke paket** (Save to pack), choose **Paket baru** (New pack, which
 
 ### 7️⃣ Manage your packs
 Tap **📦 Paket saya** (My packs) at the top right to see all packs. Open one to rename it, tick and delete stickers (WhatsApp needs at least 3 per pack), delete the pack, add it to WhatsApp again, or save it to your Gallery.
+
+Want to change one or a few stickers in a finished pack? Tick them, then tap **✏️ Rapikan** (Tidy up, eraser, for 1 sticker) or **🔄 Buat ulang** (Remake) to redraw them with a new caption & pose. Original photos aren't stored, so the AI uses the pack's other stickers as the face & style reference. If the pack is already in WhatsApp and the sticker hasn't changed, tap **Tambahkan ke WhatsApp** (Add to WhatsApp) again.
 
 ---
 

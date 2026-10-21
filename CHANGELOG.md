@@ -36,6 +36,8 @@
 - Tombol **📦 Paket saya** di kanan atas menampilkan semua paket stikermu
 - Lihat isi paket, **ganti nama**, centang lalu **hapus stiker**, **hapus paket**, tambahkan lagi ke WhatsApp, atau simpan seluruh paket ke Galeri
 - WhatsApp butuh minimal 3 stiker per paket, jadi aplikasi mencegah paket jadi kurang dari 3
+- **Edit stiker di paket yang sudah jadi**: centang stiker, lalu **✏️ Rapikan** (penghapus, untuk 1 stiker) atau **🔄 Buat ulang** dengan kata & pose baru. Foto asli tidak disimpan, jadi AI memakai stiker lain di paket itu sebagai contoh wajah & gaya, hasilnya tetap senada. Stiker lain tidak berubah
+- Kalau paketnya sudah ada di WhatsApp dan stiker belum berubah, tekan **Tambahkan ke WhatsApp** lagi
 
 ### ⬇ Simpan ke Galeri
 - Simpan stiker sebagai **PNG transparan** ke folder *Pictures/Lumi Stickerize*, untuk dipakai di Instagram Story, Telegram, dan aplikasi lain
@@ -74,6 +76,8 @@
 - The **📦 Paket saya** (My packs) button at the top right lists all your sticker packs
 - See what's inside, **rename** a pack, tick and **delete stickers**, **delete a pack**, add it to WhatsApp again, or save the whole pack to your Gallery
 - WhatsApp needs at least 3 stickers per pack, so the app won't let a pack drop below 3
+- **Edit stickers in a finished pack**: tick stickers, then **✏️ Rapikan** (Tidy up, eraser, for 1 sticker) or **🔄 Buat ulang** (Remake) with a new caption & pose. Original photos aren't stored, so the AI uses the pack's other stickers as the face & style reference and the result still matches. Other stickers stay the same
+- If the pack is already in WhatsApp and the sticker hasn't changed yet, tap **Tambahkan ke WhatsApp** (Add to WhatsApp) again
 
 ### ⬇ Save to Gallery
 - Save stickers as **transparent PNGs** to *Pictures/Lumi Stickerize* for Instagram Stories, Telegram and other apps
