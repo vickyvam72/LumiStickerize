@@ -25,10 +25,6 @@ class MainActivity : ComponentActivity() {
 
     private val vm: MainViewModel by viewModels()
 
-    // Bahasa aplikasi (bawaan English) dipakai untuk seluruh layar, terlepas dari bahasa HP.
-    override fun attachBaseContext(newBase: android.content.Context) {
-        super.attachBaseContext(com.lumi.stickerize.i18n.Lang.wrap(newBase))
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

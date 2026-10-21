@@ -85,7 +85,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.lumi.stickerize.R
 import com.lumi.stickerize.data.AppSettings
 import com.lumi.stickerize.work.Notifier
-import com.lumi.stickerize.i18n.Lang
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.AlertDialog
 
@@ -150,9 +149,6 @@ fun OnboardingScreen(settings: AppSettings, onFinished: () -> Unit) {
 
 @Composable
 private fun WelcomePage(onNext: () -> Unit) {
-    var pickLanguage by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    if (pickLanguage) LanguageDialog(onDismiss = { pickLanguage = false })
     // Isi selalu di tengah layar; kalau layar kecil / font besar, halaman bisa digeser
     BoxWithConstraints(Modifier.fillMaxSize()) {
         Column(
@@ -164,22 +160,6 @@ private fun WelcomePage(onNext: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // pilihan bahasa (bawaan English)
-            val lang = Lang.option(Lang.current(context))
-            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                Text(
-                    "🌐 ${lang.flag} ${lang.label}  ▾",
-                    color = TextMain,
-                    fontSize = 13.sp,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(50))
-                        .background(CardBg)
-                        .border(1.dp, CardBorder, RoundedCornerShape(50))
-                        .clickable { pickLanguage = true }
-                        .padding(horizontal = 12.dp, vertical = 7.dp)
-                )
-            }
-            Spacer(Modifier.height(12.dp))
             AppLogo(92)
             Spacer(Modifier.height(20.dp))
             Text(stringResource(R.string.app_name), color = TextMain, fontSize = 27.sp, fontWeight = FontWeight.Light)
@@ -732,46 +712,4 @@ private fun GradientButton(
             )
         }
     }
-}
-
-/** Pilih bahasa aplikasi; layar dimuat ulang dengan bahasa baru. */
-@Composable
-fun LanguageDialog(onDismiss: () -> Unit) {
-    val context = LocalContext.current
-    val current = Lang.current(context)
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("🌐 " + stringResource(R.string.language)) },
-        text = {
-            Column {
-                Lang.OPTIONS.forEach { opt ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable {
-                                onDismiss()
-                                if (opt.code != current) {
-                                    Lang.set(context, opt.code)
-                                    (context as? android.app.Activity)?.recreate()
-                                }
-                            }
-                            .padding(horizontal = 8.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(opt.flag, fontSize = 20.sp)
-                        Spacer(Modifier.width(12.dp))
-                        Text(
-                            opt.label,
-                            fontSize = 16.sp,
-                            fontWeight = if (opt.code == current) FontWeight.Bold else FontWeight.Normal,
-                            modifier = Modifier.weight(1f)
-                        )
-                        if (opt.code == current) Text("✓", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-        },
-        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } },
-    )
 }

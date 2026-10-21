@@ -12,7 +12,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.lumi.stickerize.R
-import com.lumi.stickerize.i18n.Lang
 
 /** Notifikasi proses pembuatan stiker & "stiker sudah jadi". */
 object Notifier {
@@ -29,7 +28,7 @@ object Notifier {
     fun ensureChannels(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val nm = context.getSystemService(NotificationManager::class.java)
-        val res = Lang.wrap(context)
+        val res = context
         nm.createNotificationChannel(
             NotificationChannel(CHANNEL_PROGRESS, res.getString(R.string.channel_progress), NotificationManager.IMPORTANCE_LOW)
                 .apply { description = res.getString(R.string.channel_progress_desc) }

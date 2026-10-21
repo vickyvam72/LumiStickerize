@@ -45,6 +45,7 @@ fun ThemePackScreen(
     count: Int,
     selected: String?,
     onPick: (ThemePack) -> Unit,
+    onClear: () -> Unit,
     onClose: () -> Unit,
 ) {
     BackHandler(onBack = onClose)
@@ -73,6 +74,19 @@ fun ThemePackScreen(
                 lineHeight = 18.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            if (selected != null) {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "✕ " + stringResource(R.string.theme_clear),
+                    color = LumiBlue,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(onClick = onClear)
+                        .padding(vertical = 6.dp, horizontal = 4.dp)
+                )
+            }
             Spacer(Modifier.height(12.dp))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -83,9 +97,11 @@ fun ThemePackScreen(
             ) {
                 items(packs, key = { it.id }) { pack ->
                     val isSel = pack.id == selected
-                    Column(
+                    // cukup emoji & judul tema
+                    Row(
                         Modifier
                             .fillMaxWidth()
+                            .height(58.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .background(if (isSel) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
                             .border(
@@ -94,29 +110,19 @@ fun ThemePackScreen(
                                 RoundedCornerShape(16.dp)
                             )
                             .clickable { onPick(pack) }
-                            .padding(12.dp)
+                            .padding(horizontal = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(pack.emoji, fontSize = 26.sp)
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                pack.name,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                lineHeight = 17.sp,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        Spacer(Modifier.height(6.dp))
+                        Text(pack.emoji, fontSize = 24.sp)
+                        Spacer(Modifier.width(10.dp))
                         Text(
-                            pack.items.take(count).joinToString(" • ") { it.caption },
-                            fontSize = 11.sp,
-                            lineHeight = 15.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
+                            pack.name,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            lineHeight = 17.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
                         )
                     }
                 }

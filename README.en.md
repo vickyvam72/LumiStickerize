@@ -4,7 +4,7 @@
 
 ### An AI-powered WhatsApp sticker maker for Android
 
-*1–3 photos · 1 AI image · 3–10 stickers · 30 theme packs · 5 languages · straight into WhatsApp*
+*1–3 photos · 1 AI image · 3–10 stickers · 38 theme packs · straight into WhatsApp*
 
 [![Release](https://img.shields.io/github/v/release/vickyvam72/LumiStickerize?label=release&color=3E84E8&style=for-the-badge)](https://github.com/vickyvam72/LumiStickerize/releases/latest)
 [![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#-requirements)
@@ -31,9 +31,8 @@
 | 💸 **Token-saving** | All stickers are drawn in **a single image**, so 3 or 10 stickers cost the same. |
 | ✂️ **Auto cut-out** | Background removed, stray frames and lines cleaned up, and a white sticker border added. |
 | 🎨 **10 styles** | Cartoon, Chibi, Anime, Cute 3D, Kawaii, Pixel Art, Comic, Watercolor, Clay and Sketch. |
-| 🎁 **30 theme packs** | Eid, Love, Office life, Birthday, Gamer, Online seller and more: captions **and** poses filled in with one tap. |
-| 💬 **Random captions 🎲** | Hundreds of ready-made captions in every language (1,647 in Indonesian). |
-| 🌐 **5 languages** | English (default), Bahasa Indonesia, Bahasa Melayu, Español and Português. |
+| 🎁 **38 theme packs** | Eid, Love, Office life, Moms, Singles, Football night and more. Each has **20 captions & poses**, filled in randomly with one tap. |
+| 💬 **1,600+ ready-made captions** | Write your own, or tap 🎲 for a random caption on each sticker. |
 | 📦 **My packs** | See what's in each pack, rename it, delete stickers or whole packs, and save to your Gallery. |
 | 🧽 **Manual eraser** | Something still not clean? Just rub it away with your finger. |
 | 🆓 **Free option** | Use free daily models from Cloudflare, or OpenRouter models for the best results. |
@@ -43,8 +42,6 @@
 ## 📸 Screenshots
 
 > From an everyday photo to **a full WhatsApp sticker pack** in a few taps. Every step fits on **one screen**: no scrolling, no fuss.
->
-> *Screenshots show the Indonesian interface. The app opens in English by default and you can switch language any time.*
 
 <div align="center">
 
@@ -64,11 +61,6 @@
 
 ## ✨ Features
 
-**🌐 Languages**
-- Interface in **English** (default), **Bahasa Indonesia**, **Bahasa Melayu**, **Español** and **Português**
-- Switch language on the welcome screen or in ⚙️ Settings, independent of your phone's language
-- Random captions 🎲, theme packs, notifications and error messages follow the chosen language
-
 **🖼️ Photos & faces**
 - **1 photo is enough**; add photos 2 and 3 (optional) for more accurate results
 - Pick photos one by one or **all at once**
@@ -81,31 +73,31 @@
 - **3 to 10** stickers (WhatsApp requires at least 3)
 - **10** art styles
 - **No text** (expressions only) or **with captions**, one per sticker
-- A 🎲 button on every field plus **🎲 Random all**, drawing from hundreds of captions in your language (1,647 in Indonesian, in 33 categories)
+- A 🎲 button on every field plus **🎲 Acak semua** (Randomize all), drawing from **1,647 Indonesian captions** in 33 categories
 - **+ pose (optional)** on every caption: describe the sticker's pose yourself (e.g. "holding my nose") or pick a quick idea; handy for unusual captions
-- **🎁 30 ready-made theme packs**: Daily greetings, Thanks & sorry, Love & crush, Office life, School & campus, Foodie, LOL, Annoyed, Feeling blue, Sleepy & lazy, Birthday, Eid, Ramadan, Christmas & New Year, Lunar New Year, Islamic phrases, Congrats!, Independence Day, Chat reactions, Besties, Couple goals, Family chat, Online seller, Motivation, Payday & broke, Mood of the week, Gamer, Sport & gym, Travel, Get well & care. One tap fills the **captions and poses** of every sticker, and you can still edit them
+- **🎁 38 ready-made theme packs**, each with **20 captions & poses** (in Indonesian), from Daily greetings, Love, Office life and Eid to Moms, Regional languages, Singles, Healing, Cat lovers, Football night, Coffee hangouts and K-pop fans. One tap fills captions and poses **randomly** from that theme; tap again for a new mix, or tap 🎲 to swap a single sticker
 
 **✂️ Results**
 - 512×512 WebP stickers under 100 KB, meeting WhatsApp's requirements
 - Automatically removes white backgrounds, **boxes/frames**, **stray line fragments** and specks
-- **Tidy up sticker**: an eraser with adjustable brush, Undo and Start over
+- **Rapikan stiker** (Tidy up sticker): an eraser with adjustable brush, Undo and Start over
 - View the original AI image for comparison
-- **Replace some**: tick 1 or more stickers, then **change their captions & poses** or **remake** only those, without redoing the whole set
-- **Redo all** with the same settings
+- **Ganti sebagian** (Replace some): tick 1 or more stickers, then **change their captions & poses** or **remake** only those, without redoing the whole set
+- **Ulang semua** (Redo all) with the same settings
 - **⬇ Save to Gallery** as transparent PNGs (folder *Pictures/Lumi Stickerize*) for Instagram Stories, Telegram and more
 
 **🔔 Leave it, get notified**
 - While the AI works, you can switch apps or turn the screen off
 - A **notification** appears when the stickers are ready (or if something fails)
-- If the AI draws **fewer** stickers than requested (e.g. 8 of 10), tap **➕ Add** to create **only the missing ones**, in the same style
-- **Clear error messages** with the right button: out of credit → *Top up credit*, wrong key or quota used up → *Open Settings*, no internet or busy AI → *Try again*
+- If the AI draws **fewer** stickers than requested (e.g. 8 of 10), tap **➕ Lengkapi** to create **only the missing ones**, in the same style
+- **Clear error messages** with the right button: out of credit → *Isi saldo* (Top up), wrong key or quota used up → *Buka Pengaturan* (Open Settings), no internet or busy AI → *Coba lagi* (Try again)
 
 **📲 Add to WhatsApp**
-- The official **Add to WhatsApp** flow, supporting WhatsApp and WhatsApp Business
+- The official **Tambahkan ke WhatsApp** (Add to WhatsApp) flow, supporting WhatsApp and WhatsApp Business
 - Save to a **new pack** or **add to an existing pack** (up to 30 stickers per pack)
 - Rename the sticker pack
 - Stickers edited after adding are updated in WhatsApp too
-- **📦 My packs**: see all packs, rename, delete some stickers, delete a pack, add it to WhatsApp again, or save a whole pack to your Gallery
+- **📦 Paket saya** (My packs): see all packs, rename, delete some stickers, delete a pack, add it to WhatsApp again, or save a whole pack to your Gallery
 
 ---
 
@@ -148,37 +140,39 @@
 
 ## 📖 User Guide
 
+> 🗣️ The app interface is in **Indonesian**. Button names are written below exactly as they appear in the app, with an English translation in brackets.
+
 ### 1️⃣ Welcome screens (once)
 On first launch, Lumi Stickerize shows 3 screens:
-1. A short **introduction**. Tap **🌐** at the top right to pick your language (English by default), then tap **Connect AI**.
-2. **Connect AI**: fill in **at least one**, or both:
+1. A short **introduction** — tap **Hubungkan AI** (Connect AI).
+2. **Hubungkan AI**: fill in **at least one**, or both:
    - **OpenRouter (paid):** create a key at [openrouter.ai/keys](https://openrouter.ai/keys), add credit at [openrouter.ai/credits](https://openrouter.ai/credits), then paste the key (starts with `sk-or-`).
    - **Cloudflare (free):** sign up at [dash.cloudflare.com](https://dash.cloudflare.com), copy your **Account ID**, create an **API Token** with the *Workers AI* template, and fill in both.
-3. **One more step**: the **required** permissions are **notifications** (to tell you when stickers are ready) and **running in the background** (so you can leave the app while the AI works). Xiaomi, Oppo, Vivo, Realme & Infinix users are also advised to turn on **Autostart** (optional) — the button opens the phone's own Autostart page directly.
+3. **Satu langkah lagi** (One more step): the **required** permissions are **notifications** (to tell you when stickers are ready) and **running in the background** (so you can leave the app while the AI works). Xiaomi, Oppo, Vivo, Realme & Infinix users are also advised to turn on **Autostart** (optional) — the button opens the phone's own Autostart page directly.
 
-You can change the language, model and keys any time via the ⚙️ icon at the top right → **AI settings**. Keys are stored **only on your device**.
+You can change the model and keys any time via the ⚙️ icon at the top right → **Pengaturan AI** (AI settings). Keys are stored **only on your device**.
 
 ### 2️⃣ Pick your photos
-**One photo is enough.** For more accurate, better-looking results, add photos 2 and 3 (optional) with the **same outfit**. Use photos with clearly visible faces, and make sure everyone you want on the stickers appears in the **main photo**.
+**One photo is enough.** For more accurate, better-looking results, add photos 2 and 3 (optional) with the **same outfit**. Use photos with clearly visible faces, and make sure everyone you want on the stickers appears in the **main photo** (*Foto utama*).
 
 ### 3️⃣ Choose faces
-Tap the box on a face in the main photo. For couple stickers, tap **Pick both (couple stickers)**.
+Tap the box on a face in the main photo. For couple stickers, tap **Pilih keduanya (stiker berdua)** (Pick both — couple stickers).
 
 ### 4️⃣ Count, style and captions
-Choose 3–10 stickers, pick a style, then choose **No text** or **With text**. Tap 🎲 for random captions, tap **+ pose** to set each sticker's pose, or tap **🎁 Theme packs** to fill captions and poses at once from 30 ready-made themes.
+Choose 3–10 stickers, pick a style, then choose **Tanpa kata** (No text) or **Pakai kata** (With text). Tap 🎲 for random captions, tap **+ pose** to set each sticker's pose, or tap **🎁 Paket tema** (Theme packs) to fill captions and poses at once from 38 ready-made themes.
 
 ### 5️⃣ Create and tidy up
-Tap **✨ Create stickers** and wait about 15–60 seconds. If anything looks untidy, tap that sticker to open **Tidy up sticker**.
+Tap **✨ Buat Stiker** (Create stickers) and wait about 15–60 seconds. If anything looks untidy, tap that sticker to open **Rapikan stiker** (Tidy up sticker).
 
-Did the AI draw fewer stickers than you asked for? Tap **➕ Add** in the info box to create only the missing ones.
+Did the AI draw fewer stickers than you asked for? Tap **➕ Lengkapi** (Add the missing ones) in the info box.
 
-Not happy with some stickers? Tap **☑ Replace some**, tick them, then choose **✏️ Text & pose** or **🔄 Remake**. Only the ticked stickers change, and it still costs a single generation.
+Not happy with some stickers? Tap **☑ Ganti sebagian** (Replace some), tick them, then choose **✏️ Kata & pose** (Text & pose) or **🔄 Buat ulang** (Remake). Only the ticked stickers change, and it still costs a single generation.
 
 ### 6️⃣ Add to WhatsApp
-Under **Save to pack**, choose **New pack** (which you can name) or one of your **existing packs**, then tap **Add to WhatsApp**. Want them in other apps too? Tap **⬇ Gallery**.
+Under **Simpan ke paket** (Save to pack), choose **Paket baru** (New pack, which you can name) or one of your **Paket lama** (existing packs), then tap **Tambahkan ke WhatsApp** (Add to WhatsApp). Want them in other apps too? Tap **⬇ Galeri** (Gallery).
 
 ### 7️⃣ Manage your packs
-Tap **📦 My packs** at the top right to see all packs. Open one to rename it, tick and delete stickers (WhatsApp needs at least 3 per pack), delete the pack, add it to WhatsApp again, or save it to your Gallery.
+Tap **📦 Paket saya** (My packs) at the top right to see all packs. Open one to rename it, tick and delete stickers (WhatsApp needs at least 3 per pack), delete the pack, add it to WhatsApp again, or save it to your Gallery.
 
 ---
 
@@ -187,13 +181,13 @@ Tap **📦 My packs** at the top right to see all packs. Open one to rename it, 
 <details>
 <summary><b>In couple stickers, both faces look the same</b></summary>
 
-Tick it with **☑ Replace some** and tap **🔄 Remake**. The app already sends each person's photo separately to the AI, but it can still slip occasionally. **Nano Banana 2** is usually the most accurate for couple stickers.
+Tick it with **☑ Ganti sebagian** (Replace some) and tap **🔄 Buat ulang** (Remake). The app already sends each person's photo separately to the AI, but it can still slip occasionally. **Nano Banana 2** is usually the most accurate for couple stickers.
 </details>
 
 <details>
 <summary><b>There's still a line or box around a sticker</b></summary>
 
-Tap that sticker, rub the area away with the eraser on the **Tidy up sticker** screen, and tap **Save**.
+Tap that sticker, rub the area away with the eraser on the **Rapikan stiker** (Tidy up sticker) screen, and tap **Simpan** (Save).
 </details>
 
 <details>
@@ -211,13 +205,7 @@ For OpenRouter, add credit at openrouter.ai/credits. For Cloudflare, wait for th
 <details>
 <summary><b>The AI only drew some of the stickers</b></summary>
 
-Tap **➕ Add** on the result page. The app creates only the missing stickers, using the finished ones as a style reference so everything matches.
-</details>
-
-<details>
-<summary><b>How do I change the language?</b></summary>
-
-Open ⚙️ Settings and pick a language under **🌐 Language**, or tap 🌐 on the welcome screen. The app uses English by default.
+Tap **➕ Lengkapi** (Add the missing ones) on the result page. The app creates only the missing stickers, using the finished ones as a style reference so everything matches.
 </details>
 
 <details>
@@ -261,16 +249,13 @@ Update WhatsApp to the latest version. If it still fails, the app shows WhatsApp
 app/src/main/java/com/lumi/stickerize/
 ├── ai/          # PromptBuilder, OpenRouter & Cloudflare clients, error kinds
 ├── data/        # Settings, model list, caption bank, theme packs
-├── i18n/        # App language choice
 ├── model/       # Sticker styles and grid layout
 ├── sticker/     # Sticker cutter, pack storage, WhatsApp ContentProvider
 ├── util/        # Face detection, photo processing, save to Gallery
 ├── whatsapp/    # "Add to WhatsApp" intent
 └── ui/          # Compose screens: wizard steps, results, eraser, theme packs, My packs
-app/src/main/assets/words/<lang>.txt     # captions for the 🎲 button (id: 1,647)
-app/src/main/assets/themes/<lang>.json   # 30 theme packs (generated by tools/themes)
-app/src/main/res/values*/strings.xml     # UI text in 5 languages (generated by tools/strings)
-tools/                                   # text & theme pack generators
+app/src/main/assets/kata_stiker.txt   # 1,647 captions for the 🎲 button
+app/src/main/assets/tema.json         # 38 theme packs (generated from tools/themes/tema.py)
 ```
 
 ### 🏗️ Building from source

@@ -23,7 +23,6 @@ import com.lumi.stickerize.data.AppSettings
 import com.lumi.stickerize.data.ThemePack
 import com.lumi.stickerize.data.ThemePacks
 import com.lumi.stickerize.data.WordBank
-import com.lumi.stickerize.i18n.Lang
 import com.lumi.stickerize.model.GridSpec
 import com.lumi.stickerize.model.StickerStyle
 import com.lumi.stickerize.sticker.PackFullException
@@ -67,7 +66,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val settings = AppSettings(app)
 
     /** Teks sesuai bahasa aplikasi. */
-    private fun s(@StringRes id: Int, vararg args: Any): String = Lang.str(getApplication(), id, *args)
+    private fun s(@StringRes id: Int, vararg args: Any): String = getApplication<Application>().getString(id, *args)
 
     var step by mutableStateOf(Step.PHOTOS)
         private set
@@ -266,15 +265,28 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     /* ------------------------------------------------ kata, pose & paket tema */
 
-    /** Isi kata acak untuk satu stiker (tidak sama dengan kata di stiker lain). */
+    private fun currentTheme(): ThemePack? = appliedTheme?.let { id -> themePacks().firstOrNull { it.id == id } }
+
+    /**
+     * Isi kata acak untuk satu stiker (tidak sama dengan kata di stiker lain).
+     * Kalau sedang memakai paket tema, kata & pose diambil dari tema itu.
+     */
     fun randomWord(index: Int) {
         val others = words.filterIndexed { i, _ -> i != index && i < count }
+        val theme = currentTheme()
+        if (theme != null) {
+            val used = others.map { it.trim().lowercase() }.toSet() + words[index].trim().lowercase()
+            val item = theme.items.filter { it.caption.lowercase() !in used }.randomOrNull() ?: theme.items.random()
+            words[index] = item.caption
+            poses[index] = item.pose
+            return
+        }
         words[index] = WordBank.random(getApplication(), others)
-        appliedTheme = null
     }
 
-    /** Isi kata acak untuk semua stiker. */
+    /** Isi kata acak untuk semua stiker (dari paket tema yang dipakai, kalau ada). */
     fun randomAllWords() {
+        currentTheme()?.let { applyTheme(it); return }
         val used = mutableListOf<String>()
         for (i in 0 until count) {
             val w = WordBank.random(getApplication(), used)
@@ -282,20 +294,28 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             poses[i] = ""
             used.add(w)
         }
-        appliedTheme = null
     }
 
     fun themePacks(): List<ThemePack> = ThemePacks.all(getApplication())
 
-    /** Pakai paket tema: kata dan pose tiap stiker langsung terisi (tetap bisa diubah). */
+    /**
+     * Pakai paket tema: kata dan pose tiap stiker langsung terisi (tetap bisa diubah).
+     * Tiap tema punya 20 kata & pose; yang dipakai dipilih acak, jadi ketuk lagi = kombinasi baru.
+     */
     fun applyTheme(pack: ThemePack) {
         useText = true
+        val picked = pack.items.shuffled()
         for (i in 0 until MAX_STICKERS) {
-            val item = pack.items.getOrNull(i)
+            val item = picked.getOrNull(i)
             words[i] = item?.caption.orEmpty()
             poses[i] = item?.pose.orEmpty()
         }
         appliedTheme = pack.id
+    }
+
+    /** Berhenti memakai paket tema (kata & pose yang sudah terisi tetap ada). */
+    fun clearTheme() {
+        appliedTheme = null
     }
 
     /* ------------------------------------------------ AI */
@@ -418,7 +438,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 val drawn = pieces.map { it.first }.toSet()
                 missing = (0 until total).filter { it !in drawn }.map { captions[it] to chosenPoses[it] }
                 packName = "Lumi ${s(chosenStyle.label)} " +
-                    SimpleDateFormat("d MMM HH.mm", Lang.locale(Lang.current(app))).format(Date())
+                    SimpleDateFormat("d MMM HH.mm", java.util.Locale("in", "ID")).format(Date())
                 refreshPacks()
                 notice = null
                 step = Step.RESULT

@@ -1,25 +1,21 @@
 package com.lumi.stickerize.data
 
 import android.content.Context
-import com.lumi.stickerize.i18n.Lang
 import org.json.JSONArray
 
-/** Kata stiker siap pakai per bahasa (assets/words/<bahasa>.txt), untuk tombol 🎲. */
+/** 1.600+ pilihan kata stiker dari assets/kata_stiker.txt, untuk tombol 🎲. */
 object WordBank {
 
-    private val cache = HashMap<String, List<String>>()
+    @Volatile
+    private var words: List<String>? = null
 
-    fun all(context: Context, lang: String = Lang.current(context)): List<String> = synchronized(cache) {
-        cache.getOrPut(lang) {
-            val file = "words/$lang.txt"
-            val name = runCatching { context.assets.open(file).close(); file }.getOrDefault("words/en.txt")
-            context.assets.open(name).bufferedReader().useLines { lines ->
-                lines.map { it.trim() }
-                    .filter { it.isNotEmpty() && !it.startsWith("#") && it.length <= 25 }
-                    .distinct()
-                    .toList()
-            }
-        }
+    fun all(context: Context): List<String> = words ?: synchronized(this) {
+        words ?: context.assets.open("kata_stiker.txt").bufferedReader().useLines { lines ->
+            lines.map { it.trim() }
+                .filter { it.isNotEmpty() && !it.startsWith("#") && it.length <= 25 }
+                .distinct()
+                .toList()
+        }.also { words = it }
     }
 
     /** Ambil satu kata acak yang belum dipakai di stiker lain. */
@@ -37,16 +33,15 @@ data class ThemeItem(val caption: String, val pose: String)
 /** Paket tema siap pakai, mis. Lebaran, Bucin, Kantor. */
 data class ThemePack(val id: String, val emoji: String, val name: String, val items: List<ThemeItem>)
 
-/** Paket tema per bahasa dari assets/themes/<bahasa>.json (dibuat oleh tools/themes/build.py). */
+/** Paket tema dari assets/tema.json (dibuat oleh tools/themes/build.py). */
 object ThemePacks {
 
-    private val cache = HashMap<String, List<ThemePack>>()
+    @Volatile
+    private var packs: List<ThemePack>? = null
 
-    fun all(context: Context, lang: String = Lang.current(context)): List<ThemePack> = synchronized(cache) {
-        cache.getOrPut(lang) {
-            val text = runCatching { context.assets.open("themes/$lang.json") }
-                .getOrElse { context.assets.open("themes/en.json") }
-                .bufferedReader().use { it.readText() }
+    fun all(context: Context): List<ThemePack> = packs ?: synchronized(this) {
+        packs ?: run {
+            val text = context.assets.open("tema.json").bufferedReader().use { it.readText() }
             val arr = JSONArray(text)
             (0 until arr.length()).map { i ->
                 val o = arr.getJSONObject(i)
@@ -61,6 +56,6 @@ object ThemePacks {
                     }
                 )
             }
-        }
+        }.also { packs = it }
     }
 }

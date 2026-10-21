@@ -6,7 +6,6 @@ import com.lumi.stickerize.R
 import com.lumi.stickerize.ai.CloudflareClient
 import com.lumi.stickerize.ai.ImageGenerator
 import com.lumi.stickerize.ai.OpenRouterClient
-import com.lumi.stickerize.i18n.Lang
 
 enum class Provider { OPENROUTER, CLOUDFLARE }
 
@@ -70,8 +69,8 @@ class AppSettings(context: Context) {
         }
 
     fun generator(): ImageGenerator = when (provider) {
-        Provider.OPENROUTER -> OpenRouterClient(apiKey, model, MODELS.firstOrNull { it.id == model.trim() }, Lang.wrap(appContext))
-        Provider.CLOUDFLARE -> CloudflareClient(cfAccountId, cfToken, model, Lang.wrap(appContext))
+        Provider.OPENROUTER -> OpenRouterClient(apiKey, model, MODELS.firstOrNull { it.id == model.trim() }, appContext)
+        Provider.CLOUDFLARE -> CloudflareClient(cfAccountId, cfToken, model, appContext)
     }
 
     companion object {

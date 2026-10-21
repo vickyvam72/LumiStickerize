@@ -25,7 +25,7 @@ class GenerationService : Service() {
             return START_NOT_STICKY
         }
         Notifier.ensureChannels(this)
-        val text = intent?.getStringExtra(EXTRA_TEXT) ?: com.lumi.stickerize.i18n.Lang.str(this, com.lumi.stickerize.R.string.notif_working)
+        val text = intent?.getStringExtra(EXTRA_TEXT) ?: getString(com.lumi.stickerize.R.string.notif_working)
         val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
         } else 0

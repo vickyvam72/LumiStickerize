@@ -98,7 +98,6 @@ import com.lumi.stickerize.R
 import com.lumi.stickerize.ai.ErrorKind
 import com.lumi.stickerize.data.AppSettings
 import com.lumi.stickerize.data.Provider
-import com.lumi.stickerize.i18n.Lang
 import com.lumi.stickerize.model.StickerStyle
 import com.lumi.stickerize.sticker.PackStore
 import com.lumi.stickerize.ui.theme.LumiBlue
@@ -198,6 +197,10 @@ fun LumiApp(vm: MainViewModel) {
                 selected = vm.appliedTheme,
                 onPick = {
                     vm.applyTheme(it)
+                    vm.themePickerOpen = false
+                },
+                onClear = {
+                    vm.clearTheme()
                     vm.themePickerOpen = false
                 },
                 onClose = { vm.themePickerOpen = false }
@@ -1703,7 +1706,6 @@ private fun SettingsDialog(settings: AppSettings, onClose: () -> Unit) {
     var reveal by remember { mutableStateOf(false) }
     val uri = LocalUriHandler.current
     val context = LocalContext.current
-    val currentLang = remember { Lang.current(context) }
     val provider = AppSettings.providerOf(model)
     val hidden = if (reveal) VisualTransformation.None else PasswordVisualTransformation()
 
@@ -1720,35 +1722,6 @@ private fun SettingsDialog(settings: AppSettings, onClose: () -> Unit) {
         title = { Text(stringResource(R.string.settings_title)) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                Text("🌐 " + stringResource(R.string.language), fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(6.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Lang.OPTIONS.forEach { opt ->
-                        val selected = opt.code == currentLang
-                        Text(
-                            "${opt.flag} ${opt.label}",
-                            fontSize = 13.sp,
-                            color = if (selected) Color.White else LumiBlue,
-                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(50))
-                                .background(if (selected) LumiBlue else LumiBlue.copy(alpha = 0.08f))
-                                .border(1.dp, LumiBlue.copy(alpha = 0.4f), RoundedCornerShape(50))
-                                .clickable(enabled = !selected) {
-                                    // simpan isian lalu muat ulang layar dengan bahasa baru
-                                    saveAll()
-                                    Lang.set(context, opt.code)
-                                    onClose()
-                                    (context as? Activity)?.recreate()
-                                }
-                                .padding(horizontal = 10.dp, vertical = 6.dp)
-                        )
-                    }
-                }
-                Spacer(Modifier.height(14.dp))
                 Text(stringResource(R.string.choose_model), fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(6.dp))
                 AppSettings.MODELS.forEach { m ->
