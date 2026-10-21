@@ -31,7 +31,7 @@
 | 💸 **Token-saving** | All stickers are drawn in **a single image**, so 3 or 10 stickers cost the same. |
 | ✂️ **Auto cut-out** | Background removed, stray frames and lines cleaned up, and a white sticker border added. |
 | 🎨 **20 art styles** | Cartoon, Chibi, Anime, Cute 3D, Kawaii, Pixel Art, Comic, Watercolor, Clay, Sketch, Caricature, Flat vector, Line art, Pop art, Retro 90s, Crayon, Neon, Oil painting, Knitted and Papercraft. |
-| 🎁 **20 theme packs** | The most-used themes: greetings, love, LOL, office, Eid, online seller and more. Each has **100 captions & poses**, filled in randomly with one tap. |
+| 🎁 **20 theme packs** | The most-used themes: greetings, love, LOL, office, singles, online seller and more. Each has **100 captions & poses**, filled in randomly with one tap. |
 | 💬 **1,600+ ready-made captions** | Write your own, or tap 🎲 for a random caption on each sticker. |
 | 📦 **My packs** | See what's in each pack, rename it, delete stickers or whole packs, and save to your Gallery. |
 | 🧽 **Manual eraser** | Something still not clean? Just rub it away with your finger. |
@@ -75,7 +75,7 @@
 - **No text** (expressions only) or **with captions**, one per sticker
 - A 🎲 button on every field plus **🎲 Acak semua** (Randomize all), drawing from **1,647 Indonesian captions** in 33 categories
 - **+ pose (optional)** on every caption: describe the sticker's pose yourself (e.g. "holding my nose") or pick a quick idea; handy for unusual captions
-- **🎁 20 ready-made theme packs**, each with **100 captions & poses** in Indonesian (2,000 in total): Daily greetings, Thanks & sorry, Chat reactions, LOL, Love, Feeling blue, Annoyed, Lazy, Office life, School & campus, Foodie, Besties, Family chat, Islamic phrases, Eid, Ramadan, Birthday, Congrats, Motivation and Online seller. One tap fills captions and poses **randomly** from that theme; tap again for a new mix, or tap 🎲 to swap a single sticker. The theme list shows just emoji and title, all on one screen
+- **🎁 20 ready-made theme packs**, each with **100 captions & poses** in Indonesian (2,000 in total): Daily greetings, Thanks & sorry, Chat reactions, LOL, Love, Feeling blue, Annoyed, Lazy, Office life, School & campus, Foodie, Besties, Family chat, Payday & broke, Coffee hangouts, Singles, Birthday, Congrats, Motivation and Online seller. One tap fills captions and poses **randomly** from that theme; tap again for a new mix, or tap 🎲 to swap a single sticker. The theme list shows just emoji and title, all on one screen
 
 **✂️ Results**
 - 512×512 WebP stickers under 100 KB, meeting WhatsApp's requirements

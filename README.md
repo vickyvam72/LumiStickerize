@@ -31,7 +31,7 @@
 | 💸 **Hemat token** | Semua stiker digambar dalam **1 gambar saja**, jadi biaya 3 atau 10 stiker sama. |
 | ✂️ **Potong otomatis** | Latar dihapus, bingkai dan garis sisa dibuang, lalu tiap stiker diberi garis tepi putih. |
 | 🎨 **20 gaya gambar** | Cartoon, Chibi, Anime, 3D Lucu, Kawaii, Pixel Art, Komik, Cat Air, Clay, Sketsa, Karikatur, Flat Vektor, Line Art, Pop Art, Retro 90-an, Krayon, Neon, Lukisan Minyak, Rajut, dan Kertas. |
-| 🎁 **20 paket tema** | Tema yang paling sering dipakai: Sapaan, Bucin, Ngakak, Kantor, Lebaran, Jualan online, dan lainnya. Tiap tema berisi **100 kata & pose**, terisi acak sekali ketuk. |
+| 🎁 **20 paket tema** | Tema yang paling sering dipakai: Sapaan, Bucin, Ngakak, Kantor, Jomblo, Jualan online, dan lainnya. Tiap tema berisi **100 kata & pose**, terisi acak sekali ketuk. |
 | 💬 **1.600+ kata siap pakai** | Tulis sendiri, atau tekan 🎲 untuk kata acak di tiap stiker. |
 | 📦 **Paket saya** | Lihat isi paket, ganti nama, hapus stiker atau paket, dan simpan ke Galeri. |
 | 🧽 **Penghapus manual** | Masih ada bagian yang kurang rapi? Gosok saja dengan jari. |
@@ -75,7 +75,7 @@
 - **Tanpa kata** (hanya ekspresi) atau **pakai kata**, satu kata per stiker
 - Tombol 🎲 di tiap kolom dan **🎲 Acak semua**, dari **1.647 kata** dalam 33 kategori: salam, terima kasih, maaf, tertawa, bucin, kerja, sekolah, makan, Islami, bahasa gaul, bahasa daerah, dan lainnya
 - **+ pose (opsional)** di tiap kata: tulis sendiri gaya stikernya (mis. "menutup hidung") atau pilih dari ide cepat, cocok untuk kata yang tidak umum
-- **🎁 20 paket tema siap pakai**, masing-masing berisi **100 kata & pose** (total 2.000): Sapaan harian, Makasih & maaf, Reaksi chat, Ngakak, Bucin, Galau, Kesel & ngegas, Mager, Kantor, Sekolah & kuliah, Kulineran, Sahabat, Grup keluarga, Islami, Lebaran, Ramadan, Ulang tahun, Selamat ya!, Semangat, Jualan online. Sekali ketuk, kata dan pose terisi **acak** dari tema itu; ketuk lagi untuk kombinasi lain, atau tekan 🎲 untuk mengganti satu stiker saja. Daftar tema cukup emoji dan judul, muat satu layar
+- **🎁 20 paket tema siap pakai**, masing-masing berisi **100 kata & pose** (total 2.000): Sapaan harian, Makasih & maaf, Reaksi chat, Ngakak, Bucin, Galau, Kesel & ngegas, Mager, Kantor, Sekolah & kuliah, Kulineran, Sahabat, Grup keluarga, Gajian & bokek, Ngopi & nongkrong, Jomblo, Ulang tahun, Selamat ya!, Semangat, Jualan online. Sekali ketuk, kata dan pose terisi **acak** dari tema itu; ketuk lagi untuk kombinasi lain, atau tekan 🎲 untuk mengganti satu stiker saja. Daftar tema cukup emoji dan judul, muat satu layar
 
 **✂️ Hasil**
 - Stiker 512×512 WebP di bawah 100 KB, sesuai syarat WhatsApp

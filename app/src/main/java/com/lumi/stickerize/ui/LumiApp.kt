@@ -815,12 +815,13 @@ private fun TextStep(vm: MainViewModel) {
     Spacer(Modifier.height(10.dp))
     // Paket tema siap pakai (kata + pose) dan acak semua
     val applied = vm.appliedTheme?.let { id -> vm.themePacks().firstOrNull { it.id == id } }
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    // dua tombol sama lebar, sejajar dengan kartu Tanpa kata / Pakai kata di atasnya
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         FilledTonalButton(
             onClick = { vm.themePickerOpen = true },
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
             modifier = Modifier
-                .weight(1.25f)
+                .weight(1f)
                 .height(40.dp)
         ) {
             Text(
